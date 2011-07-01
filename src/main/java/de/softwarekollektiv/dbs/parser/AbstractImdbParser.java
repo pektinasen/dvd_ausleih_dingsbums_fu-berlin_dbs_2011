@@ -2,13 +2,18 @@ package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
-public abstract class AbstractImdbParser {
+import de.softwarekollektiv.dbs.Registry;
 
-	private String delimiter = " ";
+public abstract class AbstractImdbParser implements ImdbParser {
+
+	protected String delimiter = " ";
 
 	protected String firstStop;
 
@@ -24,20 +29,49 @@ public abstract class AbstractImdbParser {
 	 *             if access to file fails
 	 */
 	public void open(String file) throws IOException {
-		this.in = new BufferedReader(new FileReader((file)));
-		while (in.readLine() != firstStop)
+
+		this.in = new BufferedReader(new InputStreamReader(new FileInputStream(
+				file), "ISO-8859-15"));
+		System.out.println(firstStop);
+		while (!in.readLine().equals(firstStop))
 			;
 	}
 
 	/**
 	 * start parsing previous opened file
-	 * @throws IOException if reading from file fails
+	 * 
+	 * @throws IOException
+	 *             if reading from file fails
 	 */
-	public void parse() throws IOException {
-		newLine(in.readLine().split(delimiter));
+	public void parse() {
+		try {
+			String line;
+			System.out.println(delimiter);
+			PreparedStatement st = Registry.getConnection().prepareStatement(
+					"INSERT INTO movies VALUES (?, ?);");
+			while ((line = in.readLine()) != null) {
+				newLine(line.split(delimiter), st);
+			}
+			Registry.getConnection().commit();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	public abstract void newLine(String[] lineParts);
+	public abstract void newLine(String[] lineParts, PreparedStatement st) throws SQLException;
+
+	public void close() {
+		try {
+			in.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public String getDelimiter() {
 		return delimiter;
