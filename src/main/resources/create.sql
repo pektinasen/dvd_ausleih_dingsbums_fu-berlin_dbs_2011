@@ -1,34 +1,31 @@
---DROP TABLE IF EXISTS movies CASCADE;
+DROP TABLE IF EXISTS movies CASCADE;
 DROP TABLE IF EXISTS actors;
 DROP TABLE IF EXISTS directors;
 DROP TABLE IF EXISTS locations;
 
 
-/*CREATE TABLE movies(
+CREATE TABLE movies(
+	mov_id integer primary key,
 	title varchar(128),
 	release_date date,
-	CHECK (release_date > '2010-01-01'),
-	PRIMARY KEY (title, release_date)
-);*/
+	CHECK (release_date >= '2010-01-01'),
+
+);
 
 CREATE TABLE actors (
-	name varchar (64) primary key,
-	title varchar(128),
-	release_date date,
-	FOREIGN KEY (title, release_date)
-		REFERENCES movies(title, release_date) ON DELETE CASCADE
+	act_id integer primary key,
+	name varchar (64),
+	mov_id references movie
 );
 CREATE TABLE directors (
-	name varchar (64) primary key,
-	title varchar(128),
-	release_date date,
-	FOREIGN KEY (title, release_date)
-		REFERENCES movies(title, release_date) ON DELETE CASCADE
+	dir_id integer  primary key,
+	name varchar (64),
+	mov_id references movie
 );
 CREATE TABLE locations (
-	name varchar (64) primary key,
-	title varchar(128),
-	release_date date,
-	FOREIGN KEY (title, release_date)
-		REFERENCES movies(title, release_date) ON DELETE CASCADE
+	loc_id integer primary key,
+	name varchar (64),
+	mov_id integer references movie
+
 );
+
