@@ -1,46 +1,79 @@
 package de.softwarekollektiv.dbs.parser;
 
-import java.sql.Connection;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 
-import de.softwarekollektiv.dbs.Registry;
+import org.apache.log4j.Logger;
+
+import de.softwarekollektiv.dbs.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
 
+/*
+ * FIXME Date ist nicht richtig implementiert
+ */
+public class MoviesParser extends AbstractImdbParser implements ImdbParser {
 
-
-
-public class MoviesParser extends AbstractImdbParser implements ImdbParser{
-
-	private String firstStop = "title	year	category";
 	
+	/*
+	 * delimiter for coloumns in imdb file as RegEx
+	 */
+	
+
 	public MoviesParser() {
-		super();
-		/*
-		 * mehrere tabs
-		 */
 		super.delimiter = "\t+";
-		super.firstStop = this.firstStop;
+		super.firstStop = "title\tyear\tcategory";
+		super.table = "movies";
+		super.values = 2;
 	}
-	
-	
+
 	@Override
-	public void newLine(String[] lineParts, PreparedStatement st){
-		Movie m = new Movie();
-		m.setTitle(lineParts[0]);
-		m.setReleaseDate(lineParts[1]);
+	public void newLine(String[] lineParts, PreparedStatement st) {
+		/*
+		 * now process data
+		 */
+		
+		/*
+		 * "<title>" -> tv series
+		 * title can be any character
+		 */
+		if (lineParts[0].matches("\".+?\".*")){
+//			log.debug(lineParts[0]);
+			return; 
+		}
+		/*
+		 * Movie Object parse and encode the String
+		 */
 		try {
-		st.setString(1, m.getTitle());
-		st.setInt(2, m.getReleaseDate());
+			Movie m = new Movie();
+			/*
+			 * TODO soll die Jahreszahl zum Titel gehören
+			 */
+			m.setTitle(lineParts[0].split(" \\(\\d+.*?\\)")[0]);
+			m.setReleaseDate(lineParts[1]);
+
+			/*
+			 * TODO make it more orm-like
+			 * m.save();
+			 * maybe m.save(dbConnection);
+			 */
+			st.setString(1, m.getTitle());
+			st.setDate(2, m.getReleaseDate());
 			st.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
+			
+			log.error(Arrays.toString(lineParts), e);
 
+		} catch (Exception ee) {
+			log.error(Arrays.toString(lineParts));
+		}
+		
+
+	}
 
 }

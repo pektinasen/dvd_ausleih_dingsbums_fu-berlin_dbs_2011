@@ -9,15 +9,25 @@ import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import de.softwarekollektiv.dbs.Registry;
+import org.apache.log4j.Logger;
+
+import de.softwarekollektiv.dbs.DbConnection;
 
 public abstract class AbstractImdbParser implements ImdbParser {
 
+	public static Logger log = Logger.getLogger(AbstractImdbParser.class);
+	
 	protected String delimiter = " ";
 
-	protected String firstStop;
-
+	protected String firstStop; 
+	
 	private BufferedReader in;
+
+	protected String table;
+
+	protected int values;
+	
+	
 
 	/**
 	 * opens a specific File and jumps to the first Line of data input. The
@@ -29,10 +39,19 @@ public abstract class AbstractImdbParser implements ImdbParser {
 	 *             if access to file fails
 	 */
 	public void open(String file) throws IOException {
-
-		this.in = new BufferedReader(new InputStreamReader(new FileInputStream(
+		
+		if (in != null){
+			in.close();
+		}
+		
+		log.debug("first stop: " +firstStop);
+		
+		/*
+		 * new InputReader with the correct Chareacter Encoding
+		 */
+		in = new BufferedReader(new InputStreamReader(new FileInputStream(
 				file), "ISO-8859-15"));
-		System.out.println(firstStop);
+		
 		while (!in.readLine().equals(firstStop))
 			;
 	}
@@ -44,15 +63,33 @@ public abstract class AbstractImdbParser implements ImdbParser {
 	 *             if reading from file fails
 	 */
 	public void parse() {
+		if (in == null) {
+			log.warn("got file to parse");
+//			throw new IllegalOperationException();
+		}
+		
+		/*
+		 * build the preparedStatement string
+		 */
+		StringBuilder sb = new StringBuilder();
+		sb.append("INSERT INTO "+ table +" VALUES (");
+				
+		/*
+		 * the last question mark doesn't follow a comma
+		 */
+		for ( int i =0; i < values - 1; i++){
+			sb.append("?,");
+		}
+		sb.append("?);");
+		
 		try {
 			String line;
-			System.out.println(delimiter);
-			PreparedStatement st = Registry.getConnection().prepareStatement(
-					"INSERT INTO movies VALUES (?, ?);");
+			PreparedStatement st = DbConnection.getConnection().prepareStatement(
+					sb.toString());
 			while ((line = in.readLine()) != null) {
 				newLine(line.split(delimiter), st);
 			}
-			Registry.getConnection().commit();
+			DbConnection.getConnection().commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,7 +99,7 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		}
 	}
 
-	public abstract void newLine(String[] lineParts, PreparedStatement st) throws SQLException;
+	public abstract void newLine(String[] lineParts, PreparedStatement st);
 
 	public void close() {
 		try {

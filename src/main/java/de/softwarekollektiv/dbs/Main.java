@@ -8,24 +8,26 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
+import de.softwarekollektiv.dbs.parser.ActorsParser;
+import de.softwarekollektiv.dbs.parser.ImdbParser;
 import de.softwarekollektiv.dbs.parser.MoviesParser;
 
 public class Main {
 
 	public static Logger log = Logger.getLogger(Main.class);
 
-	
-
-	private static String createScript = "src/main/resources/createScript.sql";
+	private static String createScript = "src/main/resources/create.sql";
 
 	public static void main(String[] args) throws SQLException,
-			ClassNotFoundException, FileNotFoundException {
-
-		
+			ClassNotFoundException, IOException {
 
 		/*
 		 * create a database with scheme
@@ -33,27 +35,41 @@ public class Main {
 		log.info("creating database...");
 
 		String query = fileToString(createScript);
-		Connection db = Registry.getConnection();
+		Connection db = DbConnection.getConnection();
 		Statement create = db.createStatement();
 		create.execute(query);
 		create.close();
 		db.commit();
 
 		log.info("begin parsing data");
+
+		MoviesParser movieParser = new MoviesParser();
+		ActorsParser actorsParser = new ActorsParser();
+		ActorsParser actressesPaerser = new ActorsParser();
 		
+		List<ImdbParser> parsers = new LinkedList<ImdbParser>();
+//		parsers.add(movieParser);
+		parsers.add(actorsParser);
+		parsers.add(actressesPaerser);
 		
+		movieParser.open("src/main/resources/modmovies.list");
+		actorsParser.open("src/main/resources/actors.list");
+		actressesPaerser.open("src/main/resources/actresses.list");
 		
-		MoviesParser mp = new MoviesParser();
-		try {
-			mp.open("src/main/resources/modmovies.list");
-			log.debug("parsing modmovies.list");
-			mp.parse();
-			
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		log.debug("parsing lists");
+		
+		long before = System.currentTimeMillis();	
+		
+		for (final ImdbParser parser : parsers){
+
+					// TODO Auto-generated method stub
+					parser.parse();
+					parser.close();
+					
+
 		}
+		
+		log.debug("time: " +( System.currentTimeMillis() - before) +" ms");
 		
 		db.close();
 
@@ -66,7 +82,7 @@ public class Main {
 
 			String line = null;
 			while ((line = in.readLine()) != null) {
-				sb.append(line+"\n");
+				sb.append(line + "\n");
 			}
 
 		} catch (IOException e) {

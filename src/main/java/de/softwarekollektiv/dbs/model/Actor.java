@@ -1,12 +1,15 @@
 package de.softwarekollektiv.dbs.model;
 
 public class Actor {
+	/*
+	 * name is in the format: <lastname>, <firstname>
+	 */
 	private String name;
 	private SEX sex;
 	/*
 	 * foreign key on movies
 	 */
-	private int movie;
+	private Movie movie;
 
 	public void setName(String name) {
 		this.name = name;
@@ -24,11 +27,11 @@ public class Actor {
 		return sex;
 	}
 
-	public void setMovie(int movie) {
+	public void setMovie(Movie movie) {
 		this.movie = movie;
 	}
 
-	public int getMovie() {
+	public Movie getMovie() {
 		return movie;
 	}
 }

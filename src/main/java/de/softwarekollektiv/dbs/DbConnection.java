@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-public class Registry {
-	public static Logger log = Logger.getLogger(Registry.class);
+public class DbConnection {
+	public static Logger log = Logger.getLogger(DbConnection.class);
 
 	/*
 	 * JDBC Driver and database URL
