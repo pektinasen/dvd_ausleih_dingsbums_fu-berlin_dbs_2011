@@ -26,6 +26,13 @@ CREATE TABLE locations (
 	loc_id integer primary key,
 	name varchar (64),
 	mov_id integer references movie
+);
 
+CREATE TABLE customers (
+	cus_id integer primary key,
+	surname varchar(128),
+	forename varchar(128),
+	street varchar(128),
+	phone varchar(32)
 );
 
