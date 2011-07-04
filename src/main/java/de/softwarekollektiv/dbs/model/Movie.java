@@ -38,18 +38,7 @@ public class Movie extends Entity{
 	 * TODO The output for the String "2010" is '2010-07-03'
 	 */
 	public void setReleaseDate(String releaseDate) {
-		Calendar cal = Calendar.getInstance();
-		try {
-			cal.set(Calendar.YEAR, Integer.parseInt(releaseDate.split("-")[0]));
- 		} catch (NumberFormatException e){
- 			/*
- 			 * TODO
- 			 * maybe errorhandling at another place
- 			 */
- 			log.warn(releaseDate);
- 			cal.set(Calendar.YEAR, 2000);
- 		}
-		this.releaseDate = new Date(cal.getTime().getTime());
+		
 	}
 
 	public Date getReleaseDate() {
