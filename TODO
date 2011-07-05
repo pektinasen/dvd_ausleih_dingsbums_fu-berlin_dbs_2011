@@ -1,0 +1,17 @@
+* Parser: Sollten alle Methoden IOExceptions werfen dürfen?
+  Wie reagieren wir auf IOExceptions beim Lesen der Dateien?
+* Generell exception handling im parser teil
+
+
+
+Anderes wichtiges Thema: Abstraktion von java.sql.*:
+
+Die subclasses von AbstractParser sollten nicht direkt auf
+ PreparedStatement zugreifen. Genaugenommen sollten sie über die
+ Tabellenstruktur (und damit auch die Reihenfolge im PreparedStatement)
+nichts wissen. HashMaps zurückgeben o.Ä. Irgendwie abstrahieren.
+
+Noch cooler wär's, wenn die Parser überhaupt nichts von SQl üwssten, also
+auch nicht der AbstractParser, aber wir sollten möglichst nicht die ganzen
+187mb von actors.list usw. im Speicher halten. Irgendwie anders kapseln.
+Denk drüber nach.

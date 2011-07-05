@@ -1,9 +1,7 @@
 package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
@@ -15,53 +13,66 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.softwarekollektiv.dbs.DbConnection;
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
-public abstract class AbstractImdbParser implements ImdbParser {
+public abstract class AbstractParser implements Parser {
 
-	public static Logger log = Logger.getLogger(AbstractImdbParser.class);
+	public static Logger log = Logger.getLogger(AbstractParser.class);
+	
+	protected DbConnection dbcon;
+	protected String file;
 	
 	protected String delimiter = " ";
-
-	protected String firstStop; 
-	
-	private BufferedReader in;
-
+	protected boolean skipFirstPart = true;
+	protected String firstStop;
 	protected String table;
+<<<<<<< HEAD
 
 	protected String values;
 
 	protected String ref_id = "";
 
 	protected int valuesSize;
+=======
+	int values;
+>>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
 	
+	private BufferedReader in;
 	
+	/**
+	 * @param dbcon reference to DbConnection object
+	 * @param file the file to read
+	 */
+	protected AbstractParser(DbConnection dbcon, String file) {
+		this.dbcon = dbcon;
+		this.file = file;
+	}
 
 	/**
 	 * opens a specific File and jumps to the first Line of data input. The
 	 * first Line is specified by the extending class
 	 * 
-	 * @param file
-	 *            The File to read
 	 * @throws IOException
 	 *             if access to file fails
 	 */
-	public void open(String file) throws IOException {
+	public void open() throws IOException {
 		
 		if (in != null){
 			in.close();
 		}
 		
-		log.debug("first stop: " +firstStop);
+		log.debug("first stop: " + firstStop);
 		
 		/*
-		 * new InputReader with the correct Chareacter Encoding
+		 * new InputReader with the correct character encoding
 		 */
 		in = new BufferedReader(new InputStreamReader(new FileInputStream(
 				file), "ISO-8859-15"));
 		
-		while (!in.readLine().equals(firstStop))
-			;
+		if(skipFirstPart) {
+			while (!in.readLine().equals(firstStop))
+				;
+		}
 	}
 
 	/**
@@ -71,10 +82,6 @@ public abstract class AbstractImdbParser implements ImdbParser {
 	 *             if reading from file fails
 	 */
 	public void parse() {
-		if (in == null) {
-			log.warn("got file to parse");
-//			throw new IllegalOperationException();
-		}
 		
 		/*
 		 * build the preparedStatement string
@@ -92,12 +99,12 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		
 		try {
 			String line;
-			PreparedStatement st = DbConnection.getConnection().prepareStatement(
+			PreparedStatement st = dbcon.getConnection().prepareStatement(
 					sb.toString());
 			while ((line = in.readLine()) != null) {
 				newLine(line.split(delimiter), st);
 			}
-			DbConnection.getConnection().commit();
+			dbcon.getConnection().commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,7 +114,7 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		}
 	}
 
-	public abstract void newLine(String[] lineParts, PreparedStatement st);
+	protected abstract void newLine(String[] lineParts, PreparedStatement st);
 
 	public void close() {
 		try {
@@ -117,6 +124,7 @@ public abstract class AbstractImdbParser implements ImdbParser {
 			e.printStackTrace();
 		}
 	}
+<<<<<<< HEAD
 
 	public String getDelimiter() {
 		return delimiter;
@@ -156,4 +164,6 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		return yearToDate(year);
 	}
 	
+=======
+>>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
 }

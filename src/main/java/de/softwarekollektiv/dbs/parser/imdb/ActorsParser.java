@@ -1,17 +1,29 @@
-package de.softwarekollektiv.dbs.parser;
+package de.softwarekollektiv.dbs.parser.imdb;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+<<<<<<< HEAD
 
+=======
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.model.Movie;
+>>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
 import de.softwarekollektiv.dbs.model.SEX;
+import de.softwarekollektiv.dbs.parser.AbstractParser;
+import de.softwarekollektiv.dbs.parser.Parser;
 
-public class ActorsParser extends AbstractImdbParser implements ImdbParser {
+public class ActorsParser extends AbstractParser implements Parser {
 
 	private String currentActor;
 	private SEX sex;
 
-	public ActorsParser() {
+	public ActorsParser(DbConnection dbcon, String file) {
+		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "----\t\t\t------";
 		super.table = "actors";

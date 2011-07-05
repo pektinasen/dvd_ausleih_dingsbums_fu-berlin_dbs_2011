@@ -1,1 +1,6 @@
-src/main/resource/*.list
+src/main/resources/*.list
+.classpath
+.project
+.settings/
+target/
+projekt.pdf
