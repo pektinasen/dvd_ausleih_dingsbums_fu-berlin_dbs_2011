@@ -23,7 +23,7 @@ public class Main extends SelectionMenu {
 		try {
 			new Main(System.out, System.in);
 		} catch (Exception e) {
-			// Every severe exception (e.g. IOException on console) ends up here.
+			// Any severe exception (e.g. IOException on console) ends up here.
 			Logger.getRootLogger().fatal("Fatal error: ", e);
 			System.exit(1);
 		}
@@ -33,21 +33,20 @@ public class Main extends SelectionMenu {
 		super(out, in);
 		
 		dbcon = new DbConnection();
-		boolean tryToConnect = true;
-		while(tryToConnect && !dbcon.openConnection()) {
-			tryToConnect = new DbConnectionMenu(out, in, dbcon).run();
+		while(!dbcon.openConnection()) {
+			if(!(new DbConnectionMenu(out, in, dbcon)).run())
+				return;
 		}
-		
-		// Did the user want to abort?
-		if(!tryToConnect)
-			return;
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));
 		items.add(new QuitItem());
 		
+		// Run main menu forever
 		while(super.run())
 			;
+		
+		dbcon.closeConnection();
 	}
 
 	@Override
