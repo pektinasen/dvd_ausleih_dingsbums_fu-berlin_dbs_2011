@@ -9,6 +9,7 @@ do
 	if [ ! -e $i ]
 	then
 		$PROCESSOR $BASEURL$i.gz
+		gzip -d $i.gz
 	fi
 done
 
