@@ -6,8 +6,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
@@ -25,7 +29,11 @@ public abstract class AbstractImdbParser implements ImdbParser {
 
 	protected String table;
 
-	protected int values;
+	protected String values;
+
+	protected String ref_id = "";
+
+	protected int valuesSize;
 	
 	
 
@@ -72,12 +80,12 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		 * build the preparedStatement string
 		 */
 		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO "+ table +" VALUES (");
+		sb.append("INSERT INTO "+ table +" VALUES  );
 				
 		/*
 		 * the last question mark doesn't follow a comma
 		 */
-		for ( int i =0; i < values - 1; i++){
+		for ( int i =0; i < valuesSize; i++){
 			sb.append("?,");
 		}
 		sb.append("?);");
@@ -118,4 +126,34 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		this.delimiter = delimiter;
 	}
 
+	protected Date yearToDate(String year){
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.YEAR, Integer.parseInt(year));
+		cal.set(Calendar.MONTH, 1);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+
+		return new Date(cal.getTimeInMillis());
+	}
+	
+	protected String getTitleFromImdbString(String text) {
+		return text.split(" \\(\\d+.*?\\)")[0];
+	}
+
+	protected Date getDateFromImdbString(String text) {
+		Pattern pattern = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
+
+		Matcher matcher = pattern.matcher(text);
+		String year;
+		if (matcher.find()) {
+			year = matcher.group().substring(1, 5);
+		} else {
+			// entries without a year are discarded since we just insert
+			// movies from 2010 and 2011
+			year = "2000";
+		}
+
+		return yearToDate(year);
+	}
+	
 }

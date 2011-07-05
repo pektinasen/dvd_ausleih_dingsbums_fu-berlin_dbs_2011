@@ -18,6 +18,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import de.softwarekollektiv.dbs.parser.ActorsParser;
 import de.softwarekollektiv.dbs.parser.ImdbParser;
+import de.softwarekollektiv.dbs.parser.LocationsParse;
 import de.softwarekollektiv.dbs.parser.MoviesParser;
 
 public class Main {
@@ -43,18 +44,22 @@ public class Main {
 
 		log.info("begin parsing data");
 
-		MoviesParser movieParser = new MoviesParser();
-		ActorsParser actorsParser = new ActorsParser();
-		ActorsParser actressesPaerser = new ActorsParser();
+		ImdbParser movieParser = new MoviesParser();
+		ImdbParser actorsParser = new ActorsParser();
+		ImdbParser actressesParser = new ActorsParser();
+		ImdbParser locationsParser = new LocationsParse();
+		
 		
 		List<ImdbParser> parsers = new LinkedList<ImdbParser>();
-//		parsers.add(movieParser);
+		parsers.add(movieParser);
 		parsers.add(actorsParser);
-		parsers.add(actressesPaerser);
+		parsers.add(actressesParser);
+		parsers.add(locationsParser);
 		
 		movieParser.open("src/main/resources/modmovies.list");
 		actorsParser.open("src/main/resources/actors.list");
-		actressesPaerser.open("src/main/resources/actresses.list");
+		actressesParser.open("src/main/resources/actresses.list");
+		locationsParser.open("src/main/resources/locations.list");
 		
 		log.debug("parsing lists");
 		

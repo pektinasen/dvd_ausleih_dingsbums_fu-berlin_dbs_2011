@@ -1,79 +1,47 @@
 package de.softwarekollektiv.dbs.parser;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
-import de.softwarekollektiv.dbs.DbConnection;
-import de.softwarekollektiv.dbs.model.Movie;
-
-/*
- * FIXME Date ist nicht richtig implementiert
- */
 public class MoviesParser extends AbstractImdbParser implements ImdbParser {
 
-	
 	/*
 	 * delimiter for coloumns in imdb file as RegEx
 	 */
-	
 
 	public MoviesParser() {
 		super.delimiter = "\t+";
 		super.firstStop = "title\tyear\tcategory";
 		super.table = "movies";
-		super.values = 2;
+		super.valuesSize = 3;
+		super.values = "(title, release_date)";
 	}
 
 	@Override
 	public void newLine(String[] lineParts, PreparedStatement st) {
 		/*
-		 * now process data
+		 * "<title>" -> tv series title can be any character
 		 */
-		
-		/*
-		 * "<title>" -> tv series
-		 * title can be any character
-		 */
-		if (lineParts[0].matches("\".+?\".*")){
-//			log.debug(lineParts[0]);
-			return; 
+		if (lineParts[0].matches("\".+?\".*")) {
+			// log.debug(lineParts[0]);
+			return;
 		}
-		/*
-		 * Movie Object parse and encode the String
-		 */
-		try {
-			Movie m = new Movie();
-			/*
-			 * TODO soll die Jahreszahl zum Titel gehören
-			 */
-			m.setTitle(lineParts[0].split(" \\(\\d+.*?\\)")[0]);
-			m.setReleaseDate(lineParts[1]);
 
-			/*
-			 * TODO make it more orm-like
-			 * m.save();
-			 * maybe m.save(dbConnection);
-			 */
-			st.setString(1, m.getTitle());
-			st.setDate(2, m.getReleaseDate());
+		try {
+			String title = lineParts[0].split(" \\(\\d+.*?\\)")[0];
+			String releaseDate = lineParts[1];
+
+			st.
+			st.setString(2, title);
+			st.setDate(3, yearToDate(releaseDate));
 			st.execute();
 		} catch (SQLException e) {
-			
+
 			log.error(Arrays.toString(lineParts), e);
 
 		} catch (Exception ee) {
 			log.error(Arrays.toString(lineParts));
 		}
-		
-
 	}
-
 }
