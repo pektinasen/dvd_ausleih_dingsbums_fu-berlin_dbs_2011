@@ -51,19 +51,15 @@ public class ParserCommander implements MenuItem {
 
 		log.info("begin parsing data");
 
-		MoviesParser movieParser = new MoviesParser();
-		ActorsParser actorsParser = new ActorsParser();
-		ActorsParser actressesPaerser = new ActorsParser();
+//		MoviesParser movieParser = new MoviesParser(dbcon, "src/main/resources/modmovies.list");
+		ActorsParser actorsParser = new ActorsParser(dbcon, "src/main/resources/actors.list");
+		ActorsParser actressesPaerser = new ActorsParser(dbcon, "src/main/resources/actresses.list");
 		
 		List<ImdbParser> parsers = new LinkedList<ImdbParser>();
 //		parsers.add(movieParser);
 		parsers.add(actorsParser);
 		parsers.add(actressesPaerser);
-		
-		movieParser.open("src/main/resources/modmovies.list");
-		actorsParser.open("src/main/resources/actors.list");
-		actressesPaerser.open("src/main/resources/actresses.list");
-		
+			
 		log.debug("parsing lists");
 		
 		long before = System.currentTimeMillis();	
@@ -71,10 +67,10 @@ public class ParserCommander implements MenuItem {
 		for (final ImdbParser parser : parsers){
 
 					// TODO Auto-generated method stub
+					parser.open();
 					parser.parse();
 					parser.close();
 					
-
 		}
 		
 		log.debug("time: " +( System.currentTimeMillis() - before) +" ms");

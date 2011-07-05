@@ -1,2 +1,6 @@
 * Update doc/er.dia to reflect changes in create.sql (mainly addition of IDs)
 * Erzaehl mir wozu das synchronized in DbConnection ist
+* Die DB-Verbindung sollte aufgebaut werden mt default werten
+ --> wenn das nicht klappt, benutzer nach credentials fragen
+ --> das Ganze in DbConnection? aber _vor_ der Ausgabe des Menues.
+ --> Konstruktor?

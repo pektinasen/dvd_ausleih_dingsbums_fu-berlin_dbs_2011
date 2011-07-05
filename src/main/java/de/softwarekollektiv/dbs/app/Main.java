@@ -24,9 +24,6 @@ public class Main extends SelectionMenu {
 		super(out, in);
 		
 		dbcon = new DbConnection();
-		// Try to open the connection
-		
-		// Ask for credentials
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));
@@ -38,13 +35,13 @@ public class Main extends SelectionMenu {
 	@Override
 	public String getTitle() {
 		// unused
-		return "ParserCommander menu";
+		return null;
 	}
 
 	@Override
 	public String getDescription() {
 		// unused
-		return "ParserCommander menu";
+		return null;
 	}
 
 	@Override

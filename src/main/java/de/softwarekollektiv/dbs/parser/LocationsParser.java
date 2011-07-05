@@ -1,11 +1,13 @@
 package de.softwarekollektiv.dbs.parser;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
-public class LocationsParse extends AbstractImdbParser implements ImdbParser {
+import de.softwarekollektiv.dbs.DbConnection;
 
-	public LocationsParse() {
+public class LocationsParser extends AbstractImdbParser implements ImdbParser {
+
+	public LocationsParser(DbConnection dbcon, String file) {
+		super(dbcon, file);
 					// LOCATIONS LIST
 		super.firstStop = "==============";
 	}

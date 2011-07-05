@@ -1,9 +1,7 @@
 package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.PreparedStatement;
@@ -17,6 +15,9 @@ public abstract class AbstractImdbParser implements ImdbParser {
 
 	public static Logger log = Logger.getLogger(AbstractImdbParser.class);
 	
+	protected DbConnection dbcon;
+	protected String file;
+	
 	protected String delimiter = " ";
 
 	protected String firstStop; 
@@ -27,18 +28,23 @@ public abstract class AbstractImdbParser implements ImdbParser {
 
 	protected int values;
 	
-	
+	/**
+	 * @param dbcon reference to DbConnection object
+	 * @param file the file to read
+	 */
+	AbstractImdbParser(DbConnection dbcon, String file) {
+		this.dbcon = dbcon;
+		this.file = file;
+	}
 
 	/**
 	 * opens a specific File and jumps to the first Line of data input. The
 	 * first Line is specified by the extending class
 	 * 
-	 * @param file
-	 *            The File to read
 	 * @throws IOException
 	 *             if access to file fails
 	 */
-	public void open(String file) throws IOException {
+	public void open() throws IOException {
 		
 		if (in != null){
 			in.close();
@@ -84,12 +90,12 @@ public abstract class AbstractImdbParser implements ImdbParser {
 		
 		try {
 			String line;
-			PreparedStatement st = DbConnection.getConnection().prepareStatement(
+			PreparedStatement st = dbcon.getConnection().prepareStatement(
 					sb.toString());
 			while ((line = in.readLine()) != null) {
 				newLine(line.split(delimiter), st);
 			}
-			DbConnection.getConnection().commit();
+			dbcon.getConnection().commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

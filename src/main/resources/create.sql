@@ -1,9 +1,9 @@
 DROP TABLE IF EXISTS movies CASCADE;
-DROP TABLE IF EXISTS actors;
-DROP TABLE IF EXISTS features;
-DROP TABLE IF EXISTS directors;
+DROP TABLE IF EXISTS directors CASCADE;
+DROP TABLE IF EXISTS locations CASCADE;
+DROP TABLE IF EXISTS actors CASCADE;
 DROP TABLE IF EXISTS directedBy;
-DROP TABLE IF EXISTS locations;
+DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS shotIn;
 
 CREATE TABLE movies (
@@ -20,8 +20,8 @@ CREATE TABLE actors (
 );
 
 CREATE TABLE features (
-	mov_id references movies,
-	act_id references actors
+	mov_id integer references movies,
+	act_id integer references actors
 );
 
 CREATE TABLE directors (
@@ -30,8 +30,8 @@ CREATE TABLE directors (
 );
 
 CREATE TABLE directedBy (
-	dir_id references directors,
-	mov_id references movies
+	dir_id integer references directors,
+	mov_id integer references movies
 );
 
 CREATE TABLE locations (
@@ -40,6 +40,6 @@ CREATE TABLE locations (
 );
 
 CREATE TABLE shotIn (
-	mov_id references movies,
-	loc_id references locations
+	mov_id integer references movies,
+	loc_id integer references locations
 );

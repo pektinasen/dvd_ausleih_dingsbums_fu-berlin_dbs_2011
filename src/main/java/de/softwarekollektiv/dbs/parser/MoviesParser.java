@@ -1,15 +1,8 @@
 package de.softwarekollektiv.dbs.parser;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
-
-import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
@@ -25,7 +18,8 @@ public class MoviesParser extends AbstractImdbParser implements ImdbParser {
 	 */
 	
 
-	public MoviesParser() {
+	public MoviesParser(DbConnection dbcon, String file) {
+		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "title\tyear\tcategory";
 		super.table = "movies";

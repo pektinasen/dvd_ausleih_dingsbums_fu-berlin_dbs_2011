@@ -14,12 +14,7 @@ public class DbConnection {
 	private String password = "software";
 
 	private Connection dbConnection = null;
-	
-	public void setCredentials(String user, String password) {
-		this.user = user;
-		this.password = password;
-	}
-	
+		
 	/**
 	 * Get Connection to the database
 	 * 

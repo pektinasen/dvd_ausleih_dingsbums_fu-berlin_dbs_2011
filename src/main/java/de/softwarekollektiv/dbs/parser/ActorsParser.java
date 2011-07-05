@@ -3,12 +3,11 @@ package de.softwarekollektiv.dbs.parser;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.softwarekollektiv.dbs.model.Actor;
+import de.softwarekollektiv.dbs.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
 import de.softwarekollektiv.dbs.model.SEX;
 
@@ -18,7 +17,8 @@ public class ActorsParser extends AbstractImdbParser implements ImdbParser {
 	SEX sex;
 	private boolean firstLine = true;
 
-	public ActorsParser() {
+	public ActorsParser(DbConnection dbcon, String file) {
+		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "----\t\t\t------";
 		super.table = "actors";
