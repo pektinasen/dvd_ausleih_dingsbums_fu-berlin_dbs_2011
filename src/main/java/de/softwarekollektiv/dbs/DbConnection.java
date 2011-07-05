@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 public class DbConnection {
-	public static Logger log = Logger.getLogger(DbConnection.class);
+	private static Logger log = Logger.getLogger(DbConnection.class);
 
 	/*
 	 * JDBC Driver and database URL
@@ -21,7 +21,7 @@ public class DbConnection {
 	private static String user = "kollektiv";
 	private static String password = "software";
 
-	static Connection dbConnection = null;
+	private static Connection dbConnection = null;
 
 	/*
 	 * get Connection to the database

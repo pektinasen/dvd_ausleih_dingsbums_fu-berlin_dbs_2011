@@ -1,34 +1,39 @@
 package de.softwarekollektiv.dbs;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
+import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.parser.ActorsParser;
 import de.softwarekollektiv.dbs.parser.ImdbParser;
 import de.softwarekollektiv.dbs.parser.MoviesParser;
 
-public class Main {
+// TODO rename
+public class Main implements MenuItem {
 
-	public static Logger log = Logger.getLogger(Main.class);
+	private static Logger log = Logger.getLogger(Main.class);
 
 	private static String createScript = "src/main/resources/create.sql";
 
-	public static void main(String[] args) throws SQLException,
-			ClassNotFoundException, IOException {
+	@Override
+	public String getTitle() {
+		return "Saschas Importer stuff";
+	}
 
+	@Override
+	public String getDescription() {
+		return "Sascha hackt hier an DB-Erzeugung und Importierung herum.";
+	}
+
+	@Override
+	public boolean run() throws Exception {
 		/*
 		 * create a database with scheme
 		 */
@@ -72,7 +77,7 @@ public class Main {
 		log.debug("time: " +( System.currentTimeMillis() - before) +" ms");
 		
 		db.close();
-
+		return true;
 	}
 
 	private static String fileToString(String file) {
@@ -91,5 +96,4 @@ public class Main {
 		}
 		return sb.toString();
 	}
-
 }
