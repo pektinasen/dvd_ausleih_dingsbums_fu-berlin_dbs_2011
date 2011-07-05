@@ -26,7 +26,8 @@ CREATE TABLE actors (
 
 CREATE TABLE features (
 	mov_id integer references movies,
-	act_id integer references actors
+	act_id integer references actors,
+	Primary Key (mov_id, act_id)
 );
 
 CREATE TABLE directors (

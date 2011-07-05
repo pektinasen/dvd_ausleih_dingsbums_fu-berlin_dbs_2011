@@ -48,16 +48,15 @@ public class ActorsParser extends AbstractParser implements Parser {
 			return;
 		}
 
-		/*
-		 * new Actor starting
-		 */
-		if (currentActor == null) {
-			currentActor = lineParts[0];
-		}
-
 		try {
-			actorsStatement.setString(1, currentActor);
-			actorsStatement.execute();
+			/*
+			 * new Actor starting
+			 */
+			if (currentActor == null) {
+				currentActor = lineParts[0];
+				actorsStatement.setString(1, currentActor);
+				actorsStatement.execute();
+			}
 
 			ResultSet result = actorsStatement.getGeneratedKeys();
 			result.next();
