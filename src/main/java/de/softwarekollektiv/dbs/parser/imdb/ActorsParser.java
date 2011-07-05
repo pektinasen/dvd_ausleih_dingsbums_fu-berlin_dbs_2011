@@ -1,76 +1,76 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.model.Movie;
-import de.softwarekollektiv.dbs.model.SEX;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractParser implements Parser {
 
 	String currentActor;
-	SEX sex;
 	private boolean firstLine = true;
-	private PreparedStatement actorsSt;
+	private PreparedStatement actorsStatement;
 	private PreparedStatement featuresStatement;
+	private PreparedStatement lastActorsSerial;
 	
-	private boolean male;
 	
 	public ActorsParser(DbConnection dbcon, String file, boolean male) throws SQLException {
 		super(dbcon, file);
-		this.male = male;
 		super.delimiter = "\t+";
 		super.firstStop = "----\t\t\t------";
 		super.table = "actors";
 		super.values = 3;
 		
-		actorsSt = dbcon.getConnection().prepareStatement(
+		actorsStatement = dbcon.getConnection().prepareStatement(
 				"INSERT INTO actors VALUES (DEFAULT, ? , "+male+")");
+		featuresStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO features VALUES (?, (" +
+				"		SELECT mov_id FROM movies WHERE title = ?)" +
+				")");
 		
+		lastActorsSerial = dbcon.getConnection().prepareStatement(
+				"SELECT is_called, last_Value FROM actors_act_id_seq;");
 	}
 
 	@Override
 	public void newLine(String[] lineParts) {
 
-		
+		/*
+		 * if newline the current actor has no more featuring movies
+		 */
 		if (lineParts[0].equals("")) {
 			currentActor = null;
 			return;
 		}
 
+		/*
+		 * new Actor starting
+		 */
 		if (currentActor == null) {
 			currentActor = lineParts[0];
 		}
 	
-		String movieTitle = lineParts[0];
-
-
 		try {
-			actorsSt.setString(1, currentActor);
-			actorsSt.setString(2, movieTitle);
-			actorsSt.setDate(3, movieReleaseDate);
+			actorsStatement.setString(1, currentActor);
+			actorsStatement.execute();
 
-			actorsSt.execute();
-
+			ResultSet lastValue = lastActorsSerial.executeQuery();
+			lastValue.next();
+			int nextActId = 1;
+			if (lastValue.getBoolean(1)){
+				nextActId = lastValue.getInt(2)+1;
+			}
+			
+			featuresStatement.setInt(1, nextActId);
+			featuresStatement.setString(2, lineParts[1].split("  ")[0]);
+			featuresStatement.execute();
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			log.debug("SQLException", e);
 		}
 
 	}
-
-	private String getTitleFromImdbString(String text) {
-		// TODO Auto-generated method stub
-
-		return text.split(" \\(\\d+.*?\\)")[0];
-	}
-
-
 }
