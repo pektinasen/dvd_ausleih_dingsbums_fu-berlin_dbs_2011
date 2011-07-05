@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
-import de.softwarekollektiv.dbs.DbConnection;
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public abstract class AbstractImdbParser implements ImdbParser {
 

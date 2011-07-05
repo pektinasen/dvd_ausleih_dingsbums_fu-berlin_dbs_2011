@@ -7,7 +7,7 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.softwarekollektiv.dbs.DbConnection;
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
 import de.softwarekollektiv.dbs.model.SEX;
 

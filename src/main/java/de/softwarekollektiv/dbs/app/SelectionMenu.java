@@ -1,18 +1,12 @@
 package de.softwarekollektiv.dbs.app;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-public abstract class SelectionMenu implements MenuItem {
-	private static Logger log = Logger.getLogger(SelectionMenu.class);
-	
-	
+public abstract class SelectionMenu {
 	protected PrintStream out;
 	protected BufferedReader in;
 	
@@ -23,6 +17,12 @@ public abstract class SelectionMenu implements MenuItem {
 	 */
 	protected abstract List<MenuItem> getItems();
 	
+	/**
+	 * Get the menu greeter. This should be a nice one-liner describing
+	 * what this menu contains (e.g. category of menu items).
+	 */
+	protected abstract String getGreeter();
+	
 	public SelectionMenu(PrintStream out, InputStream in) {
 		this.out = out;
 		this.in = new BufferedReader(new InputStreamReader(in));
@@ -30,39 +30,31 @@ public abstract class SelectionMenu implements MenuItem {
 	
 	public boolean run() throws Exception {
 		List<MenuItem> items = getItems();
-		boolean loop = true;
-		while(loop) {
 		
-			printItems();
+		out.println();
+		out.println(getGreeter());
+		printItems();
+		
+		int choice = 0;
+		while((choice < 1) || (choice > items.size())) {
+			out.println("Please choose a number or enter '?' to read the descriptions: ");
 			
-			int choice = 0;
-			while((choice < 1) || (choice > items.size())) {
-				out.println("Please choose a number or enter '?' to read the descriptions: ");
-				
-				String line = null;
+			String line = in.readLine();
+			
+			if(line.equals("?")) {
+				printDescriptions();
+			} else {
 				try {
-					line = in.readLine();
-				} catch (IOException e) {
-					log.error(e);
-					return false;
-				}
-				
-				if(line.equals("?")) {
-					printDescriptions();
-				} else {
-					try {
-						choice = Integer.parseInt(line);
-					} catch (NumberFormatException e) {
-						// Do nothing but let the user try again.
-					}
+					choice = Integer.parseInt(line);
+				} catch (NumberFormatException e) {
+					// Do nothing but let the user try again.
 				}
 			}
-		
-			// Do NOT catch the exception.
-			loop = items.get(choice - 1).run();
 		}
+		out.println();
 		
-		return true;
+		// Do NOT catch the exception.
+		return items.get(choice - 1).run();
 	}
 	
 	private void printItems() {

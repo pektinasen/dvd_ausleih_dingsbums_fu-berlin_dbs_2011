@@ -2,7 +2,7 @@ package de.softwarekollektiv.dbs.parser;
 
 import java.sql.PreparedStatement;
 
-import de.softwarekollektiv.dbs.DbConnection;
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public class LocationsParser extends AbstractImdbParser implements ImdbParser {
 

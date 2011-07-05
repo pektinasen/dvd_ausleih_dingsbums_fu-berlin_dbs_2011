@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.softwarekollektiv.dbs.DbConnection;
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 // TODO rename again
 public class ParserCommander implements MenuItem {
