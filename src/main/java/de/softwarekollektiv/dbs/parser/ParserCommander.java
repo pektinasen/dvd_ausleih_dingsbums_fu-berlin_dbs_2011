@@ -83,7 +83,6 @@ public class ParserCommander implements MenuItem {
 
 		log.debug("time: " + (System.currentTimeMillis() - before) + " ms");
 
-		db.close();
 		return true;
 	}
 
