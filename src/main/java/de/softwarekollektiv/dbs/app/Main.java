@@ -2,6 +2,8 @@ package de.softwarekollektiv.dbs.app;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,6 +41,7 @@ public class Main extends SelectionMenu {
 			if(!(new DbConnectionMenu(out, in, dbcon)).run())
 				return;
 		}
+		
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));

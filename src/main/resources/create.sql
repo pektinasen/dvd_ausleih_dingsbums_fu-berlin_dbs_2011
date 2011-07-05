@@ -5,16 +5,20 @@ DROP TABLE IF EXISTS actors CASCADE;
 DROP TABLE IF EXISTS directedBy;
 DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS shotIn;
+DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS rentals;
 
 CREATE TABLE movies (
-	mov_id integer primary key,
-	title text,
+	mov_id serial primary key,
+	title text unique,
 	release_date date,
+	description text,
+	price_category char
 	CHECK (release_date >= '2010-01-01')
 );
 
 CREATE TABLE actors (
-	act_id integer primary key,
+	act_id serial primary key,
 	name varchar(64),
 	male boolean
 );
@@ -25,7 +29,7 @@ CREATE TABLE features (
 );
 
 CREATE TABLE directors (
-	dir_id integer primary key,
+	dir_id serial primary key,
 	name varchar(64)
 );
 
@@ -35,7 +39,7 @@ CREATE TABLE directedBy (
 );
 
 CREATE TABLE locations (
-	loc_id integer primary key,
+	loc_id serial primary key,
 	name varchar(64)
 );
 
@@ -44,7 +48,7 @@ CREATE TABLE shotIn (
 	loc_id integer references locations
 );
 
-CREATE TABLE customer (
+CREATE TABLE customers (
 	cus_id integer primary key,
 	name varchar(64),
 	surname varchar(64),
@@ -52,4 +56,12 @@ CREATE TABLE customer (
 	zip varchar(5),
 	city varchar(64),
 	phone varchar(32)
+);
+
+CREATE TABLE rentals (
+	cus_id integer references customers,
+	type varchar(7),
+	mov_id integer references movies,
+	startdate date,
+	duration integer
 );
