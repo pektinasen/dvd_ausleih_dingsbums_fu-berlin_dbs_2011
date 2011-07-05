@@ -33,6 +33,11 @@ public class MoviesParser extends AbstractParser implements Parser {
 
 
 		String movieTitle = lineParts[0];
+		
+		if (!(movieTitle.contains("201"))){
+			return;
+		}
+		
 		Date movieRelease;
 		String movieCategory;
 		try {

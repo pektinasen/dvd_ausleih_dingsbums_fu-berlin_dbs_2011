@@ -14,7 +14,7 @@ CREATE TABLE movies (
 	release_date date,
 	description text,
 	price_category char,
-	region varchar(3),
+	region varchar(2),
 	CHECK (release_date >= '2010-01-01')
 );
 

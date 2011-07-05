@@ -18,6 +18,7 @@ public class ActorsParser extends AbstractParser implements Parser {
 	private PreparedStatement actorsStatement;
 	private PreparedStatement featuresStatement;
 	private PreparedStatement lastActorsSerial;
+	private boolean actorIsCommited;
 
 	public ActorsParser(DbConnection dbcon, String file, boolean male)
 			throws SQLException {
@@ -45,19 +46,28 @@ public class ActorsParser extends AbstractParser implements Parser {
 		 */
 		if (lineParts[0].equals("")) {
 			currentActor = null;
+			actorIsCommited = false;
 			return;
 		}
-
+		
 		try {
 			/*
 			 * new Actor starting
 			 */
 			if (currentActor == null) {
-				currentActor = lineParts[0];
-				actorsStatement.setString(1, currentActor);
-				actorsStatement.execute();
+				currentActor = lineParts[0];				
 			}
 
+			if (!(lineParts[1].contains("2010") || lineParts[1].contains("2011"))){
+				return;
+			}
+			
+			if (!actorIsCommited){
+				actorsStatement.setString(1, currentActor);
+				actorsStatement.execute();
+				actorIsCommited = true;
+			}
+			
 			ResultSet result = actorsStatement.getGeneratedKeys();
 			result.next();
 			int actId = result.getInt(1);
