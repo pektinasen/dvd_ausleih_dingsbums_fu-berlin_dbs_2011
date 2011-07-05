@@ -50,10 +50,10 @@ public abstract class AbstractImdbParser implements ImdbParser {
 			in.close();
 		}
 		
-		log.debug("first stop: " +firstStop);
+		log.debug("first stop: " + firstStop);
 		
 		/*
-		 * new InputReader with the correct Chareacter Encoding
+		 * new InputReader with the correct character encoding
 		 */
 		in = new BufferedReader(new InputStreamReader(new FileInputStream(
 				file), "ISO-8859-15"));
@@ -69,10 +69,6 @@ public abstract class AbstractImdbParser implements ImdbParser {
 	 *             if reading from file fails
 	 */
 	public void parse() {
-		if (in == null) {
-			log.warn("got file to parse");
-//			throw new IllegalOperationException();
-		}
 		
 		/*
 		 * build the preparedStatement string
@@ -115,13 +111,4 @@ public abstract class AbstractImdbParser implements ImdbParser {
 			e.printStackTrace();
 		}
 	}
-
-	public String getDelimiter() {
-		return delimiter;
-	}
-
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
-
 }
