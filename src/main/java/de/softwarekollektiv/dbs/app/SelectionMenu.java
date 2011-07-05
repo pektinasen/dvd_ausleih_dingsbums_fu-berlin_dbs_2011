@@ -7,7 +7,11 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public abstract class SelectionMenu implements MenuItem {
+	private static Logger log = Logger.getLogger(SelectionMenu.class);
+	
 	
 	protected PrintStream out;
 	protected BufferedReader in;
@@ -39,8 +43,7 @@ public abstract class SelectionMenu implements MenuItem {
 				try {
 					line = in.readLine();
 				} catch (IOException e) {
-					// TODO better error handling
-					e.printStackTrace();
+					log.error(e);
 					return false;
 				}
 				
