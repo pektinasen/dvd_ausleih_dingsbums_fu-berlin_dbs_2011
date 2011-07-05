@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.app.QuitItem;
 import de.softwarekollektiv.dbs.app.SelectionMenu;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
