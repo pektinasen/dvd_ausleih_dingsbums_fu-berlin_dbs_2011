@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.app.QuitItem;
 import de.softwarekollektiv.dbs.app.SelectionMenu;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
@@ -18,6 +19,7 @@ public class InvoiceMenu extends SelectionMenu implements MenuItem {
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new SingleInvoice(out, in, dbcon));
+		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 
 	@Override

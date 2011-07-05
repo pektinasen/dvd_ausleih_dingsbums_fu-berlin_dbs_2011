@@ -23,6 +23,7 @@ public class QueryMenu extends SelectionMenu implements MenuItem {
 //		items.add(new QueryD());
 //		items.add(new QueryE());
 //		items.add(new QueryF());
+		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 	
 	@Override
