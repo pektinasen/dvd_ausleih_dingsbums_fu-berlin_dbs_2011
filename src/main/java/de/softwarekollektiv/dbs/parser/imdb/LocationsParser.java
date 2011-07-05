@@ -1,10 +1,11 @@
-package de.softwarekollektiv.dbs.parser;
+package de.softwarekollektiv.dbs.parser.imdb;
 
 import java.sql.PreparedStatement;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.parser.Parser;
 
-public class LocationsParser extends AbstractImdbParser implements ImdbParser {
+public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	public LocationsParser(DbConnection dbcon, String file) {
 		super(dbcon, file);

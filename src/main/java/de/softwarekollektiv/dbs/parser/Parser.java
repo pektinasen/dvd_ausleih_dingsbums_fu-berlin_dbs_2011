@@ -2,7 +2,7 @@ package de.softwarekollektiv.dbs.parser;
 
 import java.io.IOException;
 
-public interface ImdbParser {
+public interface Parser {
 	
 	public void open() throws IOException;
 	

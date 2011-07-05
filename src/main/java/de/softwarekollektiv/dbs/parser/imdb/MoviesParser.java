@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs.parser;
+package de.softwarekollektiv.dbs.parser.imdb;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -6,11 +6,12 @@ import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
+import de.softwarekollektiv.dbs.parser.Parser;
 
 /*
  * FIXME Date ist nicht richtig implementiert
  */
-public class MoviesParser extends AbstractImdbParser implements ImdbParser {
+public class MoviesParser extends AbstractImdbParser implements Parser {
 
 	
 	/*

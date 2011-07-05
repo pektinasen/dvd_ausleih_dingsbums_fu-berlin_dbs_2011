@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs.parser;
+package de.softwarekollektiv.dbs.parser.imdb;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -10,8 +10,9 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.parser.Parser;
 
-public abstract class AbstractImdbParser implements ImdbParser {
+public abstract class AbstractImdbParser implements Parser {
 
 	public static Logger log = Logger.getLogger(AbstractImdbParser.class);
 	

@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 
 // TODO rename again
 public class ParserCommander implements MenuItem {
@@ -55,7 +56,7 @@ public class ParserCommander implements MenuItem {
 		ActorsParser actorsParser = new ActorsParser(dbcon, "src/main/resources/actors.list");
 		ActorsParser actressesPaerser = new ActorsParser(dbcon, "src/main/resources/actresses.list");
 		
-		List<ImdbParser> parsers = new LinkedList<ImdbParser>();
+		List<Parser> parsers = new LinkedList<Parser>();
 //		parsers.add(movieParser);
 		parsers.add(actorsParser);
 		parsers.add(actressesPaerser);
@@ -64,7 +65,7 @@ public class ParserCommander implements MenuItem {
 		
 		long before = System.currentTimeMillis();	
 		
-		for (final ImdbParser parser : parsers){
+		for (final Parser parser : parsers){
 
 					// TODO Auto-generated method stub
 					parser.open();
