@@ -13,7 +13,7 @@ CREATE TABLE movies (
 	title text unique,
 	release_date date,
 	description text,
-	price_category char
+	price_category char,
 	CHECK (release_date >= '2010-01-01')
 );
 
@@ -34,8 +34,8 @@ CREATE TABLE directors (
 );
 
 CREATE TABLE directedBy (
-	dir_id integer references directors,
-	mov_id integer references movies
+	mov_id integer references movies,
+	dir_id integer references directors
 );
 
 CREATE TABLE locations (
