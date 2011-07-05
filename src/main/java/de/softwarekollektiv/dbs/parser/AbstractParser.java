@@ -18,30 +18,25 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 public abstract class AbstractParser implements Parser {
 
 	public static Logger log = Logger.getLogger(AbstractParser.class);
-	
+
 	protected DbConnection dbcon;
 	protected String file;
-	
+
 	protected String delimiter = " ";
 	protected boolean skipFirstPart = true;
 	protected String firstStop;
 	protected String table;
-<<<<<<< HEAD
+	protected int values;
 
-	protected String values;
-
-	protected String ref_id = "";
-
-	protected int valuesSize;
-=======
-	int values;
->>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
-	
 	private BufferedReader in;
-	
+
+	private PreparedStatement st;
+
 	/**
-	 * @param dbcon reference to DbConnection object
-	 * @param file the file to read
+	 * @param dbcon
+	 *            reference to DbConnection object
+	 * @param file
+	 *            the file to read
 	 */
 	protected AbstractParser(DbConnection dbcon, String file) {
 		this.dbcon = dbcon;
@@ -56,20 +51,17 @@ public abstract class AbstractParser implements Parser {
 	 *             if access to file fails
 	 */
 	public void open() throws IOException {
-		
-		if (in != null){
+
+		if (in != null) {
 			in.close();
 		}
-		
-		log.debug("first stop: " + firstStop);
-		
 		/*
 		 * new InputReader with the correct character encoding
 		 */
-		in = new BufferedReader(new InputStreamReader(new FileInputStream(
-				file), "ISO-8859-15"));
-		
-		if(skipFirstPart) {
+		in = new BufferedReader(new InputStreamReader(
+				new FileInputStream(file), "ISO-8859-15"));
+
+		if (skipFirstPart) {
 			while (!in.readLine().equals(firstStop))
 				;
 		}
@@ -82,27 +74,12 @@ public abstract class AbstractParser implements Parser {
 	 *             if reading from file fails
 	 */
 	public void parse() {
-		
-		/*
-		 * build the preparedStatement string
-		 */
-		StringBuilder sb = new StringBuilder();
-		sb.append("INSERT INTO "+ table +" VALUES  );
-				
-		/*
-		 * the last question mark doesn't follow a comma
-		 */
-		for ( int i =0; i < valuesSize; i++){
-			sb.append("?,");
-		}
-		sb.append("?);");
-		
+
 		try {
 			String line;
-			PreparedStatement st = dbcon.getConnection().prepareStatement(
-					sb.toString());
+
 			while ((line = in.readLine()) != null) {
-				newLine(line.split(delimiter), st);
+				newLine(line.split(delimiter));
 			}
 			dbcon.getConnection().commit();
 		} catch (SQLException e) {
@@ -114,7 +91,7 @@ public abstract class AbstractParser implements Parser {
 		}
 	}
 
-	protected abstract void newLine(String[] lineParts, PreparedStatement st);
+	protected abstract void newLine(String[] lineParts) throws SQLException;
 
 	public void close() {
 		try {
@@ -124,30 +101,11 @@ public abstract class AbstractParser implements Parser {
 			e.printStackTrace();
 		}
 	}
-<<<<<<< HEAD
 
-	public String getDelimiter() {
-		return delimiter;
-	}
-
-	public void setDelimiter(String delimiter) {
-		this.delimiter = delimiter;
-	}
-
-	protected Date yearToDate(String year){
-		Calendar cal = Calendar.getInstance();
-
-		cal.set(Calendar.YEAR, Integer.parseInt(year));
-		cal.set(Calendar.MONTH, 1);
-		cal.set(Calendar.DAY_OF_MONTH, 1);
-
-		return new Date(cal.getTimeInMillis());
-	}
-	
-	protected String getTitleFromImdbString(String text) {
-		return text.split(" \\(\\d+.*?\\)")[0];
-	}
-
+	/**
+	 * returns the date of the first day of the year from the given String.
+	 * example: (2001), (2001-2002), (2002-????)
+	 */
 	protected Date getDateFromImdbString(String text) {
 		Pattern pattern = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
 
@@ -161,9 +119,16 @@ public abstract class AbstractParser implements Parser {
 			year = "2000";
 		}
 
-		return yearToDate(year);
+		return getFirstDayOfYear(year);
 	}
-	
-=======
->>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
+
+	protected Date getFirstDayOfYear(String year) {
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.YEAR, Integer.parseInt(year));
+		cal.set(Calendar.MONTH, 1);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		return new Date(cal.getTimeInMillis());
+	}
+
 }

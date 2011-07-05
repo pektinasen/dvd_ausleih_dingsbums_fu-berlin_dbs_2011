@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
@@ -51,6 +52,12 @@ public class ParserCommander implements MenuItem {
 		create.close();
 		db.commit();
 
+		Statement st =  dbcon.getConnection().createStatement();
+		ResultSet result = st.executeQuery("select nextval(mov_id_seq) from movies");
+		System.out.println(result.next());
+		
+		System.exit(0);
+		
 		log.info("begin parsing data");
 		
 		List<Parser> parsers = new LinkedList<Parser>();

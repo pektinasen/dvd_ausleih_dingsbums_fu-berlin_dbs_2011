@@ -1,60 +1,48 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 
-<<<<<<< HEAD
-public class MoviesParser extends AbstractImdbParser implements ImdbParser {
-=======
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.model.Movie;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-/*
- * FIXME Date ist nicht richtig implementiert
- */
 public class MoviesParser extends AbstractParser implements Parser {
->>>>>>> 02a008d60f5c890114d97517a77ec96b835249ba
 
-	/*
-	 * delimiter for coloumns in imdb file as RegEx
-	 */
+	private PreparedStatement movieStatement;
 
-	public MoviesParser(DbConnection dbcon, String file) {
+	public MoviesParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "title\tyear\tcategory";
-		super.table = "movies";
-		super.valuesSize = 3;
-		super.values = "(title, release_date)";
+
+		movieStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?)");
+		
+
 	}
 
+	/*
+	 * Each line is independend from any other It consists of one title, release
+	 * year and a Category seperated by \t+
+	 */
 	@Override
-	public void newLine(String[] lineParts, PreparedStatement st) {
-		/*
-		 * "<title>" -> tv series title can be any character
-		 */
-		if (lineParts[0].matches("\".+?\".*")) {
-			// log.debug(lineParts[0]);
-			return;
-		}
+	public void newLine(String[] lineParts) {
 
+		String movieTitle = lineParts[0];
+		Date movieRelease = getFirstDayOfYear(lineParts[1].substring(0,4));
+		String movieCategory = lineParts[2];
+		
 		try {
-			String title = lineParts[0].split(" \\(\\d+.*?\\)")[0];
-			String releaseDate = lineParts[1];
-
-			st.
-			st.setString(2, title);
-			st.setDate(3, yearToDate(releaseDate));
-			st.execute();
+			movieStatement.setString(1, movieTitle);
+			movieStatement.setDate(2, movieRelease);
+			movieStatement.setString(3, movieCategory);
 		} catch (SQLException e) {
-
-			log.error(Arrays.toString(lineParts), e);
-
-		} catch (Exception ee) {
-			log.error(Arrays.toString(lineParts));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
 	}
+
 }
