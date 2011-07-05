@@ -9,25 +9,24 @@ import org.apache.log4j.Logger;
 public class DbConnection {
 	private static Logger log = Logger.getLogger(DbConnection.class);
 
-	/*
-	 * JDBC Driver and database URL
-	 */
+	private String dbUrl = "jdbc:postgresql:dbs_movie";
+	private String user = "kollektiv";
+	private String password = "software";
 
-	private static String dbUrl = "jdbc:postgresql:dbs_movie";
-
-	/*
-	 * Database Credentials
-	 */
-	private static String user = "kollektiv";
-	private static String password = "software";
-
-	private static Connection dbConnection = null;
-
-	/*
-	 * get Connection to the database
+	private Connection dbConnection = null;
+	
+	public void setCredentials(String user, String password) {
+		this.user = user;
+		this.password = password;
+	}
+	
+	/**
+	 * Get Connection to the database
+	 * 
+	 * @return the java.sql.Connection object on success, null on failure
 	 */
 	synchronized
-	public static Connection getConnection() {
+	public Connection getConnection() {
 
 		if (dbConnection == null) {
 			log.info("Connecting to Database");

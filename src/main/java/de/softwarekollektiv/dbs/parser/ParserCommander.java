@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs;
+package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,17 +10,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import de.softwarekollektiv.dbs.DbConnection;
 import de.softwarekollektiv.dbs.app.MenuItem;
-import de.softwarekollektiv.dbs.parser.ActorsParser;
-import de.softwarekollektiv.dbs.parser.ImdbParser;
-import de.softwarekollektiv.dbs.parser.MoviesParser;
 
-// TODO rename
-public class Main implements MenuItem {
+// TODO rename again
+public class ParserCommander implements MenuItem {
 
-	private static Logger log = Logger.getLogger(Main.class);
+	private static Logger log = Logger.getLogger(ParserCommander.class);
 
 	private static String createScript = "src/main/resources/create.sql";
+	private final DbConnection dbcon;
+	
+	public ParserCommander(DbConnection dbcon) {
+		this.dbcon = dbcon;
+	}
 
 	@Override
 	public String getTitle() {
@@ -40,7 +43,7 @@ public class Main implements MenuItem {
 		log.info("creating database...");
 
 		String query = fileToString(createScript);
-		Connection db = DbConnection.getConnection();
+		Connection db = dbcon.getConnection();
 		Statement create = db.createStatement();
 		create.execute(query);
 		create.close();

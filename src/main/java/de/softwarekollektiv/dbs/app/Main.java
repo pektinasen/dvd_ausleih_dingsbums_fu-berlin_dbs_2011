@@ -5,38 +5,46 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.softwarekollektiv.dbs.Main;
+import de.softwarekollektiv.dbs.DbConnection;
+import de.softwarekollektiv.dbs.parser.ParserCommander;
 
-public class MainMenu extends SelectionMenu {
+public class Main extends SelectionMenu {
 	
 	private List<MenuItem> items;
+	private DbConnection dbcon;
 	
 	/**
 	 * main entrance point
 	 */
 	public static void main(String[] args) throws Exception {
-		(new MainMenu(System.out, System.in)).run();
+		new Main(System.out, System.in);
 	}
 	
-	public MainMenu(PrintStream out, InputStream in) {
+	public Main(PrintStream out, InputStream in) throws Exception {
 		super(out, in);
 		
-		items = new LinkedList<MenuItem>();
+		dbcon = new DbConnection();
+		// Try to open the connection
 		
-		items.add(new Main());
+		// Ask for credentials
+		
+		items = new LinkedList<MenuItem>();
+		items.add(new ParserCommander(dbcon));
 		items.add(new QuitItem());
+		
+		super.run();
 	}
 
 	@Override
 	public String getTitle() {
 		// unused
-		return "Main menu";
+		return "ParserCommander menu";
 	}
 
 	@Override
 	public String getDescription() {
 		// unused
-		return "Main menu";
+		return "ParserCommander menu";
 	}
 
 	@Override
