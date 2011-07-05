@@ -3,6 +3,7 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
@@ -11,23 +12,22 @@ import de.softwarekollektiv.dbs.parser.Parser;
 public class LocationsParser extends AbstractParser implements Parser {
 
 	private PreparedStatement locationsStatement;
-	private PreparedStatement lastLocationsSerial;
 	private PreparedStatement shotInStatement;
 
 	public LocationsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
+		super.delimiter = "\t+";
 		// LOCATIONS LIST
 		super.firstStop = "==============";
 
 		locationsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO locations VALUES (DEFAULT, ?)");
+				"INSERT INTO locations VALUES (DEFAULT, ?)",
+				Statement.RETURN_GENERATED_KEYS);
 
 		shotInStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO shotIn VALUES (?, ("
-						+ "		SELECT mov_id FROM movies WHERE title = ?)" + ")");
-
-		lastLocationsSerial = dbcon.getConnection().prepareStatement(
-				"SELECT is_called, last_Value FROM locations_act_id_seq;");
+				"INSERT INTO shotIn VALUES (("
+						+ "		SELECT mov_id FROM movies WHERE title = ?)" +
+								",?)");
 	}
 
 	@Override
@@ -38,18 +38,14 @@ public class LocationsParser extends AbstractParser implements Parser {
 
 		try {
 			locationsStatement.setString(1, location);
-
 			locationsStatement.execute();
 
-			ResultSet lastValue = lastLocationsSerial.executeQuery();
-			lastValue.next();
-			int nextLocId = 1;
-			if (lastValue.getBoolean(1)) {
-				nextLocId = lastValue.getInt(2) + 1;
-			}
+			ResultSet result = locationsStatement.getGeneratedKeys();
+			result.next();
+			int locId = result.getInt(1);
 
-			shotInStatement.setInt(1, nextLocId);
-			shotInStatement.setString(2, movieTitle);
+			shotInStatement.setString(1, movieTitle);
+			shotInStatement.setInt(2, locId);
 			shotInStatement.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

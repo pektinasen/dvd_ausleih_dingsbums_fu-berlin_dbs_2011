@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS actors CASCADE;
 DROP TABLE IF EXISTS directedBy;
 DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS shotIn;
-DROP TABLE IF EXISTS customers;
+DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
 
 CREATE TABLE movies (
@@ -14,6 +14,7 @@ CREATE TABLE movies (
 	release_date date,
 	description text,
 	price_category char,
+	region varchar(3),
 	CHECK (release_date >= '2010-01-01')
 );
 

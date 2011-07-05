@@ -1,8 +1,11 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
@@ -15,24 +18,23 @@ public class ActorsParser extends AbstractParser implements Parser {
 	private PreparedStatement actorsStatement;
 	private PreparedStatement featuresStatement;
 	private PreparedStatement lastActorsSerial;
-	
-	
-	public ActorsParser(DbConnection dbcon, String file, boolean male) throws SQLException {
+
+	public ActorsParser(DbConnection dbcon, String file, boolean male)
+			throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "----\t\t\t------";
 		super.table = "actors";
 		super.values = 3;
-		
+
 		actorsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO actors VALUES (DEFAULT, ? , "+male+")");
+				"INSERT INTO actors VALUES (DEFAULT, ? , " + male + ")",
+				Statement.RETURN_GENERATED_KEYS);
 		featuresStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO features VALUES (?, (" +
-				"		SELECT mov_id FROM movies WHERE title = ?)" +
-				")");
-		
-		lastActorsSerial = dbcon.getConnection().prepareStatement(
-				"SELECT is_called, last_Value FROM actors_act_id_seq;");
+				"INSERT INTO features VALUES (("
+						+ "		SELECT mov_id FROM movies WHERE title = ?)"
+						+ ",?)");
+
 	}
 
 	@Override
@@ -52,24 +54,21 @@ public class ActorsParser extends AbstractParser implements Parser {
 		if (currentActor == null) {
 			currentActor = lineParts[0];
 		}
-	
+
 		try {
 			actorsStatement.setString(1, currentActor);
 			actorsStatement.execute();
 
-			ResultSet lastValue = lastActorsSerial.executeQuery();
-			lastValue.next();
-			int nextActId = 1;
-			if (lastValue.getBoolean(1)){
-				nextActId = lastValue.getInt(2)+1;
-			}
-			
-			featuresStatement.setInt(1, nextActId);
-			featuresStatement.setString(2, lineParts[1].split("  ")[0]);
+			ResultSet result = actorsStatement.getGeneratedKeys();
+			result.next();
+			int actId = result.getInt(1);
+
+			featuresStatement.setString(1, lineParts[1].split("  ")[0]);
+			featuresStatement.setInt(2, actId);
 			featuresStatement.execute();
-			
+
 		} catch (SQLException e) {
-			log.debug("SQLException", e);
+			log.debug(Arrays.toString(lineParts), e);
 		}
 
 	}

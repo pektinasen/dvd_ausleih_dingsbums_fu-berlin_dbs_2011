@@ -9,14 +9,20 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 public class CustomerParser extends AbstractParser {
 
-	public CustomerParser(DbConnection dbcon, String file) {
+	private PreparedStatement customerStatement;
+
+	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = ",";
 		super.skipFirstPart = false;
+		
+		customerStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?)"
+			);
 	}
 
 	@Override
-	public void newLine(String[] lineParts, PreparedStatement st) {
+	public void newLine(String[] lineParts) {
 		int id = Integer.parseInt(lineParts[0]);
 		String name = lineParts[1];
 		String surname = lineParts[2];
@@ -26,13 +32,13 @@ public class CustomerParser extends AbstractParser {
 		String phone = lineParts[6];
 		
 		try {
-			st.setInt(0, id);
-			st.setString(1, name);
-			st.setString(2, surname);
-			st.setString(3, street);
-			st.setString(4, zip);
-			st.setString(5, city);
-			st.setString(6, phone);	
+			customerStatement.setInt(0, id);
+			customerStatement.setString(1, name);
+			customerStatement.setString(2, surname);
+			customerStatement.setString(3, street);
+			customerStatement.setString(4, zip);
+			customerStatement.setString(5, city);
+			customerStatement.setString(6, phone);	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

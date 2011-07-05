@@ -5,7 +5,7 @@ public class Actor {
 	 * name is in the format: <lastname>, <firstname>
 	 */
 	private String name;
-	private SEX sex;
+
 	/*
 	 * foreign key on movies
 	 */
@@ -18,15 +18,7 @@ public class Actor {
 	public String getName() {
 		return name;
 	}
-
-	public void setSex(SEX sex) {
-		this.sex = sex;
-	}
-
-	public SEX getSex() {
-		return sex;
-	}
-
+	
 	public void setMovie(Movie movie) {
 		this.movie = movie;
 	}
