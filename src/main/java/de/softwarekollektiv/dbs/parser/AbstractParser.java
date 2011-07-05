@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs.parser.imdb;
+package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -10,30 +10,27 @@ import java.sql.SQLException;
 import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.Parser;
 
-public abstract class AbstractImdbParser implements Parser {
+public abstract class AbstractParser implements Parser {
 
-	public static Logger log = Logger.getLogger(AbstractImdbParser.class);
+	public static Logger log = Logger.getLogger(AbstractParser.class);
 	
 	protected DbConnection dbcon;
 	protected String file;
 	
 	protected String delimiter = " ";
-
-	protected String firstStop; 
+	protected boolean skipFirstPart = true;
+	protected String firstStop;
+	protected String table;
+	int values;
 	
 	private BufferedReader in;
-
-	protected String table;
-
-	protected int values;
 	
 	/**
 	 * @param dbcon reference to DbConnection object
 	 * @param file the file to read
 	 */
-	AbstractImdbParser(DbConnection dbcon, String file) {
+	protected AbstractParser(DbConnection dbcon, String file) {
 		this.dbcon = dbcon;
 		this.file = file;
 	}
@@ -59,8 +56,10 @@ public abstract class AbstractImdbParser implements Parser {
 		in = new BufferedReader(new InputStreamReader(new FileInputStream(
 				file), "ISO-8859-15"));
 		
-		while (!in.readLine().equals(firstStop))
-			;
+		if(skipFirstPart) {
+			while (!in.readLine().equals(firstStop))
+				;
+		}
 	}
 
 	/**
@@ -102,7 +101,7 @@ public abstract class AbstractImdbParser implements Parser {
 		}
 	}
 
-	public abstract void newLine(String[] lineParts, PreparedStatement st);
+	protected abstract void newLine(String[] lineParts, PreparedStatement st);
 
 	public void close() {
 		try {

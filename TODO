@@ -1,6 +1,17 @@
-* Update doc/er.dia to reflect changes in create.sql (mainly addition of IDs)
-* Erzaehl mir wozu das synchronized in DbConnection ist
-* Die DB-Verbindung sollte aufgebaut werden mt default werten
- --> wenn das nicht klappt, benutzer nach credentials fragen
- --> das Ganze in DbConnection? aber _vor_ der Ausgabe des Menues.
- --> Konstruktor?
+* Parser: Sollten alle Methoden IOExceptions werfen dürfen?
+  Wie reagieren wir auf IOExceptions beim Lesen der Dateien?
+* Generell exception handling im parser teil
+
+
+
+Anderes wichtiges Thema: Abstraktion von java.sql.*:
+
+Die subclasses von AbstractParser sollten nicht direkt auf
+ PreparedStatement zugreifen. Genaugenommen sollten sie über die
+ Tabellenstruktur (und damit auch die Reihenfolge im PreparedStatement)
+nichts wissen. HashMaps zurückgeben o.Ä. Irgendwie abstrahieren.
+
+Noch cooler wär's, wenn die Parser überhaupt nichts von SQl üwssten, also
+auch nicht der AbstractParser, aber wir sollten möglichst nicht die ganzen
+187mb von actors.list usw. im Speicher halten. Irgendwie anders kapseln.
+Denk drüber nach.

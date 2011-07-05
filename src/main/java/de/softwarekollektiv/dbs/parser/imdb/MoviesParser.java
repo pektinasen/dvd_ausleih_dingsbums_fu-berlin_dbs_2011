@@ -6,12 +6,13 @@ import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
+import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 /*
  * FIXME Date ist nicht richtig implementiert
  */
-public class MoviesParser extends AbstractImdbParser implements Parser {
+public class MoviesParser extends AbstractParser implements Parser {
 
 	
 	/*

@@ -43,3 +43,13 @@ CREATE TABLE shotIn (
 	mov_id integer references movies,
 	loc_id integer references locations
 );
+
+CREATE TABLE customer (
+	cus_id integer primary key,
+	name varchar(64),
+	surname varchar(64),
+	street varchar(128),
+	zip varchar(5),
+	city varchar(64),
+	phone varchar(32)
+);

@@ -10,9 +10,10 @@ import java.util.regex.Pattern;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.model.Movie;
 import de.softwarekollektiv.dbs.model.SEX;
+import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-public class ActorsParser extends AbstractImdbParser implements Parser {
+public class ActorsParser extends AbstractParser implements Parser {
 
 	String currentActor;
 	SEX sex;
