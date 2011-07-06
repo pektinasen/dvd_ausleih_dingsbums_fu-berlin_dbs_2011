@@ -14,10 +14,8 @@ import de.softwarekollektiv.dbs.parser.Parser;
 public class ActorsParser extends AbstractParser implements Parser {
 
 	String currentActor;
-	private boolean firstLine = true;
 	private PreparedStatement actorsStatement;
 	private PreparedStatement featuresStatement;
-	private PreparedStatement lastActorsSerial;
 	private boolean actorIsCommited;
 
 	public ActorsParser(DbConnection dbcon, String file, boolean male)

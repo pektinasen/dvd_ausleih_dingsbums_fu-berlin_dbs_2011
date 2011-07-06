@@ -36,7 +36,7 @@ public class MainMenu extends AbstractSelectionMenu {
 
 	@Override
 	protected String getGreeter() {
-		return "MainMenu menu";
+		return "Main menu";
 	}
 	
 	/**
@@ -54,8 +54,7 @@ public class MainMenu extends AbstractSelectionMenu {
 			}
 			
 			MainMenu mainMenu = new MainMenu(out, in, dbcon);
-			while(mainMenu.run())
-				;
+			mainMenu.run();
 			
 			dbcon.closeConnection();
 		} catch (Exception e) {

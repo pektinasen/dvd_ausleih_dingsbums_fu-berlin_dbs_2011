@@ -66,6 +66,8 @@ public class ParserCommander implements MenuItem {
 			parsers.add(new CustomerParser(dbcon,
 					"src/main/resources/customers.list"));
 		} catch (Exception e) {
+			// TODO error handling oder weiterwerfen
+			e.printStackTrace();
 		}
 		log.debug("Parsing lists...");
 
@@ -74,7 +76,7 @@ public class ParserCommander implements MenuItem {
 		for (final Parser parser : parsers) {
 			
 			log.info("Running " + parser.getClass().getSimpleName() + "...");
-			// TODO handle exceptions?
+			// TODO error handling! be graceful
 			parser.open();
 			parser.parse();
 			parser.close();

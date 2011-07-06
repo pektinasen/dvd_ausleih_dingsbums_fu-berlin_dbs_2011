@@ -14,7 +14,7 @@ public class CustomerParser extends AbstractParser {
 	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = ",";
-		super.skipFirstPart = false;
+		super.firstStop = null;
 		
 		customerStatement = dbcon.getConnection().prepareStatement(
 				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?)"

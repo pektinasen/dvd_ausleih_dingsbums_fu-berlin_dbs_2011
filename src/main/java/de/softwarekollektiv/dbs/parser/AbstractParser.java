@@ -23,14 +23,12 @@ public abstract class AbstractParser implements Parser {
 	protected String file;
 
 	protected String delimiter = " ";
-	protected boolean skipFirstPart = true;
 	protected String firstStop;
 	protected String table;
 	protected int values;
 
 	private BufferedReader in;
-
-	private PreparedStatement customerStatement;
+	private static Pattern yearPtrn = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
 
 	/**
 	 * @param dbcon
@@ -61,7 +59,7 @@ public abstract class AbstractParser implements Parser {
 		in = new BufferedReader(new InputStreamReader(
 				new FileInputStream(file), "ISO-8859-15"));
 
-		if (skipFirstPart) {
+		if (firstStop != null) {
 			while (!in.readLine().equals(firstStop))
 				;
 		}
@@ -107,9 +105,7 @@ public abstract class AbstractParser implements Parser {
 	 * example: (2001), (2001-2002), (2002-????)
 	 */
 	protected Date getDateFromImdbString(String text) {
-		Pattern pattern = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
-
-		Matcher matcher = pattern.matcher(text);
+		Matcher matcher = yearPtrn.matcher(text);
 		String year;
 		if (matcher.find()) {
 			year = matcher.group().substring(1, 5);

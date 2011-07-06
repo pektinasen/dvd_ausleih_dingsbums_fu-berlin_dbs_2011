@@ -37,7 +37,7 @@ public class CredentialsDialog implements MenuItem {
 		String password = in.readLine();
 		
 		dbcon.setCredentials(user, password);
-		return true;
+		return false;
 	}
 
 }
