@@ -64,6 +64,6 @@ CREATE TABLE rentals (
 	cus_id integer references customers,
 	type varchar(7),
 	mov_id integer references movies,
-	startdate date,
+	startdate timestamp,
 	duration integer
 );

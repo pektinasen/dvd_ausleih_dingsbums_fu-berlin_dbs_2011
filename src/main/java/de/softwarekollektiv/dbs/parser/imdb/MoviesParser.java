@@ -22,8 +22,6 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 
 		movieStatement = dbcon.getConnection().prepareStatement(
 				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null)");
-		
-
 	}
 
 	/*
