@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs.invoices;
+package de.softwarekollektiv.dbs.listings;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -10,26 +10,27 @@ import de.softwarekollektiv.dbs.app.QuitItem;
 import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
-public class InvoiceMenu extends AbstractSelectionMenu implements MenuItem {
+public class ListingsMenu extends AbstractSelectionMenu implements MenuItem {
 
 	private final List<MenuItem> items;
 	
-	public InvoiceMenu(PrintStream out, InputStream in, DbConnection dbcon) {
+	public ListingsMenu(PrintStream out, InputStream in, DbConnection dbcon) {
 		super(out, in);
 		
 		items = new LinkedList<MenuItem>();
-		items.add(new SingleInvoice(out, in, dbcon));
+		items.add(new CustomerListing(out, dbcon));
+		items.add(new MovieListing(out, dbcon));
 		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 
 	@Override
 	public String getTitle() {
-		return "Invoices";
+		return "Listings";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Generate invoices for each rental or accumulated by user per year";
+		return "Print some listings, such as all movie titles, all customers or all actors.";
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class InvoiceMenu extends AbstractSelectionMenu implements MenuItem {
 
 	@Override
 	protected String getGreeter() {
-		return "Invoices";
+		return "Listings";
 	}
 
 }

@@ -16,7 +16,7 @@ public interface MenuItem {
 	 * Execute this menu item's action.
 	 * In case <c>false</c> is returned, the higher-level menu should abort.
 	 * 
-	 * @return true on success, fail if the application should quit.
+	 * @return true on success, false if we should return to main menu
 	 * @throws Exception if any exception is thrown from this method, the application
 	 * 			should quit immediately.
 	 */

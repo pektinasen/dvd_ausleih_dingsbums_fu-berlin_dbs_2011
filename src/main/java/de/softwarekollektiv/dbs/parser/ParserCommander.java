@@ -16,13 +16,12 @@ import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
 import de.softwarekollektiv.dbs.parser.misc.CustomerParser;
+import de.softwarekollektiv.dbs.parser.misc.RentalsParser;
 
 // TODO rename again
 public class ParserCommander implements MenuItem {
 
-	private static Logger log = Logger.getLogger(ParserCommander.class);
-
-	private static String createScript = "src/main/resources/create.sql";
+	private static final Logger log = Logger.getLogger(ParserCommander.class);
 	private final DbConnection dbcon;
 
 	public ParserCommander(DbConnection dbcon) {
@@ -31,12 +30,12 @@ public class ParserCommander implements MenuItem {
 
 	@Override
 	public String getTitle() {
-		return "Saschas Importer stuff";
+		return "Import data";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Sascha hackt hier an DB-Erzeugung und Importierung herum.";
+		return "Create a new database and import data from the given files.";
 	}
 
 	@Override
@@ -44,9 +43,9 @@ public class ParserCommander implements MenuItem {
 		/*
 		 * create a database with scheme
 		 */
-		log.info("creating database...");
+		log.info("Creating database...");
 
-		String query = fileToString(createScript);
+		String query = fileToString("src/main/resources/create.sql");
 		Connection db = dbcon.getConnection();
 		Statement create = db.createStatement();
 		create.execute(query);
@@ -65,25 +64,25 @@ public class ParserCommander implements MenuItem {
 					"src/main/resources/actresses.list", false));
 			parsers.add(new CustomerParser(dbcon,
 					"src/main/resources/customers.list"));
+			parsers.add(new RentalsParser(dbcon,
+					"src/main/resources/rentals.list"));
 		} catch (Exception e) {
+			// TODO error handling oder weiterwerfen
+			e.printStackTrace();
 		}
-		log.debug("parsing lists");
-
+		
 		long before = System.currentTimeMillis();
 
-		for (final Parser parser : parsers) {
-			
-			log.info("parsing "+parser.getClass().getSimpleName());
-			// TODO handle exceptions?
+		for (final Parser parser : parsers) {	
+			log.info("Running " + parser.getClass().getSimpleName() + "...");
+			// TODO error handling in all parsers! be graceful
 			parser.open();
 			parser.parse();
 			parser.close();
-
 		}
+		
+		log.debug("Time: " + (System.currentTimeMillis() - before) + " ms");
 
-		log.debug("time: " + (System.currentTimeMillis() - before) + " ms");
-
-		db.close();
 		return true;
 	}
 

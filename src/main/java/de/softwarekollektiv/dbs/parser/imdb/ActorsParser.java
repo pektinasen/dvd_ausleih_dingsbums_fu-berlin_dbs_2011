@@ -1,24 +1,24 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-public class ActorsParser extends AbstractParser implements Parser {
+public class ActorsParser extends AbstractImdbParser implements Parser {
 
-	String currentActor;
-	private boolean firstLine = true;
-	private PreparedStatement actorsStatement;
-	private PreparedStatement featuresStatement;
-	private PreparedStatement lastActorsSerial;
+	private static final Logger log = Logger.getLogger(ActorsParser.class);
+	private final PreparedStatement actorsStatement;
+	private final PreparedStatement featuresStatement;
+	
 	private boolean actorIsCommited;
+	private String currentActor;
 
 	public ActorsParser(DbConnection dbcon, String file, boolean male)
 			throws SQLException {
@@ -39,7 +39,7 @@ public class ActorsParser extends AbstractParser implements Parser {
 	}
 
 	@Override
-	public void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) {
 
 		/*
 		 * if newline the current actor has no more featuring movies
@@ -49,6 +49,10 @@ public class ActorsParser extends AbstractParser implements Parser {
 			actorIsCommited = false;
 			return;
 		}
+		
+		// TODO HACK
+		if(lineParts.length < 2)
+			return;
 		
 		try {
 			/*

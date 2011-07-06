@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-public abstract class SelectionMenu {
-	protected PrintStream out;
-	protected BufferedReader in;
+public abstract class AbstractSelectionMenu {
+	protected final PrintStream out;
+	protected final BufferedReader in;
 	
 	/**
 	 * Get all selectable menu items. Must be implemented by subclasses.
@@ -23,38 +23,43 @@ public abstract class SelectionMenu {
 	 */
 	protected abstract String getGreeter();
 	
-	public SelectionMenu(PrintStream out, InputStream in) {
+	public AbstractSelectionMenu(PrintStream out, InputStream in) {
 		this.out = out;
 		this.in = new BufferedReader(new InputStreamReader(in));
 	}
 	
 	public boolean run() throws Exception {
 		List<MenuItem> items = getItems();
+		boolean loop = true;
 		
-		out.println();
-		out.println(getGreeter());
-		printItems();
-		
-		int choice = 0;
-		while((choice < 1) || (choice > items.size())) {
-			out.println("Please choose a number or enter '?' to read the descriptions: ");
+		while(loop) {
+			out.println();
+			out.println(getGreeter());
+			printItems();
 			
-			String line = in.readLine();
-			
-			if(line.equals("?")) {
-				printDescriptions();
-			} else {
-				try {
-					choice = Integer.parseInt(line);
-				} catch (NumberFormatException e) {
-					// Do nothing but let the user try again.
+			int choice = 0;
+			while((choice < 1) || (choice > items.size())) {
+				out.println("Please choose a number or enter '?' to read the descriptions: ");
+				
+				String line = in.readLine();
+				
+				if(line.equals("?")) {
+					printDescriptions();
+				} else {
+					try {
+						choice = Integer.parseInt(line);
+					} catch (NumberFormatException e) {
+						// Do nothing but let the user try again.
+					}
 				}
 			}
+			out.println();
+			
+			// Do NOT catch the exception.
+			loop = items.get(choice - 1).run();
 		}
-		out.println();
 		
-		// Do NOT catch the exception.
-		return items.get(choice - 1).run();
+		return true;
 	}
 	
 	private void printItems() {

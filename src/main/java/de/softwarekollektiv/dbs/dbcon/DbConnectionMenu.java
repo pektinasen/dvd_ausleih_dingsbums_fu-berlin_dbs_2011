@@ -7,11 +7,11 @@ import java.util.List;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.QuitItem;
-import de.softwarekollektiv.dbs.app.SelectionMenu;
+import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 
-public class DbConnectionMenu extends SelectionMenu {
+public class DbConnectionMenu extends AbstractSelectionMenu {
 
-	private List<MenuItem> items;
+	private final List<MenuItem> items;
 	
 	public DbConnectionMenu(PrintStream out, InputStream in, DbConnection dbcon) {
 		super(out, in);

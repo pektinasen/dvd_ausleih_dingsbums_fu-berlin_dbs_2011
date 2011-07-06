@@ -7,11 +7,11 @@ import java.io.PrintStream;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 
-public class CredentialsDialog implements MenuItem {
+class CredentialsDialog implements MenuItem {
 
-	DbConnection dbcon;
-	PrintStream out;
-	BufferedReader in;
+	private final DbConnection dbcon;
+	private final PrintStream out;
+	private final BufferedReader in;
 	
 	CredentialsDialog(PrintStream out, InputStream in, DbConnection dbcon) {
 		this.dbcon = dbcon;
@@ -37,7 +37,7 @@ public class CredentialsDialog implements MenuItem {
 		String password = in.readLine();
 		
 		dbcon.setCredentials(user, password);
-		return true;
+		return false;
 	}
 
 }
