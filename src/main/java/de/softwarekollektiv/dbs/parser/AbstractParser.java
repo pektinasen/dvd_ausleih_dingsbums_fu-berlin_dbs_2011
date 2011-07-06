@@ -16,13 +16,12 @@ public abstract class AbstractParser implements Parser {
 	protected String delimiter;
 	
 	/**
-	 * This method is called for each line in the file. The extending class should
-	 * extract the information from it and insert it into the database.
+	 * This method is called before the parsing begins. Subclasses should
+	 * create their statements here.
 	 * 
-	 * @param lineParts
 	 * @throws SQLException
 	 */
-	protected abstract void newLine(String[] lineParts) throws SQLException;	
+	protected abstract void prepareStatements() throws SQLException;
 	
 	/**
 	 * This method is called before parsing the data, so that extending classes
@@ -31,7 +30,25 @@ public abstract class AbstractParser implements Parser {
 	 * @param in BufferedReader associated to the opened file
 	 * @throws IOException should not happen
 	 */
-	protected abstract void skipHeader(BufferedReader in) throws IOException; 
+	protected abstract void skipHeader(BufferedReader in) throws IOException; 	
+	
+	/**
+	 * This method is called for each line in the file. The extending class should
+	 * extract the information from it and insert it into the database.
+	 * 
+	 * @param lineParts
+	 * @throws SQLException 
+	 */
+	protected abstract void newLine(String[] lineParts) throws SQLException;	
+	
+	/**
+	 * This method is called after the parsing has finished. Subclasses should use
+	 * this to close their statements.
+	 * 
+	 * @throws SQLException
+	 */
+	protected abstract void closeStatements() throws SQLException;
+	
 	
 	/**
 	 * @param dbcon
@@ -46,61 +63,33 @@ public abstract class AbstractParser implements Parser {
 	}
 
 	/**
-	 * Opens a specific File and jumps to the first Line of data input.
-	 * 
-	 * @throws IOException if access to file fails
-	 */
-	public void open() throws IOException {
-
-		if (in != null) {
-			in.close();
-		}
-		
-		/*
-		 * new InputReader with the correct character encoding
-		 */
-		in = new BufferedReader(new InputStreamReader(
-				new FileInputStream(file), "ISO-8859-15"));
-
-		skipHeader(in);
-	}
-
-	/**
 	 * Start parsing previously opened file
 	 * 
-	 * @throws IOException
-	 *             if reading from file fails
+	 * @throws IOException if reading from file fails
+	 * @throws SQLException if Postgres fails us
 	 */
-	public void parse() {
+	public void parse() throws IOException, SQLException {
 		
-		try {
-			String line;
-
-			while ((line = in.readLine()) != null) {
-				newLine(line.split(delimiter));
-			}
-			
-			// TODO Wenn autocommit an ist, macht commit() keinen Sinn. 
-			// Wo haben wir es ausgemacht?! Nachdenken über transactions usw.
-			dbcon.getConnection().commit();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// Open file with correct character encoding
+		in = new BufferedReader(new InputStreamReader(
+				new FileInputStream(file), "ISO-8859-15"));
+		
+		// Skip meaningless lines
+		skipHeader(in);
+		
+		prepareStatements();
+		
+		// Parse
+		String line;
+		while ((line = in.readLine()) != null) {
+			newLine(line.split(delimiter));
 		}
-	}
 
-	/**
-	 * Close file.
-	 */
-	public void close() {
-		try {
-			in.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		closeStatements();
+		
+		// Finish transaction
+		// TODO Wenn autocommit an ist, macht commit() keinen Sinn. 
+		// Wo haben wir es ausgemacht?! Nachdenken über transactions usw.
+		dbcon.getConnection().commit();		
 	}
 }

@@ -33,7 +33,7 @@ abstract class AbstractImdbParser extends AbstractParser {
 	 * returns the date of the first day of the year from the given String.
 	 * example: (2001), (2001-2002), (2002-????)
 	 */
-	protected Date getDateFromImdbString(String text) {
+	protected static Date getDateFromImdbString(String text) {
 		Matcher matcher = yearPtrn.matcher(text);
 		String year;
 		if (matcher.find()) {
@@ -47,7 +47,7 @@ abstract class AbstractImdbParser extends AbstractParser {
 		return getFirstDayOfYear(year);
 	}
 
-	protected Date getFirstDayOfYear(String year) {
+	protected static Date getFirstDayOfYear(String year) {
 		
 		Calendar cal = Calendar.getInstance();
 

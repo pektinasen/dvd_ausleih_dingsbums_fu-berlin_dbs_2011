@@ -21,20 +21,17 @@ import de.softwarekollektiv.dbs.parser.Parser;
  */
 public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	private static final Logger log = Logger.getLogger(ReleaseDateParser.class);
+	private final DbConnection dbcon;
+	
 	private PreparedStatement updateDateStatement;
-
-	DbConnection dbcon;
 
 	public ReleaseDateParser(DbConnection dbcon, String file)
 			throws SQLException {
 		super(dbcon, file);
 		super.firstStop = "==================";
 		super.delimiter = "\t+";
+		
 		this.dbcon = dbcon;
-		updateDateStatement = dbcon
-				.getConnection()
-				.prepareStatement(
-						"UPDATE movies SET release_Date = ?, region = ? WHERE title = ?");
 	}
 
 	@Override
@@ -51,8 +48,8 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 		String dateString = lineParts[1].split(":")[1];
 		String region = lineParts[1].split(":")[0];
 		String[] dateParts = dateString.split(" ");
-		log.debug(Arrays.toString(lineParts));
-		log.debug(Arrays.toString(dateParts));
+//		log.debug(Arrays.toString(lineParts));
+//		log.debug(Arrays.toString(dateParts));
 		if (dateParts.length == 3) {
 			try {
 
@@ -74,7 +71,8 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 				updateDateStatement.setString(3, lineParts[0]);
 				updateDateStatement.execute();
 			} catch (SQLException se) {
-
+				// TODO TODO TODO TODO
+				
 			} catch (StringIndexOutOfBoundsException sie) {
 				log.debug(Arrays.toString(lineParts), sie);
 			}
@@ -83,17 +81,16 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	}
 
 	@Override
-	public void close() {
-		try {
-			Statement delete = dbcon.getConnection().createStatement();
-			delete.execute("DELETE FROM movies WHERE region != 'US'");
-			Statement alter = dbcon.getConnection().createStatement();
-			alter.execute("ALTER TABLE movies DROP COLUMN region");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		super.close();
+	protected void prepareStatements() throws SQLException {
+		updateDateStatement = dbcon
+				.getConnection()
+				.prepareStatement(
+						"UPDATE movies SET release_Date = ?, region = ? WHERE title = ?");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		updateDateStatement.close();
 	}
 
 }

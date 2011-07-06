@@ -80,9 +80,7 @@ public class ParserCommander implements MenuItem {
 		for (final Parser parser : parsers) {	
 			log.info("Running " + parser.getClass().getSimpleName() + "...");
 			// TODO error handling in all parsers! be graceful
-			parser.open();
 			parser.parse();
-			parser.close();
 		}
 		
 		log.debug("Time: " + (System.currentTimeMillis() - before) + " ms");

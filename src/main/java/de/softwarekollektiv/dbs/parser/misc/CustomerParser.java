@@ -9,16 +9,15 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 public class CustomerParser extends AbstractParser {
-
-	private final PreparedStatement customerStatement;
+	private final DbConnection dbcon;
+	
+	private PreparedStatement customerStatement;
 
 	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = ",";
 		
-		customerStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?)"
-			);
+		this.dbcon = dbcon;
 	}
 
 	@Override
@@ -40,11 +39,22 @@ public class CustomerParser extends AbstractParser {
 		customerStatement.setString(7, phone);	
 		
 		customerStatement.execute();
-
 	}
 
 	@Override
 	protected void skipHeader(BufferedReader in) throws IOException {
 		in.readLine();
+	}
+
+	@Override
+	protected void prepareStatements() throws SQLException {
+		customerStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?)"
+			);
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		customerStatement.close();
 	}
 }

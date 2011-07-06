@@ -13,8 +13,11 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractImdbParser implements Parser {
 	private static final Logger log = Logger.getLogger(ActorsParser.class);
-	private final PreparedStatement actorsStatement;
-	private final PreparedStatement featuresStatement;
+	private final DbConnection dbcon;
+	private final boolean male;
+	
+	private PreparedStatement actorsStatement;
+	private PreparedStatement featuresStatement;
 	
 	private boolean actorIsCommited;
 	private String currentActor;
@@ -26,14 +29,9 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 		super.firstStop = "----\t\t\t------";
 		super.table = "actors";
 		super.values = 3;
-
-		actorsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO actors VALUES (DEFAULT, ? , " + male + ")",
-				Statement.RETURN_GENERATED_KEYS);
-		featuresStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO features VALUES (("
-						+ "		SELECT mov_id FROM movies WHERE title = ?)"
-						+ ",?)");
+		
+		this.dbcon = dbcon;
+		this.male = male;
 	}
 
 	@Override
@@ -82,5 +80,22 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 			log.debug(Arrays.toString(lineParts), e);
 		}
 
+	}
+
+	@Override
+	protected void prepareStatements() throws SQLException {
+		actorsStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO actors VALUES (DEFAULT, ? , " + male + ")",
+				Statement.RETURN_GENERATED_KEYS);
+		featuresStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO features VALUES (("
+						+ "		SELECT mov_id FROM movies WHERE title = ?)"
+						+ ",?)");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		actorsStatement.close();
+		featuresStatement.close();
 	}
 }

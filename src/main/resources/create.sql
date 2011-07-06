@@ -27,7 +27,7 @@ CREATE TABLE actors (
 CREATE TABLE features (
 	mov_id integer references movies,
 	act_id integer references actors,
-	Primary Key (mov_id, act_id)
+	primary key (mov_id, act_id)
 );
 
 CREATE TABLE directors (
@@ -37,17 +37,20 @@ CREATE TABLE directors (
 
 CREATE TABLE directedBy (
 	mov_id integer references movies,
-	dir_id integer references directors
+	dir_id integer references directors,
+	primary key (mov_id, dir_id)
 );
 
 CREATE TABLE locations (
 	loc_id serial primary key,
-	name varchar(64)
+	name varchar(64),
+	country varchar(64)
 );
 
 CREATE TABLE shotIn (
 	mov_id integer references movies,
-	loc_id integer references locations
+	loc_id integer references locations,
+	primary key (mov_id, loc_id)
 );
 
 CREATE TABLE customers (

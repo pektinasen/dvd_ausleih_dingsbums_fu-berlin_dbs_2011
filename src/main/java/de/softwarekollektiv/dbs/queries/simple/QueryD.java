@@ -24,14 +24,12 @@ class QueryD extends AbstractSQLQuery implements MenuItem {
 
 	@Override
 	protected String getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return "SELECT cus_id, COUNT(*) as num FROM rentals r WHERE r.mov_id IN (SELECT DISTINCT mov_id FROM shotIn s JOIN locations l ON s.loc_id = l.loc_id WHERE l.country <> 'USA') GROUP BY r.cus_id;";
 	}
 
 	@Override
 	protected String[] getResultFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[] { "cus_id", "num" };
 	}
 
 }

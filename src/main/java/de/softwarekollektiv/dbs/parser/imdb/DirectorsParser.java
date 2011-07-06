@@ -11,6 +11,8 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public class DirectorsParser extends AbstractImdbParser {
 	private static final Logger log = Logger.getLogger(DirectorsParser.class);
+	private final DbConnection dbcon;
+	
 	private PreparedStatement directedByStatement;
 	private PreparedStatement directorsStatement;
 	private String currentDirector;
@@ -21,19 +23,12 @@ public class DirectorsParser extends AbstractImdbParser {
 		// Name\t\t\tTitles
 		super.firstStop = "----\t\t\t------";
 		super.delimiter = "\t+";
-
-		directorsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO directors VALUES (DEFAULT, ?)",
-				Statement.RETURN_GENERATED_KEYS);
-		directedByStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO directedBy VALUES ("
-						+ "		(SELECT mov_id FROM movies WHERE title = ?)"
-						+ ",?)");
-
+		
+		this.dbcon = dbcon;
 	}
 
 	@Override
-	protected void newLine(String[] lineParts) throws SQLException {
+	protected void newLine(String[] lineParts) {
 		/*
 		 * if newline the current actor has no more featuring movies
 		 */
@@ -68,9 +63,27 @@ public class DirectorsParser extends AbstractImdbParser {
 			directedByStatement.execute();
 
 		} catch (SQLException e) {
+			// TODO eliminate this
 			log.debug("SQLException", e);
 		}
 
+	}
+
+	@Override
+	protected void prepareStatements() throws SQLException {
+		directorsStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO directors VALUES (DEFAULT, ?)",
+				Statement.RETURN_GENERATED_KEYS);
+		directedByStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO directedBy VALUES ("
+						+ "		(SELECT mov_id FROM movies WHERE title = ?)"
+						+ ",?)");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		directorsStatement.close();
+		directedByStatement.close();
 	}
 
 }

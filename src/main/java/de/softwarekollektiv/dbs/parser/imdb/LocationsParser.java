@@ -5,28 +5,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class LocationsParser extends AbstractImdbParser implements Parser {
-
-	private final PreparedStatement locationsStatement;
-	private final PreparedStatement shotInStatement;
+	private static final Logger log = Logger.getLogger(LocationsParser.class);
+	private final DbConnection dbcon;
+	
+	private PreparedStatement locationsStatement;
+	private PreparedStatement shotInStatement;
 
 	public LocationsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t+";
-		// LOCATIONS LIST
 		super.firstStop = "==============";
 
-		locationsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO locations VALUES (DEFAULT, ?)",
-				Statement.RETURN_GENERATED_KEYS);
-
-		shotInStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO shotIn VALUES (("
-						+ "		SELECT mov_id FROM movies WHERE title = ?)" +
-								",?)");
+		this.dbcon = dbcon;
 	}
 
 	@Override
@@ -36,11 +32,14 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		if(lineParts.length < 2)
 			return;
 		
-		String location = lineParts[1].split("|")[0];
 		String movieTitle = lineParts[0];
+		String location = lineParts[1].split("|")[0];
+		String[] locationParts = location.split(",");
+		String country = locationParts[locationParts.length - 1];
 
 		try {
 			locationsStatement.setString(1, location);
+			locationsStatement.setString(2, country);
 			locationsStatement.execute();
 
 			ResultSet result = locationsStatement.getGeneratedKeys();
@@ -51,9 +50,27 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 			shotInStatement.setInt(2, locId);
 			shotInStatement.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// TODO eliminate this
+			log.debug("SQLException", e);
 		}
+	}
+
+	@Override
+	protected void prepareStatements() throws SQLException {
+		locationsStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO locations VALUES (DEFAULT, ?, ?)",
+				Statement.RETURN_GENERATED_KEYS);
+
+		shotInStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO shotIn VALUES (("
+						+ "		SELECT mov_id FROM movies WHERE title = ?)" +
+								",?)");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		locationsStatement.close();
+		shotInStatement.close();
 	}
 
 }

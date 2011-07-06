@@ -12,15 +12,16 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
 	private static final Logger log = Logger.getLogger(MoviesParser.class);
-	private final PreparedStatement movieStatement;
+	private final DbConnection dbcon;
+	
+	private PreparedStatement movieStatement;
 
 	public MoviesParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "title\tyear\tcategory";
 
-		movieStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null)");
+		this.dbcon = dbcon;
 	}
 
 	/*
@@ -83,9 +84,20 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			movieStatement.execute();
 		} catch (SQLException e) {
 			// TODO @Sascha: Auskommentieren ist nicht der Weg.
+			// eliminate this
 			log.warn(Arrays.toString(lineParts), e);
 		}
 
 	}
 
+	@Override
+	protected void prepareStatements() throws SQLException {
+		movieStatement = dbcon.getConnection().prepareStatement(
+				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null)");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		movieStatement.close();
+	}
 }

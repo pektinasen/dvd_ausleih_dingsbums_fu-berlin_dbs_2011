@@ -16,19 +16,17 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 public class RentalsParser extends AbstractParser {
 	private static final Logger log = Logger.getLogger(RentalsParser.class);
-	
-	
-	private final PreparedStatement rentalsStatement;
+	private final DbConnection dbcon;
 	private final SimpleDateFormat dateFormat;
+	
+	private PreparedStatement rentalsStatement;
 
 	public RentalsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t";
 
-		rentalsStatement = dbcon.getConnection().prepareStatement(
-						"INSERT INTO rentals VALUES (?, ?, (SELECT mov_id FROM MOVIES WHERE title = ?), ?, ?);");
-		
-		dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+		this.dbcon = dbcon;
+		this.dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
 	}
 
 	@Override
@@ -59,5 +57,16 @@ public class RentalsParser extends AbstractParser {
 	@Override
 	protected void skipHeader(BufferedReader in) throws IOException {
 		in.readLine();
+	}
+
+	@Override
+	protected void prepareStatements() throws SQLException {
+		rentalsStatement = dbcon.getConnection().prepareStatement(
+						"INSERT INTO rentals VALUES (?, ?, (SELECT mov_id FROM MOVIES WHERE title = ?), ?, ?);");
+	}
+
+	@Override
+	protected void closeStatements() throws SQLException {
+		rentalsStatement.close();
 	}
 }
