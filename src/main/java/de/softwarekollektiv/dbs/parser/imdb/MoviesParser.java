@@ -5,11 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
-
+	private static final Logger log = Logger.getLogger(MoviesParser.class);
 	private final PreparedStatement movieStatement;
 
 	public MoviesParser(DbConnection dbcon, String file) throws SQLException {

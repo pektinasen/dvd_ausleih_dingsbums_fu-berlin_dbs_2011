@@ -6,11 +6,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractImdbParser implements Parser {
-
+	private static final Logger log = Logger.getLogger(ActorsParser.class);
 	private final PreparedStatement actorsStatement;
 	private final PreparedStatement featuresStatement;
 	

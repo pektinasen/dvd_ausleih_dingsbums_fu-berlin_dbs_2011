@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
@@ -18,7 +20,7 @@ import de.softwarekollektiv.dbs.parser.Parser;
  * <Tag:int> <Month:String> <year:int>
  */
 public class ReleaseDateParser extends AbstractImdbParser implements Parser {
-
+	private static final Logger log = Logger.getLogger(ReleaseDateParser.class);
 	private PreparedStatement updateDateStatement;
 
 	DbConnection dbcon;
