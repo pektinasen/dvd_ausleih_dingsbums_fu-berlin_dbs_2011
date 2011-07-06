@@ -7,8 +7,8 @@ import java.io.PrintStream;
 import java.util.List;
 
 public abstract class AbstractSelectionMenu {
-	protected PrintStream out;
-	protected BufferedReader in;
+	protected final PrintStream out;
+	protected final BufferedReader in;
 	
 	/**
 	 * Get all selectable menu items. Must be implemented by subclasses.

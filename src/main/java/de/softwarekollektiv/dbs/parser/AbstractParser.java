@@ -10,12 +10,12 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public abstract class AbstractParser implements Parser {
 
-	protected DbConnection dbcon;
-	protected String file;
-	protected String delimiter = " ";
-	
+	private final DbConnection dbcon;
+	private final String file;
 	private BufferedReader in;
-
+	
+	protected String delimiter;
+	
 	/**
 	 * This method is called for each line in the file. The extending class should
 	 * extract the information from it and insert it into the database.
@@ -43,6 +43,7 @@ public abstract class AbstractParser implements Parser {
 	protected AbstractParser(DbConnection dbcon, String file) {
 		this.dbcon = dbcon;
 		this.file = file;
+		this.delimiter = null;
 	}
 
 	/**

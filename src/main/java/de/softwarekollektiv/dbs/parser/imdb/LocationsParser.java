@@ -10,8 +10,8 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class LocationsParser extends AbstractImdbParser implements Parser {
 
-	private PreparedStatement locationsStatement;
-	private PreparedStatement shotInStatement;
+	private final PreparedStatement locationsStatement;
+	private final PreparedStatement shotInStatement;
 
 	public LocationsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
@@ -30,7 +30,7 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 	}
 
 	@Override
-	public void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) {
 
 		String location = lineParts[1].split("|")[0];
 		String movieTitle = lineParts[0];

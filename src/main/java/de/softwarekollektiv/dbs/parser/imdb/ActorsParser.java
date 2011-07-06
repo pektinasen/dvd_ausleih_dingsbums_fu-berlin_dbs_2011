@@ -13,12 +13,12 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractImdbParser implements Parser {
 
-	private static Logger log = Logger.getLogger(ActorsParser.class);
+	private static final Logger log = Logger.getLogger(ActorsParser.class);
+	private final PreparedStatement actorsStatement;
+	private final PreparedStatement featuresStatement;
 	
-	String currentActor;
-	private PreparedStatement actorsStatement;
-	private PreparedStatement featuresStatement;
 	private boolean actorIsCommited;
+	private String currentActor;
 
 	public ActorsParser(DbConnection dbcon, String file, boolean male)
 			throws SQLException {
@@ -39,7 +39,7 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 	}
 
 	@Override
-	public void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) {
 
 		/*
 		 * if newline the current actor has no more featuring movies

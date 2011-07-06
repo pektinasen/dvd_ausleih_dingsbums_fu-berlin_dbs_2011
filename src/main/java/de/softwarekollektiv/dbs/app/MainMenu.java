@@ -14,11 +14,11 @@ import de.softwarekollektiv.dbs.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
 import de.softwarekollektiv.dbs.queries.QueryMenu;
 
-public class MainMenu extends AbstractSelectionMenu {
+class MainMenu extends AbstractSelectionMenu {
 	
-	private List<MenuItem> items;
+	private final List<MenuItem> items;
 		
-	public MainMenu(PrintStream out, InputStream in, DbConnection dbcon) throws Exception {
+	MainMenu(PrintStream out, InputStream in, DbConnection dbcon) throws Exception {
 		super(out, in);
 		
 		items = new LinkedList<MenuItem>();

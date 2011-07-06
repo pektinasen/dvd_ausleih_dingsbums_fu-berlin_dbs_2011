@@ -12,7 +12,7 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public class QueryMenu extends AbstractSelectionMenu implements MenuItem {
 
-	private List<MenuItem> items;
+	private final List<MenuItem> items;
 	
 	public QueryMenu(PrintStream out, InputStream in, DbConnection dbcon) {
 		super(out, in);

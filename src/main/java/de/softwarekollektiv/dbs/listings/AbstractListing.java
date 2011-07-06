@@ -9,12 +9,23 @@ import de.softwarekollektiv.dbs.app.PrettyTablePrinter;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 abstract class AbstractListing implements MenuItem {
-	protected abstract String getTable();
-
-	protected abstract String[] getFields();
-
+	
 	private final PrintStream out;
 	private final DbConnection dbcon;
+	
+	/**
+	 * Must be implemented by subclasses.
+	 * 
+	 * @return the table to SELECT from
+	 */
+	protected abstract String getTable();
+	
+	/**
+	 * Must be implemented by subclasses.
+	 * 
+	 * @return the fields to SELECT from the table
+	 */
+	protected abstract String[] getFields();
 
 	AbstractListing(PrintStream out, DbConnection dbcon) {
 		this.out = out;

@@ -11,7 +11,7 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 public class RentalsParser extends AbstractParser {
 
-	private PreparedStatement rentalsStatement;
+	private final PreparedStatement rentalsStatement;
 
 	public RentalsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);

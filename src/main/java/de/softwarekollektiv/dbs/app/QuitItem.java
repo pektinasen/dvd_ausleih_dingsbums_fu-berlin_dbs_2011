@@ -2,8 +2,8 @@ package de.softwarekollektiv.dbs.app;
 
 public class QuitItem implements MenuItem {
 	
-	private String title;
-	private String description;
+	private final String title;
+	private final String description;
 	
 	public QuitItem() {
 		this("Quit", "Return from nested menu or quit application.");

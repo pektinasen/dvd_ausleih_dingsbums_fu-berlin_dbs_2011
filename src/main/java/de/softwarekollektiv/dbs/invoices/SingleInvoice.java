@@ -8,11 +8,11 @@ import java.io.PrintStream;
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
-public class SingleInvoice implements MenuItem {
+class SingleInvoice implements MenuItem {
 
-	private PrintStream out;
-	private DbConnection dbcon;
-	private BufferedReader in;
+	private final PrintStream out;
+	private final DbConnection dbcon;
+	private final BufferedReader in;
 
 	SingleInvoice(PrintStream out, InputStream in, DbConnection dbcon) {
 		this.out = out;

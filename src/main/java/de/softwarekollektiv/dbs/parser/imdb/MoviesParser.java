@@ -12,8 +12,8 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
 
-	private static Logger log = Logger.getLogger(MoviesParser.class);
-	private PreparedStatement movieStatement;
+	private static final Logger log = Logger.getLogger(MoviesParser.class);
+	private final PreparedStatement movieStatement;
 
 	public MoviesParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
@@ -31,7 +31,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	 * year and a Category seperated by \t+
 	 */
 	@Override
-	public void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) {
 
 
 		String movieTitle = lineParts[0];
@@ -62,7 +62,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			
 			movieStatement.execute();
 		} catch (SQLException e) {
-//			log.warn(Arrays.toString(lineParts), e);
+			log.warn(Arrays.toString(lineParts), e);
 		}
 
 	}

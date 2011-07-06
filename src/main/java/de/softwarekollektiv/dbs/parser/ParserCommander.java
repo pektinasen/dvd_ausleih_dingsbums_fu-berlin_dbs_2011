@@ -21,9 +21,7 @@ import de.softwarekollektiv.dbs.parser.misc.RentalsParser;
 // TODO rename again
 public class ParserCommander implements MenuItem {
 
-	private static Logger log = Logger.getLogger(ParserCommander.class);
-
-	private static String createScript = "src/main/resources/create.sql";
+	private static final Logger log = Logger.getLogger(ParserCommander.class);
 	private final DbConnection dbcon;
 
 	public ParserCommander(DbConnection dbcon) {
@@ -47,7 +45,7 @@ public class ParserCommander implements MenuItem {
 		 */
 		log.info("Creating database...");
 
-		String query = fileToString(createScript);
+		String query = fileToString("src/main/resources/create.sql");
 		Connection db = dbcon.getConnection();
 		Statement create = db.createStatement();
 		create.execute(query);
@@ -72,20 +70,17 @@ public class ParserCommander implements MenuItem {
 			// TODO error handling oder weiterwerfen
 			e.printStackTrace();
 		}
-		log.debug("Parsing lists...");
-
+		
 		long before = System.currentTimeMillis();
 
-		for (final Parser parser : parsers) {
-			
+		for (final Parser parser : parsers) {	
 			log.info("Running " + parser.getClass().getSimpleName() + "...");
-			// TODO error handling! be graceful
+			// TODO error handling in all parsers! be graceful
 			parser.open();
 			parser.parse();
 			parser.close();
-
 		}
-
+		
 		log.debug("Time: " + (System.currentTimeMillis() - before) + " ms");
 
 		return true;

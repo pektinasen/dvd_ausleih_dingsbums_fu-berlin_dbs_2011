@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 public class DbConnection {
 	private static Logger log = Logger.getLogger(DbConnection.class);
 
-	private String dbUrl = "jdbc:postgresql:dbs_movie";
+	private final String dbUrl = "jdbc:postgresql:dbs_movie";
 	private String user = "kollektiv";
 	private String password = "software";
 

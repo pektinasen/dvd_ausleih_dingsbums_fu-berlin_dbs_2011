@@ -10,13 +10,13 @@ import java.util.regex.Pattern;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
-public abstract class AbstractImdbParser extends AbstractParser {
+abstract class AbstractImdbParser extends AbstractParser {
 
 	protected String firstStop;
 	protected String table;
 	protected int values;	
 	
-	private static Pattern yearPtrn = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
+	private static final Pattern yearPtrn = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
 	
 	protected AbstractImdbParser(DbConnection dbcon, String file) {
 		super(dbcon, file);

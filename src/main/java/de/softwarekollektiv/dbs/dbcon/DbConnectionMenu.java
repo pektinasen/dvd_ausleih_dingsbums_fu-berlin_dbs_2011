@@ -11,7 +11,7 @@ import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 
 public class DbConnectionMenu extends AbstractSelectionMenu {
 
-	private List<MenuItem> items;
+	private final List<MenuItem> items;
 	
 	public DbConnectionMenu(PrintStream out, InputStream in, DbConnection dbcon) {
 		super(out, in);

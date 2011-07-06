@@ -8,10 +8,9 @@ import java.sql.SQLException;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
-
 public class CustomerParser extends AbstractParser {
 
-	private PreparedStatement customerStatement;
+	private final PreparedStatement customerStatement;
 
 	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
@@ -23,7 +22,7 @@ public class CustomerParser extends AbstractParser {
 	}
 
 	@Override
-	public void newLine(String[] lineParts) throws SQLException {
+	protected void newLine(String[] lineParts) throws SQLException {
 		int id = Integer.parseInt(lineParts[0]);
 		String name = lineParts[1];
 		String surname = lineParts[2];
