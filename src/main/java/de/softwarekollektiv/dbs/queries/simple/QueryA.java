@@ -24,13 +24,11 @@ class QueryA extends AbstractSQLQuery implements MenuItem {
 
 	@Override
 	protected String getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return "SELECT type, COUNT(DISTINCT cus_id) AS 'count' FROM rentals GROUP BY type;";
 	}
 
 	@Override
 	protected String[] getResultFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return new String[] { "type", "count" };
 	}
 }
