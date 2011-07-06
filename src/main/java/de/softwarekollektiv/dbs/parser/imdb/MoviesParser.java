@@ -60,6 +60,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			
 			movieStatement.execute();
 		} catch (SQLException e) {
+			// TODO @Sascha: Auskommentieren ist nicht der Weg.
 			log.warn(Arrays.toString(lineParts), e);
 		}
 
