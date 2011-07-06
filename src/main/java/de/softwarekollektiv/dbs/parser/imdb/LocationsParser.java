@@ -32,6 +32,10 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 	@Override
 	protected void newLine(String[] lineParts) {
 
+		// TODO HACK
+		if(lineParts.length < 2)
+			return;
+		
 		String location = lineParts[1].split("|")[0];
 		String movieTitle = lineParts[0];
 
