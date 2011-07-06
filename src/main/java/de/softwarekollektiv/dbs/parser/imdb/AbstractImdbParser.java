@@ -24,8 +24,9 @@ public abstract class AbstractImdbParser extends AbstractParser {
 
 	@Override
 	protected void skipHeader(BufferedReader in) throws IOException {
-		while (!in.readLine().equals(firstStop))
-			;
+		if(firstStop != null)
+			while (!in.readLine().equals(firstStop))
+				;
 	}
 
 	/**

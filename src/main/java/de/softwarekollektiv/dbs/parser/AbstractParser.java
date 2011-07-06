@@ -46,11 +46,9 @@ public abstract class AbstractParser implements Parser {
 	}
 
 	/**
-	 * opens a specific File and jumps to the first Line of data input. The
-	 * first Line is specified by the extending class
+	 * Opens a specific File and jumps to the first Line of data input.
 	 * 
-	 * @throws IOException
-	 *             if access to file fails
+	 * @throws IOException if access to file fails
 	 */
 	public void open() throws IOException {
 
@@ -68,7 +66,7 @@ public abstract class AbstractParser implements Parser {
 	}
 
 	/**
-	 * start parsing previous opened file
+	 * Start parsing previously opened file
 	 * 
 	 * @throws IOException
 	 *             if reading from file fails
@@ -92,6 +90,9 @@ public abstract class AbstractParser implements Parser {
 		}
 	}
 
+	/**
+	 * Close file.
+	 */
 	public void close() {
 		try {
 			in.close();
