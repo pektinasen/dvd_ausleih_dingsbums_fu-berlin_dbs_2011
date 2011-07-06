@@ -80,6 +80,8 @@ public abstract class AbstractParser implements Parser {
 				newLine(line.split(delimiter));
 			}
 			
+			// TODO Wenn autocommit an ist, macht commit() keinen Sinn. 
+			// Wo haben wir es ausgemacht?! Nachdenken über transactions usw.
 			dbcon.getConnection().commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

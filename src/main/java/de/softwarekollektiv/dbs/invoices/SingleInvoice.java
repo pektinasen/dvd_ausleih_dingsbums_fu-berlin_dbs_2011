@@ -40,6 +40,8 @@ public class SingleInvoice implements MenuItem {
 			out.print("Not a valid rental ID.");
 		}
 		
+		// TODO
+		
 		return true;
 	}
 

@@ -23,7 +23,7 @@ public class CustomerParser extends AbstractParser {
 	}
 
 	@Override
-	public void newLine(String[] lineParts) {
+	public void newLine(String[] lineParts) throws SQLException {
 		int id = Integer.parseInt(lineParts[0]);
 		String name = lineParts[1];
 		String surname = lineParts[2];
@@ -32,20 +32,16 @@ public class CustomerParser extends AbstractParser {
 		String city = lineParts[5];
 		String phone = lineParts[6];
 		
-		try {
-			customerStatement.setInt(1, id);
-			customerStatement.setString(2, name);
-			customerStatement.setString(3, surname);
-			customerStatement.setString(4, street);
-			customerStatement.setString(5, zip);
-			customerStatement.setString(6, city);
-			customerStatement.setString(7, phone);	
-			
-			customerStatement.execute();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		customerStatement.setInt(1, id);
+		customerStatement.setString(2, name);
+		customerStatement.setString(3, surname);
+		customerStatement.setString(4, street);
+		customerStatement.setString(5, zip);
+		customerStatement.setString(6, city);
+		customerStatement.setString(7, phone);	
+		
+		customerStatement.execute();
+
 	}
 
 	@Override

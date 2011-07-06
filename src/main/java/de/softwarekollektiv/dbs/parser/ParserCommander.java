@@ -16,6 +16,7 @@ import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
 import de.softwarekollektiv.dbs.parser.misc.CustomerParser;
+import de.softwarekollektiv.dbs.parser.misc.RentalsParser;
 
 // TODO rename again
 public class ParserCommander implements MenuItem {
@@ -65,6 +66,8 @@ public class ParserCommander implements MenuItem {
 					"src/main/resources/actresses.list", false));
 			parsers.add(new CustomerParser(dbcon,
 					"src/main/resources/customers.list"));
+			parsers.add(new RentalsParser(dbcon,
+					"src/main/resources/rentals.list"));
 		} catch (Exception e) {
 			// TODO error handling oder weiterwerfen
 			e.printStackTrace();
