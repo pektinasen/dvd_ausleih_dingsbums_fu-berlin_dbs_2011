@@ -19,16 +19,16 @@ class QueryA extends AbstractSQLQuery implements MenuItem {
 
 	@Override
 	public String getDescription() {
-		return "Beantwortet Aufgabe 5.1.a:\nWie viele Kunden haben sich für welches Preismodell entschieden?";
+		return "Beantwortet Aufgabe 5.1.a:\nWie viele Kunden haben sich für welches Preismodell entschieden?\nSQL:\n" + getQuery();
 	}
 
 	@Override
 	protected String getQuery() {
-		return "SELECT type, COUNT(DISTINCT cus_id) AS 'count' FROM rentals GROUP BY type;";
+		return "SELECT type, COUNT(DISTINCT cus_id) AS num FROM rentals GROUP BY type;";
 	}
 
 	@Override
 	protected String[] getResultFields() {
-		return new String[] { "type", "count" };
+		return new String[] { "type", "num" };
 	}
 }

@@ -24,16 +24,16 @@ public class CustomerParser extends AbstractParser {
 	@Override
 	protected void newLine(String[] lineParts) throws SQLException {
 		int id = Integer.parseInt(lineParts[0]);
-		String name = lineParts[1];
-		String surname = lineParts[2];
+		String surename = lineParts[1];
+		String forename = lineParts[2];
 		String street = lineParts[3];
 		String zip = lineParts[4];
 		String city = lineParts[5];
 		String phone = lineParts[6];
 		
 		customerStatement.setInt(1, id);
-		customerStatement.setString(2, name);
-		customerStatement.setString(3, surname);
+		customerStatement.setString(2, surename);
+		customerStatement.setString(3, forename);
 		customerStatement.setString(4, street);
 		customerStatement.setString(5, zip);
 		customerStatement.setString(6, city);

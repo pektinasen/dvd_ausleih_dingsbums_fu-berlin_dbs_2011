@@ -18,6 +18,7 @@ public class DirectorsParser extends AbstractImdbParser {
 		super(dbcon, file);
 		// Name\t\t\tTitles
 		super.firstStop = "----\t\t\t------";
+		super.delimiter = "\t+";
 
 		directorsStatement = dbcon.getConnection().prepareStatement(
 				"INSERT INTO directors VALUES (DEFAULT, ?)",
@@ -38,6 +39,10 @@ public class DirectorsParser extends AbstractImdbParser {
 			currentDirector = null;
 			return;
 		}
+		
+		// TODO HACK
+		if(lineParts.length < 2)
+			return;
 
 		/*
 		 * new Actor starting

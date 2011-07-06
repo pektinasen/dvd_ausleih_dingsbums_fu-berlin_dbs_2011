@@ -52,8 +52,8 @@ CREATE TABLE shotIn (
 
 CREATE TABLE customers (
 	cus_id integer primary key,
-	name varchar(64),
-	surname varchar(64),
+	surename varchar(64),
+	forename varchar(64),
 	street varchar(128),
 	zip varchar(5),
 	city varchar(64),
