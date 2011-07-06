@@ -48,6 +48,10 @@ public class ActorsParser extends AbstractParser implements Parser {
 			return;
 		}
 		
+		// TODO HACK
+		if(lineParts.length < 2)
+			return;
+		
 		try {
 			/*
 			 * new Actor starting
