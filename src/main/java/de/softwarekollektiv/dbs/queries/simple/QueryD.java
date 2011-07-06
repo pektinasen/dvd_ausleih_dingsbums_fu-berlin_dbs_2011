@@ -6,20 +6,20 @@ import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.queries.AbstractSQLQuery;
 
-class QueryA extends AbstractSQLQuery implements MenuItem {
+class QueryD extends AbstractSQLQuery implements MenuItem {
 
-	QueryA(PrintStream out, DbConnection dbcon) {
+	QueryD(PrintStream out, DbConnection dbcon) {
 		super(out, dbcon);
 	}
 
 	@Override
 	public String getTitle() {
-		return "Customer price model rollup";
+		return "Customers with high foreign movie / US-movie ratio";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Beantwortet Aufgabe 5.1.a:\nWie viele Kunden haben sich für welches Preismodell entschieden?";
+		return "Beantwortet Aufgabe 5.1.d:\nErmitteln sie eine Rangliste alle Kunden, sortiert nach dem\nAnteil der geliehenen Filme, die (auch) außerhalb der USA\ngedreht wurden.";
 	}
 
 	@Override
@@ -33,4 +33,5 @@ class QueryA extends AbstractSQLQuery implements MenuItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

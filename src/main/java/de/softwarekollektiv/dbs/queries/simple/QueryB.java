@@ -6,20 +6,20 @@ import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.queries.AbstractSQLQuery;
 
-class QueryA extends AbstractSQLQuery implements MenuItem {
+class QueryB extends AbstractSQLQuery implements MenuItem {
 
-	QueryA(PrintStream out, DbConnection dbcon) {
+	QueryB(PrintStream out, DbConnection dbcon) {
 		super(out, dbcon);
 	}
 
 	@Override
 	public String getTitle() {
-		return "Customer price model rollup";
+		return "Invoices (January)";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Beantwortet Aufgabe 5.1.a:\nWie viele Kunden haben sich für welches Preismodell entschieden?";
+		return "Beantwortet Aufgabe 5.1.b:\nDie Rechnungssummen für alle Kunden für den Monat Januar.";
 	}
 
 	@Override
@@ -33,4 +33,5 @@ class QueryA extends AbstractSQLQuery implements MenuItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 }

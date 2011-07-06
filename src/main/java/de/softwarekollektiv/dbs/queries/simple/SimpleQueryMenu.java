@@ -19,10 +19,10 @@ public class SimpleQueryMenu extends AbstractSelectionMenu implements MenuItem {
 		super(out, in);
 		
 		items = new LinkedList<MenuItem>();
-		items.add(new QueryA());
-//		items.add(new QueryB());
-//		items.add(new QueryC());
-//		items.add(new QueryD());
+		items.add(new QueryA(out, dbcon));
+		items.add(new QueryB(out, dbcon));
+		items.add(new QueryC(out, dbcon));
+		items.add(new QueryD(out, dbcon));
 		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 	
