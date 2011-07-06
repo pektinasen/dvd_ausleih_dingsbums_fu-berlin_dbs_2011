@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-public abstract class SelectionMenu {
+public abstract class AbstractSelectionMenu {
 	protected PrintStream out;
 	protected BufferedReader in;
 	
@@ -23,7 +23,7 @@ public abstract class SelectionMenu {
 	 */
 	protected abstract String getGreeter();
 	
-	public SelectionMenu(PrintStream out, InputStream in) {
+	public AbstractSelectionMenu(PrintStream out, InputStream in) {
 		this.out = out;
 		this.in = new BufferedReader(new InputStreamReader(in));
 	}

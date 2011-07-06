@@ -14,7 +14,7 @@ import de.softwarekollektiv.dbs.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
 import de.softwarekollektiv.dbs.queries.QueryMenu;
 
-public class MainMenu extends SelectionMenu {
+public class MainMenu extends AbstractSelectionMenu {
 	
 	private List<MenuItem> items;
 		
