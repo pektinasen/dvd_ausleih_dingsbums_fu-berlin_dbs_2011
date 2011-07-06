@@ -1,8 +1,8 @@
-package de.softwarekollektiv.dbs.queries;
+package de.softwarekollektiv.dbs.queries.simple;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 
-public class QueryA implements MenuItem {
+class QueryA implements MenuItem {
 
 	@Override
 	public String getTitle() {

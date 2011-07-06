@@ -1,4 +1,4 @@
-package de.softwarekollektiv.dbs.queries;
+package de.softwarekollektiv.dbs.queries.simple;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -9,12 +9,13 @@ import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.QuitItem;
 import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.queries.simple.QueryA;
 
-public class QueryMenu extends AbstractSelectionMenu implements MenuItem {
+public class SimpleQueryMenu extends AbstractSelectionMenu implements MenuItem {
 
 	private final List<MenuItem> items;
 	
-	public QueryMenu(PrintStream out, InputStream in, DbConnection dbcon) {
+	public SimpleQueryMenu(PrintStream out, InputStream in, DbConnection dbcon) {
 		super(out, in);
 		
 		items = new LinkedList<MenuItem>();
@@ -22,8 +23,6 @@ public class QueryMenu extends AbstractSelectionMenu implements MenuItem {
 //		items.add(new QueryB());
 //		items.add(new QueryC());
 //		items.add(new QueryD());
-//		items.add(new QueryE());
-//		items.add(new QueryF());
 		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 	
