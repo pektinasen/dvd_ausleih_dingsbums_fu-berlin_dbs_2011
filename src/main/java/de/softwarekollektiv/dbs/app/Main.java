@@ -2,8 +2,6 @@ package de.softwarekollektiv.dbs.app;
 
 import java.io.InputStream;
 import java.io.PrintStream;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,6 +10,7 @@ import org.apache.log4j.Logger;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.dbcon.DbConnectionMenu;
 import de.softwarekollektiv.dbs.invoices.InvoiceMenu;
+import de.softwarekollektiv.dbs.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
 import de.softwarekollektiv.dbs.queries.QueryMenu;
 
@@ -29,6 +28,7 @@ public class Main extends SelectionMenu {
 		} catch (Exception e) {
 			// Any severe exception (e.g. IOException on console) ends up here.
 			Logger.getRootLogger().fatal("Fatal error: ", e);
+			e.printStackTrace();
 			System.exit(1);
 		}
 	}
@@ -45,6 +45,7 @@ public class Main extends SelectionMenu {
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));
+		items.add(new ListingsMenu(out, in, dbcon));
 		items.add(new InvoiceMenu(out, in, dbcon));
 		items.add(new QueryMenu(out, in, dbcon));
 		items.add(new QuitItem());

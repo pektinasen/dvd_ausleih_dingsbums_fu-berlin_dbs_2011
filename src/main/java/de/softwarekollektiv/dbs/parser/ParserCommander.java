@@ -44,7 +44,7 @@ public class ParserCommander implements MenuItem {
 		/*
 		 * create a database with scheme
 		 */
-		log.info("creating database...");
+		log.info("Creating database...");
 
 		String query = fileToString(createScript);
 		Connection db = dbcon.getConnection();
@@ -67,13 +67,13 @@ public class ParserCommander implements MenuItem {
 					"src/main/resources/customers.list"));
 		} catch (Exception e) {
 		}
-		log.debug("parsing lists");
+		log.debug("Parsing lists...");
 
 		long before = System.currentTimeMillis();
 
 		for (final Parser parser : parsers) {
 			
-			log.info("parsing "+parser.getClass().getSimpleName());
+			log.info("Running " + parser.getClass().getSimpleName() + "...");
 			// TODO handle exceptions?
 			parser.open();
 			parser.parse();
@@ -81,7 +81,7 @@ public class ParserCommander implements MenuItem {
 
 		}
 
-		log.debug("time: " + (System.currentTimeMillis() - before) + " ms");
+		log.debug("Time: " + (System.currentTimeMillis() - before) + " ms");
 
 		return true;
 	}
