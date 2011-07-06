@@ -5,8 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
@@ -29,34 +27,57 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	 */
 	@Override
 	protected void newLine(String[] lineParts) {
+		String movieTitle;
+		String movieReleaseString = null;
+		if (lineParts.length > 2){
 
+			movieTitle = lineParts[0];
+			movieReleaseString = lineParts[1];
 
-		String movieTitle = lineParts[0];
-		
-		if (!(movieTitle.contains("201"))){
+		}
+		else {
+			// discard entry, if it's too few arguments
 			return;
 		}
 		
+		if (!(movieReleaseString.contains("2010") || movieReleaseString
+				.contains("2011"))) {
+			return;
+		}
+
 		Date movieRelease;
 		String movieCategory;
 		try {
-			movieRelease = getFirstDayOfYear(lineParts[1].substring(0,4));
+			//check for entries like '2009-2010'
+			if (movieReleaseString.startsWith("201")){
+				movieRelease = getFirstDayOfYear(lineParts[1].substring(0, 4));
+			}
+			else {				
+				movieRelease = getFirstDayOfYear(movieReleaseString.split("-")[1]);
+			}
 			movieCategory = lineParts[2];
-		} catch (StringIndexOutOfBoundsException e){
+			
+		} catch (StringIndexOutOfBoundsException e) {
+			// it has no year associated
 			log.debug(Arrays.toString(lineParts), e);
 			movieRelease = getDateFromImdbString(lineParts[0]);
 			movieCategory = lineParts[1];
-		} catch (NumberFormatException ne){
+		} catch (NumberFormatException ne) {
+			//year is '????'
 			log.debug(Arrays.toString(lineParts), ne);
 			movieRelease = getDateFromImdbString(lineParts[0]);
 			movieCategory = lineParts[2];
 		}
 		
+		if (lineParts.length == 4){
+			movieCategory = lineParts[3];
+		}
+
 		try {
 			movieStatement.setString(1, movieTitle);
 			movieStatement.setDate(2, movieRelease);
 			movieStatement.setString(3, movieCategory);
-			
+
 			movieStatement.execute();
 		} catch (SQLException e) {
 			// TODO @Sascha: Auskommentieren ist nicht der Weg.

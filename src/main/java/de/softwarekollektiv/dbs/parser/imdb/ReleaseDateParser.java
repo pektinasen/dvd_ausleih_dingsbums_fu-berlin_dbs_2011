@@ -11,7 +11,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 /*

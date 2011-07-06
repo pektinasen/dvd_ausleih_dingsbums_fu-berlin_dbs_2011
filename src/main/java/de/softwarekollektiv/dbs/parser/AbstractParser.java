@@ -6,10 +6,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
+import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 
 public abstract class AbstractParser implements Parser {
 
+	public static final Logger log = Logger.getLogger(ActorsParser.class);
+	
 	private final DbConnection dbcon;
 	private final String file;
 	private BufferedReader in;

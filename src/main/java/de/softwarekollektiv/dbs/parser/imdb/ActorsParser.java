@@ -6,8 +6,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
-import org.apache.log4j.Logger;
-
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
@@ -34,7 +32,6 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 				"INSERT INTO features VALUES (("
 						+ "		SELECT mov_id FROM movies WHERE title = ?)"
 						+ ",?)");
-
 	}
 
 	@Override
