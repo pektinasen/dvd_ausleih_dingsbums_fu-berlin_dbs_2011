@@ -1,10 +1,11 @@
-package de.softwarekollektiv.dbs.listings;
+package de.softwarekollektiv.dbs.queries.listings;
 
 import java.io.PrintStream;
 
+import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
-class MovieListing extends AbstractListing {
+class MovieListing extends AbstractListing implements MenuItem {
 
 	MovieListing(PrintStream out, DbConnection dbcon) {
 		super(out, dbcon);

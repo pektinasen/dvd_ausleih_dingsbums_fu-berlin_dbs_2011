@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.dbcon.DbConnectionMenu;
 import de.softwarekollektiv.dbs.invoices.InvoiceMenu;
-import de.softwarekollektiv.dbs.listings.ListingsMenu;
+import de.softwarekollektiv.dbs.queries.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
-import de.softwarekollektiv.dbs.queries.QueryMenu;
+import de.softwarekollektiv.dbs.queries.simple.SimpleQueryMenu;
 
 class MainMenu extends AbstractSelectionMenu {
 	
@@ -25,7 +25,7 @@ class MainMenu extends AbstractSelectionMenu {
 		items.add(new ParserCommander(dbcon));
 		items.add(new ListingsMenu(out, in, dbcon));
 		items.add(new InvoiceMenu(out, in, dbcon));
-		items.add(new QueryMenu(out, in, dbcon));
+		items.add(new SimpleQueryMenu(out, in, dbcon));
 		items.add(new QuitItem());
 	}
 
