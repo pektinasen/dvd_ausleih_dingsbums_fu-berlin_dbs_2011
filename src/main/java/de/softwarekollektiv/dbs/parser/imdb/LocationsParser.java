@@ -6,10 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-public class LocationsParser extends AbstractParser implements Parser {
+public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	private PreparedStatement locationsStatement;
 	private PreparedStatement shotInStatement;

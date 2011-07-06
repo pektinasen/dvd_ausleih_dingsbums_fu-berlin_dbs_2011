@@ -1,5 +1,7 @@
 package de.softwarekollektiv.dbs.parser.misc;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -14,10 +16,9 @@ public class CustomerParser extends AbstractParser {
 	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = ",";
-		super.firstStop = null;
 		
 		customerStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?)"
+				"INSERT INTO customers VALUES (?, ?, ?, ?, ?, ?, ?)"
 			);
 	}
 
@@ -32,16 +33,23 @@ public class CustomerParser extends AbstractParser {
 		String phone = lineParts[6];
 		
 		try {
-			customerStatement.setInt(0, id);
-			customerStatement.setString(1, name);
-			customerStatement.setString(2, surname);
-			customerStatement.setString(3, street);
-			customerStatement.setString(4, zip);
-			customerStatement.setString(5, city);
-			customerStatement.setString(6, phone);	
+			customerStatement.setInt(1, id);
+			customerStatement.setString(2, name);
+			customerStatement.setString(3, surname);
+			customerStatement.setString(4, street);
+			customerStatement.setString(5, zip);
+			customerStatement.setString(6, city);
+			customerStatement.setString(7, phone);	
+			
+			customerStatement.execute();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	protected void skipHeader(BufferedReader in) throws IOException {
+		in.readLine();
 	}
 }

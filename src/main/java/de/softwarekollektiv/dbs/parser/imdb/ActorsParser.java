@@ -1,18 +1,20 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
-import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.AbstractParser;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-public class ActorsParser extends AbstractParser implements Parser {
+public class ActorsParser extends AbstractImdbParser implements Parser {
 
+	private static Logger log = Logger.getLogger(ActorsParser.class);
+	
 	String currentActor;
 	private PreparedStatement actorsStatement;
 	private PreparedStatement featuresStatement;

@@ -12,9 +12,6 @@ import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
-import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
-import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
 import de.softwarekollektiv.dbs.parser.misc.CustomerParser;
 
 // TODO rename again
@@ -56,13 +53,13 @@ public class ParserCommander implements MenuItem {
 		List<Parser> parsers = new LinkedList<Parser>();
 		try {
 
-			parsers.add(new MoviesParser(dbcon,
-					"src/main/resources/modmovies.list"));
-			parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
-			parsers.add(new ActorsParser(dbcon,
-					"src/main/resources/actors.list", true));
-			parsers.add(new ActorsParser(dbcon,
-					"src/main/resources/actresses.list", false));
+//			parsers.add(new MoviesParser(dbcon,
+//					"src/main/resources/modmovies.list"));
+//			parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
+//			parsers.add(new ActorsParser(dbcon,
+//					"src/main/resources/actors.list", true));
+//			parsers.add(new ActorsParser(dbcon,
+//					"src/main/resources/actresses.list", false));
 			parsers.add(new CustomerParser(dbcon,
 					"src/main/resources/customers.list"));
 		} catch (Exception e) {

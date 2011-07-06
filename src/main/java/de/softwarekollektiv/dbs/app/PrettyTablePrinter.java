@@ -18,7 +18,7 @@ public class PrettyTablePrinter {
 				
 		out.print("# ");
 		for(int i = 0; i < fields.length; ++i) {
-			out.print(padRight(fields[i], (widths[i] - fields[i].length())));
+			out.print(padRight(fields[i], widths[i]));
 			out.print(" # ");
 		}
 		out.println();
@@ -28,7 +28,7 @@ public class PrettyTablePrinter {
 			out.print("# ");
 			for(int i = 0; i < fields.length; ++i) {
 				String value = rs.getString(fields[i]);
-				out.print(padRight(value, (widths[i] - value.length())));
+				out.print(padRight(value, widths[i]));
 				out.print(" # ");
 			}
 			out.println();
