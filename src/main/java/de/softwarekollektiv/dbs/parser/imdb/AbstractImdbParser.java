@@ -7,11 +7,15 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 abstract class AbstractImdbParser extends AbstractParser {
 
+	public static final Logger log = Logger.getLogger(ActorsParser.class);
+	
 	protected String firstStop;
 	protected String table;
 	protected int values;	

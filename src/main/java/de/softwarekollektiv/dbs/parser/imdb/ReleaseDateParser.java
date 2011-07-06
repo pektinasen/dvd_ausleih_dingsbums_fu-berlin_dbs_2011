@@ -18,16 +18,18 @@ import de.softwarekollektiv.dbs.parser.Parser;
  * TODO es werden nur korrekt formatierte Datumse zugelassen
  * <Tag:int> <Month:String> <year:int>
  */
-public class ReleaseDateParser extends AbstractParser implements Parser {
+public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 	private PreparedStatement updateDateStatement;
+
+	DbConnection dbcon;
 
 	public ReleaseDateParser(DbConnection dbcon, String file)
 			throws SQLException {
 		super(dbcon, file);
 		super.firstStop = "==================";
 		super.delimiter = "\t+";
-
+		this.dbcon = dbcon;
 		updateDateStatement = dbcon
 				.getConnection()
 				.prepareStatement(
@@ -37,12 +39,14 @@ public class ReleaseDateParser extends AbstractParser implements Parser {
 	@Override
 	protected void newLine(String[] lineParts) {
 
-		if (!(lineParts[0].contains("2010") || lineParts[0].contains("2011"))){
+		if (!(lineParts[0].contains("2010") || lineParts[0].contains("2011"))) {
 			return;
 		}
-		
-		if (!lineParts[1].contains("US")){return;}
-		
+
+		if (!lineParts[1].contains("US")) {
+			return;
+		}
+
 		String dateString = lineParts[1].split(":")[1];
 		String region = lineParts[1].split(":")[0];
 		String[] dateParts = dateString.split(" ");
@@ -70,7 +74,7 @@ public class ReleaseDateParser extends AbstractParser implements Parser {
 				updateDateStatement.execute();
 			} catch (SQLException se) {
 
-			} catch (StringIndexOutOfBoundsException sie){
+			} catch (StringIndexOutOfBoundsException sie) {
 				log.debug(Arrays.toString(lineParts), sie);
 			}
 		}

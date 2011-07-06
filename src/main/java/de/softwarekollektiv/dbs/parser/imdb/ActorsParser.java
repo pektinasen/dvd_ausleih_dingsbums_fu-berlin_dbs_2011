@@ -13,7 +13,6 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractImdbParser implements Parser {
 
-	private static final Logger log = Logger.getLogger(ActorsParser.class);
 	private final PreparedStatement actorsStatement;
 	private final PreparedStatement featuresStatement;
 	

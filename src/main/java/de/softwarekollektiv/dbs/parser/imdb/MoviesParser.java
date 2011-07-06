@@ -12,7 +12,6 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
 
-	private static final Logger log = Logger.getLogger(MoviesParser.class);
 	private final PreparedStatement movieStatement;
 
 	public MoviesParser(DbConnection dbcon, String file) throws SQLException {

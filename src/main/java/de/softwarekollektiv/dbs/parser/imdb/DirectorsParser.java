@@ -8,13 +8,13 @@ import java.sql.Statement;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
-public class DirectorsParser extends AbstractParser {
+public class DirectorsParser extends AbstractImdbParser {
 
 	private PreparedStatement directedByStatement;
 	private PreparedStatement directorsStatement;
 	private String currentDirector;
 
-	protected DirectorsParser(DbConnection dbcon, String file)
+	public DirectorsParser(DbConnection dbcon, String file)
 			throws SQLException {
 		super(dbcon, file);
 		// Name\t\t\tTitles

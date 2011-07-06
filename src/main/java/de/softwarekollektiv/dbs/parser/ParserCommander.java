@@ -62,6 +62,8 @@ public class ParserCommander implements MenuItem {
 					"src/main/resources/actors.list", true));
 			parsers.add(new ActorsParser(dbcon,
 					"src/main/resources/actresses.list", false));
+			parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
+			parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
 			parsers.add(new CustomerParser(dbcon,
 					"src/main/resources/customers.list"));
 			parsers.add(new RentalsParser(dbcon,
