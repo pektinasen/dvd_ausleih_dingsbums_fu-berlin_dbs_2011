@@ -14,34 +14,12 @@ import de.softwarekollektiv.dbs.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
 import de.softwarekollektiv.dbs.queries.QueryMenu;
 
-public class Main extends SelectionMenu {
+public class MainMenu extends SelectionMenu {
 	
 	private List<MenuItem> items;
-	private DbConnection dbcon;
-	
-	/**
-	 * main entrance point
-	 */
-	public static void main(String[] args) {
-		try {
-			new Main(System.out, System.in);
-		} catch (Exception e) {
-			// Any severe exception (e.g. IOException on console) ends up here.
-			Logger.getRootLogger().fatal("Fatal error: ", e);
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-	
-	public Main(PrintStream out, InputStream in) throws Exception {
+		
+	public MainMenu(PrintStream out, InputStream in, DbConnection dbcon) throws Exception {
 		super(out, in);
-		
-		dbcon = new DbConnection();
-		while(!dbcon.openConnection()) {
-			if(!(new DbConnectionMenu(out, in, dbcon)).run())
-				return;
-		}
-		
 		
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));
@@ -49,12 +27,6 @@ public class Main extends SelectionMenu {
 		items.add(new InvoiceMenu(out, in, dbcon));
 		items.add(new QueryMenu(out, in, dbcon));
 		items.add(new QuitItem());
-		
-		// Run main menu forever
-		while(super.run())
-			;
-		
-		dbcon.closeConnection();
 	}
 
 	@Override
@@ -64,6 +36,33 @@ public class Main extends SelectionMenu {
 
 	@Override
 	protected String getGreeter() {
-		return "Main menu";
+		return "MainMenu menu";
+	}
+	
+	/**
+	 * main entrance point
+	 */
+	public static void main(String[] args) {
+		try {
+			PrintStream out = System.out;
+			InputStream in = System.in;
+			
+			DbConnection dbcon = new DbConnection();
+			while(!dbcon.openConnection()) {
+				if(!(new DbConnectionMenu(out, in, dbcon)).run())
+					return;
+			}
+			
+			MainMenu mainMenu = new MainMenu(out, in, dbcon);
+			while(mainMenu.run())
+				;
+			
+			dbcon.closeConnection();
+		} catch (Exception e) {
+			// Any severe exception (e.g. IOException on console) ends up here.
+			Logger.getRootLogger().fatal("Fatal error: ", e);
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 }
