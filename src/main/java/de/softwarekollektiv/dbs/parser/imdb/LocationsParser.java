@@ -14,9 +14,10 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 	private static final Logger log = Logger.getLogger(LocationsParser.class);
 	private final DbConnection dbcon;
 	
-	private PreparedStatement movieIdStatement;
-	private PreparedStatement locationsStatement;
-	private PreparedStatement shotInStatement;
+	private PreparedStatement movIdStmt;
+	private PreparedStatement locIdStmt;
+	private PreparedStatement locInsStmt;
+	private PreparedStatement shotInStmt;
 
 	public LocationsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
@@ -37,31 +38,43 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		String location = lineParts[1].split("|")[0];
 		String[] locationParts = location.split(",");
 		String country = locationParts[locationParts.length - 1];
+		
 		int movId;
+		int locId;
 		
 		try {
-			movieIdStatement.setString(1, movieTitle);
-			ResultSet result = movieIdStatement.executeQuery();
+			
+			movIdStmt.setString(1, movieTitle);
+			ResultSet movIdRslt = movIdStmt.executeQuery();
 			
 			// Is movie in database?
-			if(result.next()) {
-				movId = result.getInt(1);
-				result.close();
-
-			
-				locationsStatement.setString(1, location);
-				locationsStatement.setString(2, country);
-				locationsStatement.execute();
+			if(movIdRslt.next()) {
+				movId = movIdRslt.getInt(1);
+				
+				locIdStmt.setString(1, location);
+				ResultSet locIdRslt = locIdStmt.executeQuery();
+				
+				// Is location already in database?
+				if(locIdRslt.next()) {
+					locId = locIdRslt.getInt(1);
+				} else {
+					locInsStmt.setString(1, location);
+					locInsStmt.setString(2, country);
+					locInsStmt.execute();
 	
-				result = locationsStatement.getGeneratedKeys();
-				result.next();
-				int locId = result.getInt(1);
-				result.close();
-	
-				shotInStatement.setInt(1, movId);
-				shotInStatement.setInt(2, locId);
-				shotInStatement.execute();
+					ResultSet locInsRslt = locInsStmt.getGeneratedKeys();
+					locInsRslt.next();
+					locId = locInsRslt.getInt(1);
+					locInsRslt.close();
+				}
+				locIdRslt.close();
+				
+				shotInStmt.setInt(1, movId);
+				shotInStmt.setInt(2, locId);
+				shotInStmt.execute();
 			}
+			movIdRslt.close();
+			
 		} catch (SQLException e) {
 			// TODO eliminate this
 			log.debug("SQLException", e);
@@ -70,20 +83,23 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	@Override
 	protected void prepareStatements() throws SQLException {
-		movieIdStatement = dbcon.getConnection().prepareStatement(
+		movIdStmt = dbcon.getConnection().prepareStatement(
 				"SELECT mov_id FROM movies WHERE title = ?;");
-		locationsStatement = dbcon.getConnection().prepareStatement(
+		locIdStmt = dbcon.getConnection().prepareStatement(
+				"SELECT loc_id FROM locations WHERE name = ?;");
+		locInsStmt = dbcon.getConnection().prepareStatement(
 				"INSERT INTO locations VALUES (DEFAULT, ?, ?)",
 				Statement.RETURN_GENERATED_KEYS);
-		shotInStatement = dbcon.getConnection().prepareStatement(
+		shotInStmt = dbcon.getConnection().prepareStatement(
 				"INSERT INTO shotIn VALUES (?, ?);");
 	}
 
 	@Override
 	protected void closeStatements() throws SQLException {
-		movieIdStatement.close();
-		locationsStatement.close();
-		shotInStatement.close();
+		movIdStmt.close();
+		locIdStmt.close();
+		locInsStmt.close();
+		shotInStmt.close();
 	}
 
 }

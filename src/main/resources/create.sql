@@ -43,7 +43,7 @@ CREATE TABLE directedBy (
 
 CREATE TABLE locations (
 	loc_id serial primary key,
-	name varchar(64),
+	name text unique,
 	country varchar(64)
 );
 
