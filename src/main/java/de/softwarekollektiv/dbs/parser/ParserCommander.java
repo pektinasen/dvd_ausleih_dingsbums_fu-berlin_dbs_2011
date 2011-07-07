@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
@@ -50,9 +51,9 @@ public class ParserCommander implements MenuItem {
 		db.commit();
 
 		List<Parser> parsers = new LinkedList<Parser>();
-		parsers.add(new MoviesParser(dbcon,
-				"src/main/resources/modmovies.list"));
-		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
+//		parsers.add(new MoviesParser(dbcon,
+//				"src/main/resources/modmovies.list"));
+//		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
 		parsers.add(new ActorsParser(dbcon,
 				"src/main/resources/actors.list", true));
 		parsers.add(new ActorsParser(dbcon,

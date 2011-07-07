@@ -29,7 +29,7 @@ class QueryB extends AbstractSQLQuery implements MenuItem {
 		return Utils.fileToString("src/main/resources/sql/queryb.sql");
 	}
 
-	@Override
+//	@Override
 	protected String[] getResultFields() {
 		// TODO Auto-generated method stub
 		return null;

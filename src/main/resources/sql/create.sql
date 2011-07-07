@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS movies CASCADE;
+--DROP TABLE IF EXISTS movies CASCADE;
 DROP TABLE IF EXISTS directors CASCADE;
 DROP TABLE IF EXISTS locations CASCADE;
 DROP TABLE IF EXISTS actors CASCADE;
@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS shotIn;
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
-
+/*
 CREATE TABLE movies (
 	mov_id serial PRIMARY KEY,
 	title text UNIQUE,
@@ -17,7 +17,7 @@ CREATE TABLE movies (
 	region varchar(64),
 	CHECK (release_date >= '2010-01-01')
 );
-
+*/
 CREATE TABLE actors (
 	act_id serial PRIMARY KEY,
 	name varchar(128), 

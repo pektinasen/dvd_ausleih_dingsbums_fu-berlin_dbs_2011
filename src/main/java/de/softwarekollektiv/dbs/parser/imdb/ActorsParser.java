@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
@@ -30,6 +31,9 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 	protected void newLine(String[] lineParts) throws SQLException {
 
 		// if newline the current actor has no more featuring movies
+		// FIXME Hier liegt der Hase im Pfeffer begraben
+		// Zeilen wie "\t\t\t<titel>" die noch zu einem Actor gehören
+		// haben auch "" als lineParts[0]
 		if (lineParts[0].equals("")) {
 			currentActor = null;
 			currentActorId = -1;
@@ -57,7 +61,14 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 			// Only insert the actor/actress into the db if we haven't dont so yet, else re-use the key
 			if (currentActorId < 0){
 				actorsStatement.setString(1, currentActor);
+			try {
 				actorsStatement.execute();
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				log.debug(Arrays.toString(lineParts));
+				log.debug("Exception: ", e);
+			}
 				
 				ResultSet result = actorsStatement.getGeneratedKeys();
 				result.next();

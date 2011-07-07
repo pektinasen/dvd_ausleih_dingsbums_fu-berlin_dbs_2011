@@ -62,7 +62,6 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 		 * if the date is still less than 2010, then discard this entry
 		 */
 		if (Integer.parseInt(movieReleaseString) < 2010){
-			log.debug(Arrays.toString(lineParts));
 			return;
 		}
 		

@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -14,10 +13,7 @@ import java.util.regex.Pattern;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
-/*
- * TODO es werden nur korrekt formatierte Datumse zugelassen
- * <Tag:int> <Month:String> <year:int>
- */
+
 public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 	private final DbConnection dbcon;
@@ -25,7 +21,10 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	private PreparedStatement updateDateStatement;
 
 	/*
-	 * group(1) = day group(2) = month year group(3) = month group(4) = year
+	 * group(1) = day
+	 * group(2) = month year
+	 * group(3) = month
+	 * group(4) = year
 	 */
 	private static final Pattern datePattern = Pattern
 			.compile("(\\d{1,2})? ?((\\w+)? ?(\\d{4}))");
@@ -41,15 +40,19 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	protected void newLine(String[] lineParts) throws SQLException {
 
 		String movieTitle = lineParts[0];
-
-		String[] dateParts = lineParts[1].split(":");
+		String[] dateParts;
+		if (lineParts.length >= 2) {
+			dateParts = lineParts[1].split(":");
+		} else {
+			dateParts = new String[] { "2010" };
+		}
 		String dateString;
 		String dateRegion;
-		if (dateParts.length > 1) {
+		if (dateParts.length >= 2) {
 			dateRegion = dateParts[0];
 			dateString = dateParts[1];
 		}
-		// datePats.length == 1
+		// dateParts.length == 1
 		else {
 			dateRegion = "unknown";
 			dateString = dateParts[0];
@@ -65,14 +68,14 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 		Date minDate = toDate("1", "Jan", "2010");
 
 		if (date.compareTo(minDate) >= 0) {
-			
+
 			updateDateStatement.setDate(1, date);
 			updateDateStatement.setString(2, dateRegion);
 			updateDateStatement.setString(3, movieTitle);
 			try {
 				updateDateStatement.execute();
 			} catch (Exception e) {
-				log.debug(date+ " " + dateRegion + " "+ movieTitle);
+				log.debug(date + " " + dateRegion + " " + movieTitle);
 				log.debug("Error ", e);
 			}
 		}
