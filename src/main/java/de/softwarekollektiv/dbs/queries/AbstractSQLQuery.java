@@ -1,5 +1,6 @@
 package de.softwarekollektiv.dbs.queries;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -15,16 +16,10 @@ public abstract class AbstractSQLQuery {
 	 * Must be implemented by subclasses.
 	 * 
 	 * @return the SQL query to execute
+	 * @throws IOException 
 	 */
-	protected abstract String getQuery();
-	
-	/**
-	 * Must be implemented by subclasses.
-	 * 
-	 * @return the fields contained in the ResultSet
-	 */
-	protected abstract String[] getResultFields();
-	
+	protected abstract String getQuery() throws IOException;
+
 	public AbstractSQLQuery(PrintStream out, DbConnection dbcon) {
 		this.out = out;
 		this.dbcon = dbcon;
@@ -35,7 +30,7 @@ public abstract class AbstractSQLQuery {
 				ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet rs = sm.executeQuery(getQuery());
 
-		PrettyTablePrinter.print(out, rs, getResultFields());
+		PrettyTablePrinter.print(out, rs);
 
 		rs.close();
 		sm.close();

@@ -27,11 +27,4 @@ class QueryC extends AbstractSQLQuery implements MenuItem {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	protected String[] getResultFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

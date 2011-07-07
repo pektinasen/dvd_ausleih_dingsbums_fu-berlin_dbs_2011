@@ -38,10 +38,6 @@ abstract class AbstractListing extends AbstractSQLQuery {
 		
 		return sb.toString();
 	}
-	
-	protected String[] getResultFields() {
-		return getFields();
-	}
 
 	AbstractListing(PrintStream out, DbConnection dbcon) {
 		super(out, dbcon);

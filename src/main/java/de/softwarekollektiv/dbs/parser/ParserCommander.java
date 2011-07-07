@@ -42,7 +42,7 @@ public class ParserCommander implements MenuItem {
 	public boolean run() throws Exception {
 		// Create a database with scheme
 		log.info("Creating database...");
-		String query = fileToString("src/main/resources/create.sql");
+		String query = Utils.fileToString("src/main/resources/sql/create.sql");
 		Connection db = dbcon.getConnection();
 		Statement create = db.createStatement();
 		create.execute(query);
@@ -76,18 +76,5 @@ public class ParserCommander implements MenuItem {
 		log.debug("Total time: " + (System.currentTimeMillis() - before) + " ms");
 		
 		return true;
-	}
-
-	private static String fileToString(String file) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		BufferedReader in = new BufferedReader(new FileReader(file));
-
-		String line = null;
-		while ((line = in.readLine()) != null) {
-			sb.append(line + "\n");
-		}
-		in.close();
-
-		return sb.toString();
 	}
 }

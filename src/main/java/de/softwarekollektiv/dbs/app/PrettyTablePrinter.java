@@ -2,32 +2,36 @@ package de.softwarekollektiv.dbs.app;
 
 import java.io.PrintStream;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class PrettyTablePrinter {
 	
-	public static void print(PrintStream out, ResultSet rs, String[] fields) throws SQLException {
+	public static void print(PrintStream out, ResultSet rs) throws SQLException {
+		ResultSetMetaData rsmd = rs.getMetaData();
+		
 		// calculate column width
 		// In case ResultSet is not scrollable, we fall back to variable column width
-		// indicated by widths == {0, 0, 0, ... }
+		// indicated by widths == {0, 0, 0, ... }	
 		int[] widths;
 		if(rs.getType() == ResultSet.TYPE_FORWARD_ONLY)
-			widths = new int[fields.length];
+			widths = new int[rsmd.getColumnCount()];
 		else
-			widths = calculateColumnWidth(rs, fields);
+			widths = calculateColumnWidth(rs, rsmd);
 				
+		// Print header
 		out.print("# ");
-		for(int i = 0; i < fields.length; ++i) {
-			out.print(padRight(fields[i], widths[i]));
+		for(int i = 0; i < rsmd.getColumnCount(); ++i) {
+			out.print(padRight(rsmd.getColumnLabel(i + 1), widths[i]));
 			out.print(" # ");
 		}
 		out.println();
 		
-		
+		// Print rows
 		while(rs.next()) {
 			out.print("# ");
-			for(int i = 0; i < fields.length; ++i) {
-				String value = rs.getString(fields[i]);
+			for(int i = 0; i < rsmd.getColumnCount(); ++i) {
+				String value = rs.getString(rsmd.getColumnLabel(i + 1));
 				out.print(padRight(value, widths[i]));
 				out.print(" # ");
 			}
@@ -43,14 +47,14 @@ public class PrettyTablePrinter {
 	}
 
 
-	private static int[] calculateColumnWidth(ResultSet rs, String[] fields) throws SQLException {
-		int[] retval = new int[fields.length];
-		for(int i = 0; i < fields.length; ++i)
-			retval[i] = fields[i].length();
+	private static int[] calculateColumnWidth(ResultSet rs, ResultSetMetaData rsmd) throws SQLException {
+		int[] retval = new int[rsmd.getColumnCount()];
+		for(int i = 0; i < rsmd.getColumnCount(); ++i)
+			retval[i] = rsmd.getColumnLabel(i + 1).length();
 				
 		while(rs.next()) {
-			for(int i = 0; i < fields.length; ++i) {
-				String value = rs.getString(fields[i]);
+			for(int i = 0; i < rsmd.getColumnCount(); ++i) {
+				String value = rs.getString(rsmd.getColumnLabel(i + 1));
 				if(retval[i] < value.length())
 					retval[i] = value.length();
 			}
