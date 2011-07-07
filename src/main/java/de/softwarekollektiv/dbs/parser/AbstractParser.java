@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public abstract class AbstractParser implements Parser {
-	private static final Logger log = Logger.getLogger(AbstractParser.class);
+	protected static final Logger log = Logger.getLogger(AbstractParser.class);
 	private final DbConnection dbcon;
 	private final String file;
 	private BufferedReader in;
@@ -110,17 +110,17 @@ public abstract class AbstractParser implements Parser {
 		// TODO remove try-catch block and savepoints after we eliminated all issues
 		
 		for(int i = 0; i < n; ++i) {
-			try {
-				sp = dbcon.getConnection().setSavepoint();
+//			try {
+//				sp = dbcon.getConnection().setSavepoint();
 				newLine(lines[i]);
-			} catch (SQLException e) {
-				log.warn("Got SQLException for line: " + Arrays.toString(lines[i]) + "\nError was: \"" + e.getMessage() + "\"");
+//			} cat7ch (SQLException e) {
+//				log.warn("Got SQLException for line: " + Arrays.toString(lines[i]) + "\nError was: \"" + e.getMessage() + "\"", e);
 				
-				dbcon.getConnection().rollback(sp);
-				log.warn("Rolled back to savepoint!");
-			}
+//				dbcon.getConnection().rollback(sp);
+//				log.warn("Rolled back to savepoint!");
+//			}
 		}
-		dbcon.getConnection().releaseSavepoint(sp);
+//		dbcon.getConnection().releaseSavepoint(sp);
 		dbcon.getConnection().commit();
 	}
 }

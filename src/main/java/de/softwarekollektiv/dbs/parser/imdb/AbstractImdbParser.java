@@ -51,8 +51,8 @@ abstract class AbstractImdbParser extends AbstractParser {
 	protected static Date getFirstDayOfYear(String year) {
 
 		Calendar cal = Calendar.getInstance();
-
 		cal.set(Calendar.YEAR, Integer.parseInt(year));
+		
 		cal.set(Calendar.MONTH, 0);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		return new Date(cal.getTimeInMillis());

@@ -34,6 +34,35 @@ public class RegExTest {
 		matcher.find();
 		assertEquals("2010", matcher.group().substring(1,5));
 	}
+	
+	@Test
+	public void moreDateRegExTest(){
+		Pattern datePattern = Pattern
+				.compile("(\\d{1,2})? ?((\\w+)? ?(\\d{4}))");
+		String year = "2000";
+		String monthYear = "January 2000";
+		String dayMonthYear = "1 January 2000";
+		
+		Matcher mYear = datePattern.matcher(year);
+		Matcher mMonthYear = datePattern.matcher(monthYear);
+		Matcher mDayMonthYear = datePattern.matcher(dayMonthYear);
+		mYear.find();
+		mMonthYear.find();
+		mDayMonthYear.find();
+		System.out.println(mYear.groupCount());
+		System.out.println(mMonthYear.groupCount());
+		System.out.println(mDayMonthYear.groupCount());
+		
+		System.out.println(mYear.group(1));
+		System.out.println(mMonthYear.group(2));
+		System.out.println(mYear.group(3));
+		System.out.println(mYear.group(4));
+		
+		
+		
+		
+		
+	}
 
 	
 }
