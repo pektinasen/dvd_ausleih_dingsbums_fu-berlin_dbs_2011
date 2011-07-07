@@ -28,11 +28,4 @@ class QueryB extends AbstractSQLQuery implements MenuItem {
 	protected String getQuery() throws IOException {
 		return Utils.fileToString("src/main/resources/sql/queryb.sql");
 	}
-
-//	@Override
-	protected String[] getResultFields() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
