@@ -18,7 +18,7 @@ public class DirectorsParser extends AbstractImdbParser {
 	public DirectorsParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		// Name\t\t\tTitles
-		super.firstStop = "----\t\t\t------";
+		super.skipLines = 235;
 		super.delimiter = "\t+";
 		
 		this.dbcon = dbcon;

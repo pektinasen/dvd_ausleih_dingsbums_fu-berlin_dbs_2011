@@ -18,9 +18,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 
 	public MoviesParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
-		super.delimiter = "\t+";
-		super.firstStop = "title\tyear\tcategory";
-
+		super.skipLines = 4;
 		this.dbcon = dbcon;
 	}
 

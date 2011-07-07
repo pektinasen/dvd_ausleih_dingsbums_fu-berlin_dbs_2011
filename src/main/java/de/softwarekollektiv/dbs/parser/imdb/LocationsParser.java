@@ -18,9 +18,7 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	public LocationsParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
-		super.delimiter = "\t+";
-		super.firstStop = "==============";
-
+		super.skipLines = 264;
 		this.dbcon = dbcon;
 	}
 

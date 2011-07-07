@@ -5,12 +5,10 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.QuitItem;
-import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
-import de.softwarekollektiv.dbs.queries.listings.CustomerListing;
-import de.softwarekollektiv.dbs.queries.listings.MovieListing;
 
 public class ListingsMenu extends AbstractSelectionMenu implements MenuItem {
 

@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
-import de.softwarekollektiv.dbs.parser.imdb.DirectorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;

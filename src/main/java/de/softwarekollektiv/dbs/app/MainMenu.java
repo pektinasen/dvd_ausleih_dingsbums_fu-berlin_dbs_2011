@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.dbcon.DbConnectionMenu;
 import de.softwarekollektiv.dbs.invoices.InvoiceMenu;
-import de.softwarekollektiv.dbs.queries.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.parser.ParserCommander;
+import de.softwarekollektiv.dbs.queries.listings.ListingsMenu;
 import de.softwarekollektiv.dbs.queries.simple.SimpleQueryMenu;
 
 class MainMenu extends AbstractSelectionMenu {

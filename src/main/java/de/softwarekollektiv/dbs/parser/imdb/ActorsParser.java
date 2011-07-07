@@ -21,10 +21,7 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 
 	public ActorsParser(DbConnection dbcon, String file, boolean male) {
 		super(dbcon, file);
-		super.delimiter = "\t+";
-		super.firstStop = "----\t\t\t------";
-		super.table = "actors";
-		super.values = 3;
+		super.skipLines = 239;
 		
 		this.dbcon = dbcon;
 		this.male = male;

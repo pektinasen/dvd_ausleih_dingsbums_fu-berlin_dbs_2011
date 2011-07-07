@@ -1,7 +1,6 @@
 package de.softwarekollektiv.dbs;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

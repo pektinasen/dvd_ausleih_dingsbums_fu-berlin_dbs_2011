@@ -25,8 +25,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 	public ReleaseDateParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
-		super.firstStop = "==================";
-		super.delimiter = "\t+";
+		super.skipLines = 14;
 		
 		this.dbcon = dbcon;
 	}

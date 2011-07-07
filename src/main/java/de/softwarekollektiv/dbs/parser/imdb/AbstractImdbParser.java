@@ -11,22 +11,23 @@ import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 abstract class AbstractImdbParser extends AbstractParser {
-	
-	protected String firstStop;
-	protected String table;
-	protected int values;	
-	
-	private static final Pattern yearPtrn = Pattern.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
-	
+
+	protected int skipLines;
+
+	private static final Pattern yearPtrn = Pattern
+			.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
+
 	protected AbstractImdbParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
+		super.delimiter = "\t+";
 	}
 
 	@Override
 	protected void skipHeader(BufferedReader in) throws IOException {
-		if(firstStop != null)
-			while (!in.readLine().equals(firstStop))
-				;
+
+		for (int i = 0; i < skipLines; i++) {
+			in.readLine();
+		}
 	}
 
 	/**
@@ -48,13 +49,13 @@ abstract class AbstractImdbParser extends AbstractParser {
 	}
 
 	protected static Date getFirstDayOfYear(String year) {
-		
+
 		Calendar cal = Calendar.getInstance();
 
 		cal.set(Calendar.YEAR, Integer.parseInt(year));
 		cal.set(Calendar.MONTH, 0);
 		cal.set(Calendar.DAY_OF_MONTH, 1);
 		return new Date(cal.getTimeInMillis());
-	}	
-	
+	}
+
 }

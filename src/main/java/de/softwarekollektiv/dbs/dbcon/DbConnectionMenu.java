@@ -5,9 +5,9 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.QuitItem;
-import de.softwarekollektiv.dbs.app.AbstractSelectionMenu;
 
 public class DbConnectionMenu extends AbstractSelectionMenu {
 
