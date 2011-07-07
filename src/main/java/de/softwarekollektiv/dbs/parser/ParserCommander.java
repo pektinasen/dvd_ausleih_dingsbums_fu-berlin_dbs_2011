@@ -22,7 +22,6 @@ import de.softwarekollektiv.dbs.parser.misc.RentalsParser;
 
 // TODO rename again
 public class ParserCommander implements MenuItem {
-
 	private static final Logger log = Logger.getLogger(ParserCommander.class);
 	private final DbConnection dbcon;
 
@@ -42,11 +41,8 @@ public class ParserCommander implements MenuItem {
 
 	@Override
 	public boolean run() throws Exception {
-		/*
-		 * create a database with scheme
-		 */
+		// Create a database with scheme
 		log.info("Creating database...");
-
 		String query = fileToString("src/main/resources/create.sql");
 		Connection db = dbcon.getConnection();
 		Statement create = db.createStatement();
@@ -55,53 +51,44 @@ public class ParserCommander implements MenuItem {
 		db.commit();
 
 		List<Parser> parsers = new LinkedList<Parser>();
-		try {
-
-			parsers.add(new MoviesParser(dbcon,
-					"src/main/resources/modmovies.list"));
-			parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
-			parsers.add(new ActorsParser(dbcon,
-					"src/main/resources/actors.list", true));
-			parsers.add(new ActorsParser(dbcon,
-					"src/main/resources/actresses.list", false));
-			parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
-			parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
-			parsers.add(new CustomerParser(dbcon,
-					"src/main/resources/customers.list"));
-			parsers.add(new RentalsParser(dbcon,
-					"src/main/resources/rentals.list"));
-		} catch (Exception e) {
-			// TODO error handling oder weiterwerfen
-			e.printStackTrace();
-		}
+		parsers.add(new MoviesParser(dbcon,
+				"src/main/resources/modmovies.list"));
+		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
+		parsers.add(new ActorsParser(dbcon,
+				"src/main/resources/actors.list", true));
+		parsers.add(new ActorsParser(dbcon,
+				"src/main/resources/actresses.list", false));
+		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
+		// TODO auskommentiert weil noch nicht nachgepflegt
+//		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
+		parsers.add(new CustomerParser(dbcon,
+				"src/main/resources/customers.list"));
+		parsers.add(new RentalsParser(dbcon,
+				"src/main/resources/rentals.list"));
 		
 		long before = System.currentTimeMillis();
-
+		long beforeParser = 0;
 		for (final Parser parser : parsers) {	
+			beforeParser = System.currentTimeMillis();
 			log.info("Running " + parser.getClass().getSimpleName() + "...");
-			// TODO error handling in all parsers! be graceful
 			parser.parse();
+			log.debug("Time: " + (System.currentTimeMillis() - beforeParser) + " ms");
 		}
+		log.debug("Total time: " + (System.currentTimeMillis() - before) + " ms");
 		
-		log.debug("Time: " + (System.currentTimeMillis() - before) + " ms");
-
 		return true;
 	}
 
-	private static String fileToString(String file) {
+	private static String fileToString(String file) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(file));
+		BufferedReader in = new BufferedReader(new FileReader(file));
 
-			String line = null;
-			while ((line = in.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-
-		} catch (IOException e) {
-			// log.warn("Cannot convert file to string", e);
-			e.printStackTrace();
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			sb.append(line + "\n");
 		}
+		in.close();
+
 		return sb.toString();
 	}
 }

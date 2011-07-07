@@ -16,7 +16,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	
 	private PreparedStatement movieStatement;
 
-	public MoviesParser(DbConnection dbcon, String file) throws SQLException {
+	public MoviesParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		super.delimiter = "\t+";
 		super.firstStop = "title\tyear\tcategory";
@@ -29,20 +29,15 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	 * year and a Category seperated by \t+
 	 */
 	@Override
-	protected void newLine(String[] lineParts) {
-		String movieTitle;
-		String movieReleaseString = null;
-		if (lineParts.length > 2){
+	protected void newLine(String[] lineParts) throws SQLException {
 
-			movieTitle = lineParts[0];
-			movieReleaseString = lineParts[1];
-
-		}
-		else {
+		if (lineParts.length < 3)
 			// discard entry, if it's too few arguments
 			return;
-		}
 		
+		String movieTitle = lineParts[0];
+		String movieReleaseString = lineParts[1];
+
 		if (!(movieReleaseString.contains("2010") || movieReleaseString
 				.contains("2011"))) {
 			return;
@@ -76,24 +71,17 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			movieCategory = lineParts[3];
 		}
 
-		try {
-			movieStatement.setString(1, movieTitle);
-			movieStatement.setDate(2, movieRelease);
-			movieStatement.setString(3, movieCategory);
-
-			movieStatement.execute();
-		} catch (SQLException e) {
-			// TODO @Sascha: Auskommentieren ist nicht der Weg.
-			// eliminate this
-			log.warn(Arrays.toString(lineParts), e);
-		}
-
+		movieStatement.setString(1, movieTitle);
+		movieStatement.setDate(2, movieRelease);
+		movieStatement.setString(3, movieCategory);
+		
+		movieStatement.execute();
 	}
 
 	@Override
 	protected void prepareStatements() throws SQLException {
 		movieStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null)");
+				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null);");
 	}
 
 	@Override

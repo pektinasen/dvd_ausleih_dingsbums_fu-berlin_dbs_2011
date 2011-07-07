@@ -5,15 +5,21 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.util.Arrays;
+
+import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 public abstract class AbstractParser implements Parser {
+	private static final Logger log = Logger.getLogger(AbstractParser.class);
 	private final DbConnection dbcon;
 	private final String file;
 	private BufferedReader in;
 	
 	protected String delimiter;
+	private Savepoint sp;
 	
 	/**
 	 * This method is called before the parsing begins. Subclasses should
@@ -36,7 +42,7 @@ public abstract class AbstractParser implements Parser {
 	 * This method is called for each line in the file. The extending class should
 	 * extract the information from it and insert it into the database.
 	 * 
-	 * @param lineParts
+	 * @param lineParts line split by delimiter
 	 * @throws SQLException 
 	 */
 	protected abstract void newLine(String[] lineParts) throws SQLException;	
@@ -56,7 +62,7 @@ public abstract class AbstractParser implements Parser {
 	 * @param file
 	 *            the file to read
 	 */
-	protected AbstractParser(DbConnection dbcon, String file) {
+	protected AbstractParser(DbConnection dbcon, String file) {	
 		this.dbcon = dbcon;
 		this.file = file;
 		this.delimiter = null;
@@ -77,19 +83,44 @@ public abstract class AbstractParser implements Parser {
 		// Skip meaningless lines
 		skipHeader(in);
 		
+		// Prepare the SQL channels
 		prepareStatements();
-		
-		// Parse
+			
+		// Parse (with caching)
+		int lineCount = 0;
 		String line;
+		String[][] lines = new String[5000][];
 		while ((line = in.readLine()) != null) {
-			newLine(line.split(delimiter));
+			lines[lineCount++] = line.split(delimiter);
+			
+			if(lineCount == 5000) {
+				newLines(lines, lineCount);
+				lineCount = 0;
+			}
 		}
-
-		closeStatements();
+		if(lineCount > 0)
+			newLines(lines, lineCount);	
 		
-		// Finish transaction
-		// TODO Wenn autocommit an ist, macht commit() keinen Sinn. 
-		// Wo haben wir es ausgemacht?! Nachdenken über transactions usw.
-		dbcon.getConnection().commit();		
+		// Close
+		in.close();
+		closeStatements();			
+	}
+	
+	protected void newLines(String[][] lines, int n) throws SQLException {
+		// TODO remove try-catch block and savepoints after we eliminated all issues
+		
+		for(int i = 0; i < n; ++i) {
+			try {
+				sp = dbcon.getConnection().setSavepoint();
+				newLine(lines[i]);
+			} catch (SQLException e) {
+				log.warn("Got SQLException for line: " + Arrays.toString(lines[i]) + "\nError was: \"" + e.getMessage() + "\"");
+				
+				dbcon.getConnection().rollback(sp);
+				log.warn("Rolled back to savepoint!");
+			}
+		}
+		dbcon.getConnection().releaseSavepoint(sp);
+		dbcon.getConnection().commit();
 	}
 }

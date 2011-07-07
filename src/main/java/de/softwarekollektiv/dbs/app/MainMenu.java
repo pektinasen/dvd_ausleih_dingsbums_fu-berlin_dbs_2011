@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
@@ -15,7 +16,7 @@ import de.softwarekollektiv.dbs.parser.ParserCommander;
 import de.softwarekollektiv.dbs.queries.simple.SimpleQueryMenu;
 
 class MainMenu extends AbstractSelectionMenu {
-	
+	private static final Logger log = Logger.getLogger(MainMenu.class);
 	private final List<MenuItem> items;
 		
 	MainMenu(PrintStream out, InputStream in, DbConnection dbcon) throws Exception {
@@ -43,11 +44,14 @@ class MainMenu extends AbstractSelectionMenu {
 	 * main entrance point
 	 */
 	public static void main(String[] args) {
-		try {
-			PrintStream out = System.out;
-			InputStream in = System.in;
-			
-			DbConnection dbcon = new DbConnection();
+		DbConnection dbcon = null;
+		PrintStream out = System.out;
+		InputStream in = System.in;
+		
+		Logger.getRootLogger().setLevel(Level.DEBUG); // TODO remove later
+
+		try {			
+			dbcon = new DbConnection();
 			while(!dbcon.openConnection()) {
 				if(!(new DbConnectionMenu(out, in, dbcon)).run())
 					return;
@@ -59,8 +63,10 @@ class MainMenu extends AbstractSelectionMenu {
 			dbcon.closeConnection();
 		} catch (Exception e) {
 			// Any severe exception (e.g. IOException on console) ends up here.
-			Logger.getRootLogger().fatal("Fatal error: ", e);
-			e.printStackTrace();
+			log.fatal("Fatal error: ", e);
+			
+			if(dbcon != null)
+				dbcon.closeConnection();
 			System.exit(1);
 		}
 	}

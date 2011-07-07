@@ -3,10 +3,8 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -25,8 +23,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	
 	private PreparedStatement updateDateStatement;
 
-	public ReleaseDateParser(DbConnection dbcon, String file)
-			throws SQLException {
+	public ReleaseDateParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		super.firstStop = "==================";
 		super.delimiter = "\t+";
@@ -35,7 +32,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	}
 
 	@Override
-	protected void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) throws SQLException {
 
 		if (!(lineParts[0].contains("2010") || lineParts[0].contains("2011"))) {
 			return;
@@ -48,38 +45,32 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 		String dateString = lineParts[1].split(":")[1];
 		String region = lineParts[1].split(":")[0];
 		String[] dateParts = dateString.split(" ");
-//		log.debug(Arrays.toString(lineParts));
-//		log.debug(Arrays.toString(dateParts));
 		if (dateParts.length == 3) {
+
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateParts[0]));
+			java.util.Date date = null;
 			try {
-
-				Calendar cal = Calendar.getInstance();
-				cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dateParts[0]));
-				java.util.Date date = null;
-				try {
-					date = new SimpleDateFormat("MMM", Locale.ENGLISH)
-							.parse(dateParts[1].substring(0, 3));
-				} catch (ParseException e) {
-				}
-				Calendar month = Calendar.getInstance();
-				month.setTime(date);
-				cal.set(Calendar.MONTH, month.get(Calendar.MONTH));
-				cal.set(Calendar.YEAR, Integer.parseInt(dateParts[2]));
-
-				updateDateStatement.setDate(1, new Date(cal.getTimeInMillis()));
-				updateDateStatement.setString(2, region.substring(0, 2));
-				updateDateStatement.setString(3, lineParts[0]);
-				updateDateStatement.execute();
-			} catch (SQLException se) {
-				// TODO TODO TODO TODO
-				
-			} catch (StringIndexOutOfBoundsException sie) {
-				log.debug(Arrays.toString(lineParts), sie);
+				date = new SimpleDateFormat("MMM", Locale.ENGLISH)
+						.parse(dateParts[1].substring(0, 3));
+			} catch (ParseException e) {
+				log.debug("Could not parse date: " + dateParts[1]);
+				return;
 			}
+
+			Calendar month = Calendar.getInstance();
+			month.setTime(date);
+			cal.set(Calendar.MONTH, month.get(Calendar.MONTH));
+			cal.set(Calendar.YEAR, Integer.parseInt(dateParts[2]));
+
+			updateDateStatement.setDate(1, new Date(cal.getTimeInMillis()));
+			updateDateStatement.setString(2, region.substring(0, 2));
+			updateDateStatement.setString(3, lineParts[0]);
+			updateDateStatement.execute();
+			
 		}
-
 	}
-
+	
 	@Override
 	protected void prepareStatements() throws SQLException {
 		updateDateStatement = dbcon

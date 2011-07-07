@@ -9,8 +9,8 @@ DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
 
 CREATE TABLE movies (
-	mov_id serial primary key,
-	title text unique,
+	mov_id serial PRIMARY KEY,
+	title text UNIQUE,
 	release_date date,
 	description text,
 	price_category char,
@@ -19,42 +19,43 @@ CREATE TABLE movies (
 );
 
 CREATE TABLE actors (
-	act_id serial primary key,
-	name varchar(64),
-	male boolean
+	act_id serial PRIMARY KEY,
+	name varchar(128), 
+	male boolean, 
+	UNIQUE (name, male)
 );
 
 CREATE TABLE features (
-	mov_id integer references movies,
-	act_id integer references actors,
-	primary key (mov_id, act_id)
+	mov_id integer REFERENCES movies,
+	act_id integer REFERENCES actors,
+	PRIMARY KEY (mov_id, act_id)
 );
 
 CREATE TABLE directors (
-	dir_id serial primary key,
-	name varchar(64)
+	dir_id serial PRIMARY KEY,
+	name varchar(128) UNIQUE
 );
 
 CREATE TABLE directedBy (
-	mov_id integer references movies,
-	dir_id integer references directors,
-	primary key (mov_id, dir_id)
+	mov_id integer REFERENCES movies,
+	dir_id integer REFERENCES directors,
+	PRIMARY KEY (mov_id, dir_id)
 );
 
 CREATE TABLE locations (
-	loc_id serial primary key,
-	name text unique,
+	loc_id serial PRIMARY KEY,
+	name text UNIQUE,
 	country varchar(64)
 );
 
 CREATE TABLE shotIn (
-	mov_id integer references movies,
-	loc_id integer references locations,
-	primary key (mov_id, loc_id)
+	mov_id integer REFERENCES movies,
+	loc_id integer REFERENCES locations,
+	PRIMARY KEY (mov_id, loc_id)
 );
 
 CREATE TABLE customers (
-	cus_id integer primary key,
+	cus_id integer PRIMARY KEY,
 	surename varchar(64),
 	forename varchar(64),
 	street varchar(128),
@@ -64,9 +65,10 @@ CREATE TABLE customers (
 );
 
 CREATE TABLE rentals (
-	cus_id integer references customers,
+	cus_id integer REFERENCES customers,
 	type varchar(7),
-	mov_id integer references movies,
+	mov_id integer REFERENCES movies,
 	startdate timestamp,
-	duration integer
+	duration integer,
+	PRIMARY KEY (cus_id, mov_id, startdate)
 );

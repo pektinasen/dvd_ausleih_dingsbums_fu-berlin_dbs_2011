@@ -5,20 +5,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.Logger;
-
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
+// TODO unify DirectorsParser & ActorsParser
 public class DirectorsParser extends AbstractImdbParser {
-	private static final Logger log = Logger.getLogger(DirectorsParser.class);
 	private final DbConnection dbcon;
 	
 	private PreparedStatement directedByStatement;
 	private PreparedStatement directorsStatement;
 	private String currentDirector;
 
-	public DirectorsParser(DbConnection dbcon, String file)
-			throws SQLException {
+	public DirectorsParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		// Name\t\t\tTitles
 		super.firstStop = "----\t\t\t------";
@@ -28,7 +25,7 @@ public class DirectorsParser extends AbstractImdbParser {
 	}
 
 	@Override
-	protected void newLine(String[] lineParts) {
+	protected void newLine(String[] lineParts) throws SQLException {
 		/*
 		 * if newline the current actor has no more featuring movies
 		 */
@@ -50,23 +47,16 @@ public class DirectorsParser extends AbstractImdbParser {
 
 		String movieTitle = lineParts[1];
 
-		try {
-			directorsStatement.setString(1, currentDirector);
-			directorsStatement.execute();
+		directorsStatement.setString(1, currentDirector);
+		directorsStatement.execute();
 
-			ResultSet result = directorsStatement.getGeneratedKeys();
-			result.next();
-			int dirId = result.getInt(1);
+		ResultSet result = directorsStatement.getGeneratedKeys();
+		result.next();
+		int dirId = result.getInt(1);
 
-			directedByStatement.setString(1, movieTitle);
-			directedByStatement.setInt(2, dirId);
-			directedByStatement.execute();
-
-		} catch (SQLException e) {
-			// TODO eliminate this
-			log.debug("SQLException", e);
-		}
-
+		directedByStatement.setString(1, movieTitle);
+		directedByStatement.setInt(2, dirId);
+		directedByStatement.execute();
 	}
 
 	@Override

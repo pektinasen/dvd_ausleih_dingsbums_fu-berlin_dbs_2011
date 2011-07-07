@@ -36,6 +36,7 @@ public class DbConnection {
 		log.info("Connecting to database...");
 		try {
 			dbConnection = DriverManager.getConnection(dbUrl, user, password);
+			dbConnection.setAutoCommit(false);
 		} catch (SQLException e) {
 			log.warn("Could not establish database connection. ", e);
 			dbConnection = null;
