@@ -1,8 +1,10 @@
 package de.softwarekollektiv.dbs.queries.simple;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.queries.AbstractSQLQuery;
 
@@ -23,13 +25,7 @@ class QueryD extends AbstractSQLQuery implements MenuItem {
 	}
 
 	@Override
-	protected String getQuery() {
-		return "SELECT cus_id, COUNT(*) as num FROM rentals r WHERE r.mov_id IN (SELECT DISTINCT mov_id FROM shotIn s JOIN locations l ON s.loc_id = l.loc_id WHERE l.country <> 'USA') GROUP BY r.cus_id;";
+	protected String getQuery() throws IOException {
+		return Utils.fileToString("src/main/resources/sql/queryd.sql");
 	}
-
-	@Override
-	protected String[] getResultFields() {
-		return new String[] { "cus_id", "num" };
-	}
-
 }
