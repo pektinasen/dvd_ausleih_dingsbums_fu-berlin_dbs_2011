@@ -14,6 +14,7 @@ import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
+import de.softwarekollektiv.dbs.parser.imdb.ActressesParser;
 import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
@@ -51,13 +52,13 @@ public class ParserCommander implements MenuItem {
 		db.commit();
 
 		List<Parser> parsers = new LinkedList<Parser>();
-//		parsers.add(new MoviesParser(dbcon,
-//				"src/main/resources/modmovies.list"));
-//		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
+		parsers.add(new MoviesParser(dbcon,
+				"src/main/resources/modmovies.list"));
+		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
 		parsers.add(new ActorsParser(dbcon,
-				"src/main/resources/actors.list", true));
-		parsers.add(new ActorsParser(dbcon,
-				"src/main/resources/actresses.list", false));
+				"src/main/resources/actors.list"));
+		parsers.add(new ActressesParser(dbcon,
+				"src/main/resources/actresses.list"));
 		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
 		// TODO auskommentiert weil noch nicht nachgepflegt
 //		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
