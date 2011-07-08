@@ -11,7 +11,7 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class ActorsParser extends AbstractImdbParser implements Parser {
 	private final DbConnection dbcon;
-	private final boolean male;
+	protected boolean male;
 	
 	private PreparedStatement movIdStatement;
 	private PreparedStatement actorsStatement;
@@ -20,29 +20,25 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 	private String currentActor;
 	private int currentActorId;
 
-	public ActorsParser(DbConnection dbcon, String file, boolean male) {
+	public ActorsParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		super.skipLines = 239;
-		
+		super.stopAfter = 11240132;
 		this.dbcon = dbcon;
-		this.male = male;
+		this.male = true;
 	}
 
 	protected void newLine(String[] lineParts) throws SQLException {
-
+		try {
 		// if newline the current actor has no more featuring movies
-		// FIXME Hier liegt der Hase im Pfeffer begraben
+		// Hier lag der Hund begraben
 		// Zeilen wie "\t\t\t<titel>" die noch zu einem Actor gehören
 		// haben auch "" als lineParts[0]
-		if (lineParts[0].equals("")) {
+		if (lineParts.length == 1) {
 			currentActor = null;
 			currentActorId = -1;
 			return;
 		}
-		
-		// TODO Some lines are broken. This is ugly.
-		if(lineParts.length < 2)
-			return;
 		
 		// new Actor starting
 		if (currentActor == null) {
@@ -61,15 +57,8 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 			// Only insert the actor/actress into the db if we haven't dont so yet, else re-use the key
 			if (currentActorId < 0){
 				actorsStatement.setString(1, currentActor);
-			try {
 				actorsStatement.execute();
-				
-			} catch (Exception e) {
-				// TODO: handle exception
-				log.debug(Arrays.toString(lineParts));
-				log.debug("Exception: ", e);
-			}
-				
+								
 				ResultSet result = actorsStatement.getGeneratedKeys();
 				result.next();
 				currentActorId = result.getInt(1);
@@ -78,6 +67,10 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 			featuresStatement.setInt(1, movId);
 			featuresStatement.setInt(2, currentActorId);
 			featuresStatement.execute();
+		}
+		}catch (Exception e) {
+			log.debug("Exception ",e);
+			throw new RuntimeException(e);
 		}
 	}
 

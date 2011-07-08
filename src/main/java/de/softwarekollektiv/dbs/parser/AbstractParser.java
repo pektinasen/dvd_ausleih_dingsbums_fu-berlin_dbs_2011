@@ -20,6 +20,8 @@ public abstract class AbstractParser implements Parser {
 	
 	protected String delimiter;
 	private Savepoint sp;
+	protected int stopAfter;
+	protected int skipLines;
 	
 	/**
 	 * This method is called before the parsing begins. Subclasses should
@@ -90,7 +92,8 @@ public abstract class AbstractParser implements Parser {
 		int lineCount = 0;
 		String line;
 		String[][] lines = new String[5000][];
-		while ((line = in.readLine()) != null) {
+		int overAllLineCount = skipLines;
+		while ((line = in.readLine()) != null && overAllLineCount++  < stopAfter) {
 			lines[lineCount++] = line.split(delimiter);
 			
 			if(lineCount == 5000) {

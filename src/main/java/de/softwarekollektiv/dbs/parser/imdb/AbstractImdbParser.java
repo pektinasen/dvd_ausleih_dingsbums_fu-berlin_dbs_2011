@@ -12,7 +12,7 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 abstract class AbstractImdbParser extends AbstractParser {
 
-	protected int skipLines;
+	
 
 	private static final Pattern yearPtrn = Pattern
 			.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
