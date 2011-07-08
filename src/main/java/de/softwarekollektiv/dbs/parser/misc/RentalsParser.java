@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -51,7 +52,12 @@ public class RentalsParser extends AbstractParser {
 		rentalsStatement.setTimestamp(4, ts);
 		rentalsStatement.setInt(5, duration);
 
-		rentalsStatement.execute();
+		try {
+			rentalsStatement.execute();
+			
+		} catch (Exception e){
+			log.debug(Arrays.toString(lineParts), e);
+		}
 	}
 
 	@Override

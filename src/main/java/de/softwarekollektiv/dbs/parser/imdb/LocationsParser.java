@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
@@ -24,14 +25,15 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	@Override
 	protected void newLine(String[] lineParts) throws SQLException {
-
+		
 		// TODO HACK
-		if(lineParts.length < 2)
+		if(lineParts.length < 2){
+			log.debug("too short: "+ Arrays.toString(lineParts));
 			return;
+		}
 		
 		String movieTitle = lineParts[0];
-		String location = lineParts[1].split("|")[0];
-		String[] locationParts = location.split(",");
+		String[] locationParts = lineParts[1].split(",");
 		String country = locationParts[locationParts.length - 1];
 		
 		int movId;
@@ -44,14 +46,14 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		if(movIdRslt.next()) {
 			movId = movIdRslt.getInt(1);
 			
-			locIdStmt.setString(1, location);
+			locIdStmt.setString(1, lineParts[1]);
 			ResultSet locIdRslt = locIdStmt.executeQuery();
 			
 			// Is location already in database?
 			if(locIdRslt.next()) {
 				locId = locIdRslt.getInt(1);
 			} else {
-				locInsStmt.setString(1, location);
+				locInsStmt.setString(1, lineParts[1]);
 				locInsStmt.setString(2, country);
 				locInsStmt.execute();
 

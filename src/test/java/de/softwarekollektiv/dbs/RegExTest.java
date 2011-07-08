@@ -17,6 +17,9 @@ public class RegExTest {
 	
 		String manyTabsInTheBeginning = "\t\t\tbla";
 		
+		String empty = "";
+		assertEquals(1, empty.split("\t").length);
+		
 		assertEquals("",manyTabsInTheBeginning.split("\t+")[0]);
 		assertEquals("bla", manyTabsInTheBeginning.split("\t+")[1]);
 		String aMovie= "A Movie Name (2010)";

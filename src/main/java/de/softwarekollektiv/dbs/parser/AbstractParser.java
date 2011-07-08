@@ -1,12 +1,11 @@
 package de.softwarekollektiv.dbs.parser;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.sql.Savepoint;
-import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 
@@ -16,11 +15,13 @@ public abstract class AbstractParser implements Parser {
 	protected static final Logger log = Logger.getLogger(AbstractParser.class);
 	private final DbConnection dbcon;
 	private final String file;
+	/*
+	 * change to LineNumberReader
+	 */
 	private BufferedReader in;
 	
 	protected String delimiter;
-	private Savepoint sp;
-	protected int stopAfter;
+	protected long stopAfter;
 	protected int skipLines;
 	
 	/**
@@ -68,6 +69,7 @@ public abstract class AbstractParser implements Parser {
 		this.dbcon = dbcon;
 		this.file = file;
 		this.delimiter = null;
+		this.stopAfter= new File(file).length(); 
 	}
 
 	/**
@@ -110,20 +112,11 @@ public abstract class AbstractParser implements Parser {
 	}
 	
 	protected void newLines(String[][] lines, int n) throws SQLException {
-		// TODO remove try-catch block and savepoints after we eliminated all issues
-		
+	
 		for(int i = 0; i < n; ++i) {
-//			try {
-//				sp = dbcon.getConnection().setSavepoint();
 				newLine(lines[i]);
-//			} cat7ch (SQLException e) {
-//				log.warn("Got SQLException for line: " + Arrays.toString(lines[i]) + "\nError was: \"" + e.getMessage() + "\"", e);
-				
-//				dbcon.getConnection().rollback(sp);
-//				log.warn("Rolled back to savepoint!");
-//			}
 		}
-//		dbcon.getConnection().releaseSavepoint(sp);
+
 		dbcon.getConnection().commit();
 	}
 }

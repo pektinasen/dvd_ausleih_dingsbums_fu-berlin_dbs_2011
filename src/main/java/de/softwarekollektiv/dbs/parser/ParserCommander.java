@@ -1,8 +1,5 @@
 package de.softwarekollektiv.dbs.parser;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.LinkedList;
@@ -15,6 +12,7 @@ import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.ActressesParser;
+import de.softwarekollektiv.dbs.parser.imdb.DirectorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
@@ -61,7 +59,7 @@ public class ParserCommander implements MenuItem {
 				"src/main/resources/actresses.list"));
 		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
 		// TODO auskommentiert weil noch nicht nachgepflegt
-//		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
+		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
 		parsers.add(new CustomerParser(dbcon,
 				"src/main/resources/customers.list"));
 		parsers.add(new RentalsParser(dbcon,
