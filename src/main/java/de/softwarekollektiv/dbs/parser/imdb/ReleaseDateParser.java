@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +21,8 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 	private PreparedStatement updateDateStatement;
 
+	private Map<String, Integer> movIdCache;
+
 	/*
 	 * group(1) = day
 	 * group(2) = month year
@@ -29,11 +32,12 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	private static final Pattern datePattern = Pattern
 			.compile("(\\d{1,2})? ?((\\w+)? ?(\\d{4}))");
 
-	public ReleaseDateParser(DbConnection dbcon, String file) {
+	public ReleaseDateParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
 		super.skipLines = 14;
 
 		this.dbcon = dbcon;
+		this.movIdCache = movIdCache;
 	}
 
 	@Override
@@ -69,11 +73,14 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 		if (date.compareTo(minDate) >= 0) {
 
-			updateDateStatement.setDate(1, date);
-			updateDateStatement.setString(2, dateRegion);
-			updateDateStatement.setString(3, movieTitle);
+			Integer movId = movIdCache.get(movieTitle);
+			if (movId != null) {
+				updateDateStatement.setDate(1, date);
+				updateDateStatement.setString(2, dateRegion);
+				updateDateStatement.setInt(3, movId);
 
-			updateDateStatement.addBatch();
+				updateDateStatement.addBatch();
+			}
 		}
 
 	}
@@ -105,7 +112,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 		updateDateStatement = dbcon
 				.getConnection()
 				.prepareStatement(
-						"UPDATE movies SET release_Date = ?, region = ? WHERE title = ?");
+						"UPDATE movies SET release_Date = ?, region = ? WHERE mov_id = ?");
 	}
 
 	@Override

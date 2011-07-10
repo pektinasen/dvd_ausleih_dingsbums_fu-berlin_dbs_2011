@@ -3,6 +3,7 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,16 +12,20 @@ import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
 	
+	private static final Pattern yearPattern = Pattern.compile("(\\d{4})?-?((\\d{4})|\\?{4})");
 	private final DbConnection dbcon;
+	private final Map<String, Integer> movIdCache;
 	
 	private PreparedStatement movStmt;
-
-	private static final Pattern yearPattern = Pattern.compile("(\\d{4})?-?((\\d{4})|\\?{4})");
+	private int currentId = 1;
 	
-	public MoviesParser(DbConnection dbcon, String file) {
+
+	public MoviesParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
 		super.skipLines = 4;
+		
 		this.dbcon = dbcon;
+		this.movIdCache = movIdCache;
 	}
 
 	/*
@@ -66,12 +71,13 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 		
 		Date movieRelease = getFirstDayOfYear(movieReleaseString);	
 		
-		movStmt.setString(1, movieTitle);
-		movStmt.setDate(2, movieRelease);
-		movStmt.setString(3, movieCategory);
-		
+		movStmt.setInt(1, currentId);
+		movStmt.setString(2, movieTitle);
+		movStmt.setDate(3, movieRelease);
+		movStmt.setString(4, movieCategory);
 		movStmt.addBatch();
-
+		movIdCache.put(movieTitle, currentId);
+		++currentId;
 	}
 
 	private String parseReleaseString(String input) {
@@ -96,7 +102,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	@Override
 	protected void prepareStatements() throws SQLException {
 		movStmt = dbcon.getConnection().prepareStatement(
-				"INSERT INTO movies VALUES (DEFAULT, ?, ?,null,?, null);");
+				"INSERT INTO movies VALUES (?, ?, ?, null, ?, null);");
 	}
 
 	@Override

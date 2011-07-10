@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
 
 CREATE TABLE movies (
-	mov_id serial PRIMARY KEY,
+	mov_id integer PRIMARY KEY,
 	title text UNIQUE,
 	release_date date,
 	description text,
@@ -19,7 +19,7 @@ CREATE TABLE movies (
 );
 
 CREATE TABLE actors (
-	act_id serial PRIMARY KEY,
+	act_id integer PRIMARY KEY,
 	name varchar(128), 
 	male boolean
 	-- not unique because some actors appears twice in actors.list
@@ -44,7 +44,7 @@ CREATE TABLE shotIn (
 );
 
 CREATE TABLE directors (
-	dir_id serial PRIMARY KEY,
+	dir_id integer PRIMARY KEY,
 	name varchar(128)
 );
 

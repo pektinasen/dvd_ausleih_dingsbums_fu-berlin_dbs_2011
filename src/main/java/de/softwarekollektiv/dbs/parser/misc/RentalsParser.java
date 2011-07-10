@@ -1,13 +1,13 @@
 package de.softwarekollektiv.dbs.parser.misc;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -16,19 +16,19 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 public class RentalsParser extends AbstractParser {
 	private static final Logger log = Logger.getLogger(RentalsParser.class);
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
 	private final DbConnection dbcon;
-	private final SimpleDateFormat dateFormat;
+	private final Map<String, Integer> movIdCache;
 	
 	private PreparedStatement rentalsStmt;
-	private PreparedStatement movIdStmt;
 
-	public RentalsParser(DbConnection dbcon, String file) throws SQLException {
+	public RentalsParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t";
 		super.skipLines = 1;
 
 		this.dbcon = dbcon;
-		this.dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+		this.movIdCache = movIdCache;
 	}
 
 	@Override
@@ -38,10 +38,8 @@ public class RentalsParser extends AbstractParser {
 		String movtitle = lineParts[2];
 		int duration = Integer.parseInt(lineParts[4]);
 		
-		movIdStmt.setString(1, movtitle);
-		ResultSet movIdRslt = movIdStmt.executeQuery();
-		if(movIdRslt.next()) {
-			int movId = movIdRslt.getInt(1);
+		Integer movId = movIdCache.get(movtitle);
+		if(movId != null) {
 		
 			Timestamp ts = null;
 			try {
@@ -65,15 +63,12 @@ public class RentalsParser extends AbstractParser {
 
 	@Override
 	protected void prepareStatements() throws SQLException {
-		movIdStmt = dbcon.getConnection().prepareStatement(
-						"SELECT mov_id FROM movies WHERE title = ?;");
 		rentalsStmt = dbcon.getConnection().prepareStatement(
 						"INSERT INTO rentals VALUES (?, ?, ?, ?, ?);");
 	}
 
 	@Override
 	protected void closeStatements() throws SQLException {
-		movIdStmt.close();
 		rentalsStmt.close();
 	}
 

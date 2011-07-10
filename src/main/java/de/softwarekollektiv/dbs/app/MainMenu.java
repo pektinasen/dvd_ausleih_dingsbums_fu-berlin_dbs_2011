@@ -2,6 +2,7 @@ package de.softwarekollektiv.dbs.app;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.sql.BatchUpdateException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,6 +65,11 @@ class MainMenu extends AbstractSelectionMenu {
 		} catch (Exception e) {
 			// Any severe exception (e.g. IOException on console) ends up here.
 			log.fatal("Fatal error: ", e);
+			
+			if(e instanceof BatchUpdateException) {
+				BatchUpdateException bue = (BatchUpdateException) e;
+				log.fatal("Next Exception: ", bue.getNextException());
+			}
 			
 			if(dbcon != null)
 				dbcon.closeConnection();

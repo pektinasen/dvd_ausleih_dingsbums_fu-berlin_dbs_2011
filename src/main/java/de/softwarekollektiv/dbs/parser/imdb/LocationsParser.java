@@ -5,22 +5,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Map;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class LocationsParser extends AbstractImdbParser implements Parser {
 	private final DbConnection dbcon;
+	private final Map<String, Integer> movIdCache;
 	
-	private PreparedStatement movIdStmt;
 	private PreparedStatement locIdStmt;
 	private PreparedStatement locInsStmt;
 	private PreparedStatement shotInStmt;
 
-	public LocationsParser(DbConnection dbcon, String file) {
+	public LocationsParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
 		super.skipLines = 264;
 		this.dbcon = dbcon;
+		this.movIdCache = movIdCache;
 	}
 
 	@Override
@@ -36,15 +38,11 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		String[] locationParts = lineParts[1].split(",");
 		String country = locationParts[locationParts.length - 1];
 		
-		int movId;
-		int locId;
+		Integer movId = movIdCache.get(movieTitle);
 		
-		movIdStmt.setString(1, movieTitle);
-		ResultSet movIdRslt = movIdStmt.executeQuery();
-		
-		// Is movie in database?
-		if(movIdRslt.next()) {
-			movId = movIdRslt.getInt(1);
+		// only when the movie exists
+		if(movId != null) {
+			int locId;
 			
 			locIdStmt.setString(1, lineParts[1]);
 			ResultSet locIdRslt = locIdStmt.executeQuery();
@@ -68,13 +66,10 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 			shotInStmt.setInt(2, locId);
 			shotInStmt.execute();
 		}
-		movIdRslt.close();
 	}
 
 	@Override
 	protected void prepareStatements() throws SQLException {
-		movIdStmt = dbcon.getConnection().prepareStatement(
-				"SELECT mov_id FROM movies WHERE title = ?;");
 		locIdStmt = dbcon.getConnection().prepareStatement(
 				"SELECT loc_id FROM locations WHERE name = ?;");
 		locInsStmt = dbcon.getConnection().prepareStatement(
@@ -86,7 +81,6 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	@Override
 	protected void closeStatements() throws SQLException {
-		movIdStmt.close();
 		locIdStmt.close();
 		locInsStmt.close();
 		shotInStmt.close();
@@ -94,8 +88,12 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 
 	@Override
 	protected void executeBatchStatements() throws SQLException {
-		// TODO Kein batch processing bis jetzt, da wir den zurückgegebenen
-		// key brauchen
+		// TODO batch processing
+		// Das ist hier schwierig, da wir das Inserten der neuen Loc
+		// sofort machen müssen, um danach im SELECT das zu finden
+		// liegt an der Struktur der Datei (neue Locations wiederholt
+		// aber nicht unmittelbar hintereinander (d.h. verteilt über das
+		// file))
 	}
 
 }

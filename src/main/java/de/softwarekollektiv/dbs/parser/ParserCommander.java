@@ -2,8 +2,10 @@ package de.softwarekollektiv.dbs.parser;
 
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -49,20 +51,22 @@ public class ParserCommander implements MenuItem {
 		create.close();
 		db.commit();
 
+		Map<String, Integer> movIdCache = new HashMap<String, Integer>();
+		
 		List<Parser> parsers = new LinkedList<Parser>();
 		parsers.add(new MoviesParser(dbcon,
-				"src/main/resources/modmovies.list"));
-		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list"));
+				"src/main/resources/modmovies.list", movIdCache));
+		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list", movIdCache));
 		parsers.add(new ActorsParser(dbcon,
-				"src/main/resources/actors.list"));
+				"src/main/resources/actors.list", movIdCache));
 		parsers.add(new ActressesParser(dbcon,
-				"src/main/resources/actresses.list"));
-		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list"));
-		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list"));
+				"src/main/resources/actresses.list", movIdCache));
+		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list", movIdCache));
+//		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list", movIdCache));
 		parsers.add(new CustomerParser(dbcon,
 				"src/main/resources/customers.list"));
 		parsers.add(new RentalsParser(dbcon,
-				"src/main/resources/rentals.list"));
+				"src/main/resources/rentals.list", movIdCache));
 		
 		long before = System.currentTimeMillis();
 		long beforeParser = 0;
