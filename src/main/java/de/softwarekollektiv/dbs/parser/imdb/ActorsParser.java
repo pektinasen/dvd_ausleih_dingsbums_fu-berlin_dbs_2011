@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
@@ -29,7 +28,6 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 	}
 
 	protected void newLine(String[] lineParts) throws SQLException {
-		try {
 		// if newline the current actor has no more featuring movies
 		// Hier lag der Hund begraben
 		// Zeilen wie "\t\t\t<titel>" die noch zu einem Actor gehören
@@ -67,10 +65,6 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 			featuresStatement.setInt(1, movId);
 			featuresStatement.setInt(2, currentActorId);
 			featuresStatement.execute();
-		}
-		}catch (Exception e) {
-			log.debug("Exception ",e);
-			throw new RuntimeException(e);
 		}
 	}
 

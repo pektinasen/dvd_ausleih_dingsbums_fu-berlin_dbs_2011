@@ -72,12 +72,8 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 			updateDateStatement.setDate(1, date);
 			updateDateStatement.setString(2, dateRegion);
 			updateDateStatement.setString(3, movieTitle);
-			try {
-				updateDateStatement.execute();
-			} catch (Exception e) {
-				log.debug(date + " " + dateRegion + " " + movieTitle);
-				log.debug("Error ", e);
-			}
+
+			updateDateStatement.execute();
 		}
 
 	}

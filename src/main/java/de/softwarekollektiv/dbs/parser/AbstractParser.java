@@ -1,10 +1,9 @@
 package de.softwarekollektiv.dbs.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
@@ -15,11 +14,9 @@ public abstract class AbstractParser implements Parser {
 	protected static final Logger log = Logger.getLogger(AbstractParser.class);
 	private final DbConnection dbcon;
 	private final String file;
-	/*
-	 * change to LineNumberReader
-	 */
-	private BufferedReader in;
 	
+	private LineNumberReader in;
+
 	protected String delimiter;
 	protected long stopAfter;
 	protected int skipLines;
@@ -31,15 +28,6 @@ public abstract class AbstractParser implements Parser {
 	 * @throws SQLException
 	 */
 	protected abstract void prepareStatements() throws SQLException;
-	
-	/**
-	 * This method is called before parsing the data, so that extending classes
-	 * can skip any header parts contained in their respective files.
-	 * 
-	 * @param in BufferedReader associated to the opened file
-	 * @throws IOException should not happen
-	 */
-	protected abstract void skipHeader(BufferedReader in) throws IOException; 	
 	
 	/**
 	 * This method is called for each line in the file. The extending class should
@@ -69,7 +57,8 @@ public abstract class AbstractParser implements Parser {
 		this.dbcon = dbcon;
 		this.file = file;
 		this.delimiter = null;
-		this.stopAfter= new File(file).length(); 
+		this.stopAfter = 0; 
+		this.skipLines = 0;
 	}
 
 	/**
@@ -81,30 +70,31 @@ public abstract class AbstractParser implements Parser {
 	public void parse() throws IOException, SQLException {
 		
 		// Open file with correct character encoding
-		in = new BufferedReader(new InputStreamReader(
+		in = new LineNumberReader(new InputStreamReader(
 				new FileInputStream(file), "ISO-8859-15"));
 		
 		// Skip meaningless lines
-		skipHeader(in);
+		in.setLineNumber(skipLines);
 		
 		// Prepare the SQL channels
 		prepareStatements();
 			
 		// Parse (with caching)
-		int lineCount = 0;
+		int round = 5000;
+		long lineCount = 0;
 		String line;
-		String[][] lines = new String[5000][];
-		int overAllLineCount = skipLines;
-		while ((line = in.readLine()) != null && overAllLineCount++  < stopAfter) {
-			lines[lineCount++] = line.split(delimiter);
+		String[][] lines = new String[round][];
+		while ((line = in.readLine()) != null && 
+				((stopAfter == 0) || (lineCount < stopAfter))) {
+			lines[(int) (lineCount++ % round)] = line.split(delimiter);
 			
-			if(lineCount == 5000) {
-				newLines(lines, lineCount);
+			if((lineCount % round) == 0) {
+				newLines(lines, round);
 				lineCount = 0;
 			}
 		}
-		if(lineCount > 0)
-			newLines(lines, lineCount);	
+		if((lineCount % round) > 0)
+			newLines(lines, (int) (lineCount % round));	
 		
 		// Close
 		in.close();
@@ -112,10 +102,8 @@ public abstract class AbstractParser implements Parser {
 	}
 	
 	protected void newLines(String[][] lines, int n) throws SQLException {
-	
-		for(int i = 0; i < n; ++i) {
+		for(int i = 0; i < n; ++i)
 				newLine(lines[i]);
-		}
 
 		dbcon.getConnection().commit();
 	}

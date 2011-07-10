@@ -1,8 +1,7 @@
 package de.softwarekollektiv.dbs.parser.misc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -20,11 +19,13 @@ public class RentalsParser extends AbstractParser {
 	private final DbConnection dbcon;
 	private final SimpleDateFormat dateFormat;
 	
-	private PreparedStatement rentalsStatement;
+	private PreparedStatement rentalsStmt;
+	private PreparedStatement movIdStmt;
 
 	public RentalsParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = "\t";
+		super.skipLines = 1;
 
 		this.dbcon = dbcon;
 		this.dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
@@ -37,42 +38,42 @@ public class RentalsParser extends AbstractParser {
 		String movtitle = lineParts[2];
 		int duration = Integer.parseInt(lineParts[4]);
 		
-		Timestamp ts = null;
-		try {
-			Date dt = dateFormat.parse(lineParts[3]);
-			ts = new Timestamp(dt.getTime());
-		} catch (ParseException e) {
-			log.warn("Could not parse date: " + lineParts[3]);
-			return;
-		}
+		movIdStmt.setString(1, movtitle);
+		ResultSet movIdRslt = movIdStmt.executeQuery();
+		if(movIdRslt.next()) {
+			int movId = movIdRslt.getInt(1);
 		
-		rentalsStatement.setInt(1, id);
-		rentalsStatement.setString(2, type);
-		rentalsStatement.setString(3, movtitle);
-		rentalsStatement.setTimestamp(4, ts);
-		rentalsStatement.setInt(5, duration);
-
-		try {
-			rentalsStatement.execute();
+			Timestamp ts = null;
+			try {
+				Date dt = dateFormat.parse(lineParts[3]);
+				ts = new Timestamp(dt.getTime());
+			} catch (ParseException e) {
+				log.warn("Could not parse date: " + Arrays.toString(lineParts));
+				return;
+			}
 			
-		} catch (Exception e){
-			log.debug(Arrays.toString(lineParts), e);
+			rentalsStmt.setInt(1, id);
+			rentalsStmt.setString(2, type);
+			rentalsStmt.setInt(3, movId);
+			rentalsStmt.setTimestamp(4, ts);
+			rentalsStmt.setInt(5, duration);
+	
+			rentalsStmt.execute();
+			
 		}
-	}
-
-	@Override
-	protected void skipHeader(BufferedReader in) throws IOException {
-		in.readLine();
 	}
 
 	@Override
 	protected void prepareStatements() throws SQLException {
-		rentalsStatement = dbcon.getConnection().prepareStatement(
-						"INSERT INTO rentals VALUES (?, ?, (SELECT mov_id FROM MOVIES WHERE title = ?), ?, ?);");
+		movIdStmt = dbcon.getConnection().prepareStatement(
+						"SELECT mov_id FROM movies WHERE title = ?;");
+		rentalsStmt = dbcon.getConnection().prepareStatement(
+						"INSERT INTO rentals VALUES (?, ?, ?, ?, ?);");
 	}
 
 	@Override
 	protected void closeStatements() throws SQLException {
-		rentalsStatement.close();
+		movIdStmt.close();
+		rentalsStmt.close();
 	}
 }

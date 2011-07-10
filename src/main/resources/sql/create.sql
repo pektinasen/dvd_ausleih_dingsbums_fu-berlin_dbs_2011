@@ -54,8 +54,6 @@ CREATE TABLE directedBy (
 	PRIMARY KEY (mov_id, dir_id)
 );
 
-
-
 CREATE TABLE customers (
 	cus_id integer PRIMARY KEY,
 	surename varchar(64),

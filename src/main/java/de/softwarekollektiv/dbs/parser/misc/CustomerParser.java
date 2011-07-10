@@ -1,7 +1,5 @@
 package de.softwarekollektiv.dbs.parser.misc;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -16,6 +14,7 @@ public class CustomerParser extends AbstractParser {
 	public CustomerParser(DbConnection dbcon, String file) throws SQLException {
 		super(dbcon, file);
 		super.delimiter = ",";
+		super.skipLines = 1;
 		
 		this.dbcon = dbcon;
 	}
@@ -39,11 +38,6 @@ public class CustomerParser extends AbstractParser {
 		customerStatement.setString(7, phone);	
 		
 		customerStatement.execute();
-	}
-
-	@Override
-	protected void skipHeader(BufferedReader in) throws IOException {
-		in.readLine();
 	}
 
 	@Override

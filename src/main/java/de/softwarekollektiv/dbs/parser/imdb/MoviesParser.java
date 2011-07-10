@@ -3,7 +3,6 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -1,7 +1,5 @@
 package de.softwarekollektiv.dbs.parser.imdb;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.regex.Matcher;
@@ -12,22 +10,12 @@ import de.softwarekollektiv.dbs.parser.AbstractParser;
 
 abstract class AbstractImdbParser extends AbstractParser {
 
-	
-
 	private static final Pattern yearPtrn = Pattern
 			.compile("\\(\\d{4}-?(\\d{4}|\\?{4})?\\)");
 
 	protected AbstractImdbParser(DbConnection dbcon, String file) {
 		super(dbcon, file);
 		super.delimiter = "\t+";
-	}
-
-	@Override
-	protected void skipHeader(BufferedReader in) throws IOException {
-
-		for (int i = 0; i < skipLines; i++) {
-			in.readLine();
-		}
 	}
 
 	/**
