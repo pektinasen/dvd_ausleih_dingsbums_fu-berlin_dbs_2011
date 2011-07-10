@@ -73,7 +73,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 			updateDateStatement.setString(2, dateRegion);
 			updateDateStatement.setString(3, movieTitle);
 
-			updateDateStatement.execute();
+			updateDateStatement.addBatch();
 		}
 
 	}
@@ -111,6 +111,11 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	@Override
 	protected void closeStatements() throws SQLException {
 		updateDateStatement.close();
+	}
+
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		updateDateStatement.executeBatch();
 	}
 
 }

@@ -70,7 +70,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 		movStmt.setDate(2, movieRelease);
 		movStmt.setString(3, movieCategory);
 		
-		movStmt.execute();
+		movStmt.addBatch();
 
 	}
 
@@ -102,5 +102,10 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	@Override
 	protected void closeStatements() throws SQLException {
 		movStmt.close();
+	}
+
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		movStmt.executeBatch();
 	}
 }

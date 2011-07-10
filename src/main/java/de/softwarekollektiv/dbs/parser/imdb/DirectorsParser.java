@@ -103,4 +103,10 @@ public class DirectorsParser extends AbstractImdbParser {
 		directedByStatement.close();
 	}
 
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		// TODO Kein batch processing bis jetzt, da wir den zurückgegebenen
+		// key brauchen
+	}
+
 }

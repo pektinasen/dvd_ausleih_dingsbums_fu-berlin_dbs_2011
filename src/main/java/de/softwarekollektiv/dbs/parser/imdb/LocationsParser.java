@@ -92,4 +92,10 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		shotInStmt.close();
 	}
 
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		// TODO Kein batch processing bis jetzt, da wir den zurückgegebenen
+		// key brauchen
+	}
+
 }

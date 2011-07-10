@@ -1,9 +1,9 @@
 package de.softwarekollektiv.dbs.parser;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
@@ -15,7 +15,7 @@ public abstract class AbstractParser implements Parser {
 	private final DbConnection dbcon;
 	private final String file;
 	
-	private LineNumberReader in;
+	private BufferedReader in;
 
 	protected String delimiter;
 	protected long stopAfter;
@@ -37,6 +37,14 @@ public abstract class AbstractParser implements Parser {
 	 * @throws SQLException 
 	 */
 	protected abstract void newLine(String[] lineParts) throws SQLException;	
+	
+	/**
+	 * This method is called after some heap of lines has been processes and allows
+	 * subclasses to execute their batch statements.
+	 * 
+	 * @throws SQLException
+	 */
+	protected abstract void executeBatchStatements() throws SQLException;
 	
 	/**
 	 * This method is called after the parsing has finished. Subclasses should use
@@ -70,16 +78,17 @@ public abstract class AbstractParser implements Parser {
 	public void parse() throws IOException, SQLException {
 		
 		// Open file with correct character encoding
-		in = new LineNumberReader(new InputStreamReader(
+		in = new BufferedReader(new InputStreamReader(
 				new FileInputStream(file), "ISO-8859-15"));
 		
 		// Skip meaningless lines
-		in.setLineNumber(skipLines);
+		for(int i = 0; i < skipLines; ++i)
+			in.readLine();
 		
 		// Prepare the SQL channels
 		prepareStatements();
 			
-		// Parse (with caching)
+		// Parse (with buffering)
 		int round = 5000;
 		long lineCount = 0;
 		String line;
@@ -103,8 +112,10 @@ public abstract class AbstractParser implements Parser {
 	
 	protected void newLines(String[][] lines, int n) throws SQLException {
 		for(int i = 0; i < n; ++i)
-				newLine(lines[i]);
+			newLine(lines[i]);			
 
+		executeBatchStatements();
+		
 		dbcon.getConnection().commit();
 	}
 }

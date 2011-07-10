@@ -37,7 +37,7 @@ public class CustomerParser extends AbstractParser {
 		customerStatement.setString(6, city);
 		customerStatement.setString(7, phone);	
 		
-		customerStatement.execute();
+		customerStatement.addBatch();
 	}
 
 	@Override
@@ -50,5 +50,10 @@ public class CustomerParser extends AbstractParser {
 	@Override
 	protected void closeStatements() throws SQLException {
 		customerStatement.close();
+	}
+
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		customerStatement.executeBatch();
 	}
 }

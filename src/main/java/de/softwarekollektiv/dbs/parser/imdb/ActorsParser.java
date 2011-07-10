@@ -85,4 +85,10 @@ public class ActorsParser extends AbstractImdbParser implements Parser {
 		actorsStatement.close();
 		featuresStatement.close();
 	}
+
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		// TODO Kein batch processing bis jetzt, da wir den zurückgegebenen
+		// key brauchen
+	}
 }

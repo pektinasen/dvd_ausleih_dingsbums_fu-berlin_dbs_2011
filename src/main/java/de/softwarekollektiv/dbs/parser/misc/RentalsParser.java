@@ -58,7 +58,7 @@ public class RentalsParser extends AbstractParser {
 			rentalsStmt.setTimestamp(4, ts);
 			rentalsStmt.setInt(5, duration);
 	
-			rentalsStmt.execute();
+			rentalsStmt.addBatch();
 			
 		}
 	}
@@ -75,5 +75,10 @@ public class RentalsParser extends AbstractParser {
 	protected void closeStatements() throws SQLException {
 		movIdStmt.close();
 		rentalsStmt.close();
+	}
+
+	@Override
+	protected void executeBatchStatements() throws SQLException {
+		rentalsStmt.executeBatch();
 	}
 }
