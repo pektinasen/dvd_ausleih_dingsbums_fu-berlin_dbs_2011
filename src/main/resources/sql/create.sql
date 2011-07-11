@@ -32,7 +32,7 @@ CREATE TABLE features (
 );
 
 CREATE TABLE locations (
-	loc_id serial PRIMARY KEY,
+	loc_id integer PRIMARY KEY,
 	name text UNIQUE,
 	country varchar(64)
 );
