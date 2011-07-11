@@ -24,7 +24,7 @@ public class DirectorsParser extends AbstractImdbParser {
 	 * we need this set, because of some title appears multiple times for one
 	 * director, but with different addition
 	 */
-	Set<String> currentDirectedMovies = new HashSet<String>();
+	Set<Integer> currentDirectedMovies = new HashSet<Integer>();
 
 	public DirectorsParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
@@ -42,7 +42,7 @@ public class DirectorsParser extends AbstractImdbParser {
 		// Zeilen wie "\t\t\t<titel>" die noch zu einem Actor gehören
 		// haben auch "" als lineParts[0]
 		if (lineParts.length == 1) {
-			currentDirectedMovies = new HashSet<String>();
+			currentDirectedMovies = new HashSet<Integer>();
 			currentDirector = null;
 			currentDirectorId = -1;
 			return;
@@ -55,37 +55,35 @@ public class DirectorsParser extends AbstractImdbParser {
 
 		// Extract movie title and look up in database
 		String movieTitle = lineParts[1].split("  ")[0];
-		// TODO this is wrong. (equals, Logik?)
-		if (currentDirector == "")
+		Integer movId = movIdCache.get(movieTitle);
+		
+		// only when the movie exists
+		if (movId != null) {
 
-			if (!currentDirectedMovies.contains(movieTitle)) {
-
-				currentDirectedMovies.add(movieTitle);
-				Integer movId = movIdCache.get(movieTitle);
-
-				// only when the movie exists
-				if (movId != null) {
-					
-					// Only insert the director into the db if we haven't dont
-					// so yet, else re-use the key
-					if (currentDirectorId < 0) {
-						currentDirectorId = nextId++;
-						directorsStatement.setInt(1, currentDirectorId);
-						directorsStatement.setString(2, currentDirector);
-						directorsStatement.addBatch();
-					}
-					directedByStatement.setInt(1, movId);
-					directedByStatement.setInt(2, currentDirectorId);
-					directedByStatement.addBatch();
-
+			if (!currentDirectedMovies.contains(movId)) {
+				currentDirectedMovies.add(movId);
+				
+				// Only insert the director into the db if we haven't dont
+				// so yet, else re-use the key
+				if (currentDirectorId < 0) {
+					currentDirectorId = nextId++;
+					directorsStatement.setInt(1, currentDirectorId);
+					directorsStatement.setString(2, currentDirector);
+					directorsStatement.addBatch();
 				}
+				
+				directedByStatement.setInt(1, movId);
+				directedByStatement.setInt(2, currentDirectorId);
+				directedByStatement.addBatch();
+				
 			}
+		}
 	}
 
 	@Override
 	protected void prepareStatements() throws SQLException {
 		directorsStatement = dbcon.getConnection().prepareStatement(
-				"INSERT INTO directors VALUES (DEFAULT, ?)");
+				"INSERT INTO directors VALUES (?, ?)");
 		directedByStatement = dbcon.getConnection().prepareStatement(
 				"INSERT INTO directedBy VALUES (?, ?);");
 	}

@@ -62,7 +62,7 @@ public class ParserCommander implements MenuItem {
 		parsers.add(new ActressesParser(dbcon,
 				"src/main/resources/actresses.list", movIdCache));
 		parsers.add(new LocationsParser(dbcon, "src/main/resources/locations.list", movIdCache));
-//		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list", movIdCache));
+		parsers.add(new DirectorsParser(dbcon, "src/main/resources/directors.list", movIdCache));
 		parsers.add(new CustomerParser(dbcon,
 				"src/main/resources/customers.list"));
 		parsers.add(new RentalsParser(dbcon,
