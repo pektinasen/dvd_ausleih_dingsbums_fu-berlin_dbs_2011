@@ -23,6 +23,10 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 	private Map<String, Integer> movIdCache;
 
+	private String currentMovie = "";
+
+	private boolean skipNext;
+	
 	/*
 	 * group(1) = day
 	 * group(2) = month year
@@ -30,7 +34,7 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	 * group(4) = year
 	 */
 	private static final Pattern datePattern = Pattern
-			.compile("(\\d{1,2})? ?((\\w+)? ?(\\d{4}))");
+			.compile("(\\d{1,2})? ?(?:(\\w+)? ?(\\d{4}))");
 
 	public ReleaseDateParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
@@ -38,18 +42,29 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 
 		this.dbcon = dbcon;
 		this.movIdCache = movIdCache;
+		
 	}
 
 	@Override
 	protected void newLine(String[] lineParts) throws SQLException {
 
-		String movieTitle = lineParts[0];
+		if (!currentMovie.equals(lineParts[0])){
+			currentMovie = lineParts[0];
+			skipNext = false;
+		}
+		
+		if (skipNext){
+			return;
+		}
+		
 		String[] dateParts;
+		
 		if (lineParts.length >= 2) {
 			dateParts = lineParts[1].split(":");
 		} else {
 			dateParts = new String[] { "2010" };
 		}
+		
 		String dateString;
 		String dateRegion;
 		if (dateParts.length >= 2) {
@@ -61,16 +76,20 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 			dateRegion = "unknown";
 			dateString = dateParts[0];
 		}
+		
+		if (dateRegion.equals("USA")) {
+			skipNext = true;
+		}
 
 		Matcher m = datePattern.matcher(dateString);
 		m.find();
 		String day = m.group(1);
-		String month = m.group(3);
-		String year = m.group(4);
+		String month = m.group(2);
+		String year = m.group(3);
 
 		Date date = toDate(day, month, year);
 
-		Integer movId = movIdCache.get(movieTitle);
+		Integer movId = movIdCache.get(currentMovie);
 		if (movId != null) {
 			updateDateStatement.setDate(1, date);
 			updateDateStatement.setString(2, dateRegion);
