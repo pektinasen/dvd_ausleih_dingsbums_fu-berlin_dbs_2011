@@ -3,6 +3,7 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -133,6 +134,12 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 	@Override
 	protected void closeStatements() throws SQLException {
 		updateDateStatement.close();
+		
+		Statement fillInStmt = dbcon.getConnection().createStatement();
+		fillInStmt.execute(
+				"UPDATE movies SET release_Date = '01-01-2000', region = 'unknown' WHERE release_date IS NULL");
+		dbcon.getConnection().commit();
+		fillInStmt.close();
 	}
 
 	@Override

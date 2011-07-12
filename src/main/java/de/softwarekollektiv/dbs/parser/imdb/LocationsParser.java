@@ -38,7 +38,7 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 		String movieTitle = lineParts[0];
 		String location = lineParts[1];
 		String[] locationParts = location.split(",");
-		String country = locationParts[locationParts.length - 1];
+		String country = locationParts[locationParts.length - 1].trim();
 		
 		Integer movId = movIdCache.get(movieTitle);
 		
