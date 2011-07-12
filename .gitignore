@@ -1,6 +1,15 @@
-src/main/resources/*.list
 .classpath
 .project
 .settings/
 target/
 projekt.pdf
+
+src/main/resources/actors.list
+src/main/resources/actresses.list
+src/main/resources/customers.list
+src/main/resources/directors.list
+src/main/resources/locations.list
+src/main/resources/modmovies.list
+src/main/resources/plot.list
+src/main/resources/release-dates.list
+src/main/resources/rentals.list

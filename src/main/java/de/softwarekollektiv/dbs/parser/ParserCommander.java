@@ -14,6 +14,7 @@ import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.imdb.ActorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.ActressesParser;
+import de.softwarekollektiv.dbs.parser.imdb.AdditionalMoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.DirectorsParser;
 import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
@@ -56,6 +57,8 @@ public class ParserCommander implements MenuItem {
 		List<Parser> parsers = new LinkedList<Parser>();
 		parsers.add(new MoviesParser(dbcon,
 				"src/main/resources/modmovies.list", movIdCache));
+		parsers.add(new AdditionalMoviesParser(dbcon,
+				"src/main/resources/addmovies.list", movIdCache));
 		parsers.add(new ReleaseDateParser(dbcon, "src/main/resources/release-dates.list", movIdCache));
 		parsers.add(new ActorsParser(dbcon,
 				"src/main/resources/actors.list", movIdCache));

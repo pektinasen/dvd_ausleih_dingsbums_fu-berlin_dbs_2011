@@ -17,7 +17,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	private final Map<String, Integer> movIdCache;
 	
 	private PreparedStatement movStmt;
-	private int currentId = 1;
+	private static int nextId = 1;
 	
 
 	public MoviesParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
@@ -62,22 +62,15 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			movieCategory = lineParts[3];
 		}
 		
-		/*
-		 * if the date is still less than 2010, then discard this entry
-		 */
-		if (Integer.parseInt(movieReleaseString) < 2010){
-			return;
-		}
-		
 		Date movieRelease = getFirstDayOfYear(movieReleaseString);	
 		
+		int currentId = nextId++;
 		movStmt.setInt(1, currentId);
 		movStmt.setString(2, movieTitle);
 		movStmt.setDate(3, movieRelease);
 		movStmt.setString(4, movieCategory);
 		movStmt.addBatch();
 		movIdCache.put(movieTitle, currentId);
-		++currentId;
 	}
 
 	private String parseReleaseString(String input) {
