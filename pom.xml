@@ -25,6 +25,21 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>de.softwarekollektiv.dbs.app.MainMenu</mainClass>
+							<addClasspath>true</addClasspath>		
+						</manifest>
+					</archive>
+					<excludes>
+						<exclude>*.list</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
