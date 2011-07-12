@@ -32,7 +32,10 @@ public class PrettyTablePrinter {
 			out.print("# ");
 			for(int i = 0; i < rsmd.getColumnCount(); ++i) {
 				String value = rs.getString(rsmd.getColumnLabel(i + 1));
-				out.print(padRight(value, widths[i]));
+				if(value != null)
+					out.print(padRight(value, widths[i]));
+				else
+					out.print(padRight("null", widths[i]));
 				out.print(" # ");
 			}
 			out.println();
@@ -52,11 +55,13 @@ public class PrettyTablePrinter {
 		for(int i = 0; i < rsmd.getColumnCount(); ++i)
 			retval[i] = rsmd.getColumnLabel(i + 1).length();
 				
+		int len;
 		while(rs.next()) {
 			for(int i = 0; i < rsmd.getColumnCount(); ++i) {
 				String value = rs.getString(rsmd.getColumnLabel(i + 1));
-				if(retval[i] < value.length())
-					retval[i] = value.length();
+				len = (value == null) ? 4 : value.length();
+				if(retval[i] < len)
+					retval[i] = len;
 			}
 		}
 		rs.beforeFirst();
