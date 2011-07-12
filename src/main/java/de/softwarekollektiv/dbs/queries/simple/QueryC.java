@@ -1,8 +1,10 @@
 package de.softwarekollektiv.dbs.queries.simple;
 
+import java.io.IOException;
 import java.io.PrintStream;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
+import de.softwarekollektiv.dbs.app.Utils;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.queries.AbstractSQLQuery;
 
@@ -23,8 +25,7 @@ class QueryC extends AbstractSQLQuery implements MenuItem {
 	}
 
 	@Override
-	protected String getQuery() {
-		// TODO Auto-generated method stub
-		return null;
+	protected String getQuery() throws IOException {
+		return Utils.fileToString("src/main/resources/sql/queryc.sql");
 	}
 }
