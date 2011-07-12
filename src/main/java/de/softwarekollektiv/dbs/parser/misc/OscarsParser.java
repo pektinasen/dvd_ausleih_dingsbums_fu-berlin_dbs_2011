@@ -25,19 +25,17 @@ public class OscarsParser extends AbstractParser {
 
 	@Override
 	protected void newLine(String[] lineParts) throws SQLException {
-		String title = lineParts[0];
+		Integer movId = movIdCache.get(lineParts[0]);
 		String category = lineParts[1];
-		String year = lineParts[2];
-		
-		Integer movId = movIdCache.get(title);
+		int year = Integer.parseInt(lineParts[2]);
 		
 		// Don't need to check movId as I inserted relevant movies manually into
 		// the database. Don't need to catch the NumberFormatException either, as
 		// there won't be any.
-		
+
 		oscarInsStmt.setInt(1, movId);
 		oscarInsStmt.setString(2, category);
-		oscarInsStmt.setInt(3, Integer.parseInt(year));
+		oscarInsStmt.setInt(3, year);
 		oscarInsStmt.addBatch();
 	}
 	

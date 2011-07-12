@@ -69,18 +69,14 @@ public class ReleaseDateParser extends AbstractImdbParser implements Parser {
 		String year = m.group(4);
 
 		Date date = toDate(day, month, year);
-		Date minDate = toDate("1", "Jan", "2010");
 
-		if (date.compareTo(minDate) >= 0) {
+		Integer movId = movIdCache.get(movieTitle);
+		if (movId != null) {
+			updateDateStatement.setDate(1, date);
+			updateDateStatement.setString(2, dateRegion);
+			updateDateStatement.setInt(3, movId);
 
-			Integer movId = movIdCache.get(movieTitle);
-			if (movId != null) {
-				updateDateStatement.setDate(1, date);
-				updateDateStatement.setString(2, dateRegion);
-				updateDateStatement.setInt(3, movId);
-
-				updateDateStatement.addBatch();
-			}
+			updateDateStatement.addBatch();
 		}
 
 	}

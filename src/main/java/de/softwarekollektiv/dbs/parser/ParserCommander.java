@@ -20,6 +20,7 @@ import de.softwarekollektiv.dbs.parser.imdb.LocationsParser;
 import de.softwarekollektiv.dbs.parser.imdb.MoviesParser;
 import de.softwarekollektiv.dbs.parser.imdb.ReleaseDateParser;
 import de.softwarekollektiv.dbs.parser.misc.CustomerParser;
+import de.softwarekollektiv.dbs.parser.misc.OscarsParser;
 import de.softwarekollektiv.dbs.parser.misc.RentalsParser;
 
 // TODO rename again
@@ -70,6 +71,8 @@ public class ParserCommander implements MenuItem {
 				"src/main/resources/customers.list"));
 		parsers.add(new RentalsParser(dbcon,
 				"src/main/resources/rentals.list", movIdCache));
+		parsers.add(new OscarsParser(dbcon,
+				"src/main/resources/oscars.list", movIdCache));
 		
 		long before = System.currentTimeMillis();
 		long beforeParser = 0;

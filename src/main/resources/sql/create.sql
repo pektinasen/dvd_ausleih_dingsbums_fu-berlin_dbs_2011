@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS features;
 DROP TABLE IF EXISTS shotIn;
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
+DROP TABLE IF EXISTS nominations;
 
 CREATE TABLE movies (
 	mov_id integer PRIMARY KEY,
@@ -14,8 +15,9 @@ CREATE TABLE movies (
 	release_date date,
 	description text,
 	price_category char,
-	region varchar(64),
-	CHECK (release_date >= '2010-01-01')
+	region varchar(64)
+	-- CHECK (release_date >= '2010-01-01')
+	-- removed as we also add some movies from 09 to the db (oscar nominees)
 );
 
 CREATE TABLE actors (
