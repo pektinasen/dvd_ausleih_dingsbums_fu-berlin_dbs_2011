@@ -72,3 +72,9 @@ CREATE TABLE rentals (
 	duration integer,
 	PRIMARY KEY (cus_id, mov_id, startdate)
 );
+
+CREATE TABLE nominations (
+	mov_id integer REFERENCES movies,
+	category varchar(8),
+	year integer
+);
