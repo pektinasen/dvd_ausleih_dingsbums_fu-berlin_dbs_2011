@@ -10,6 +10,7 @@ import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.app.QuitItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
+// TODO delete (unused right now)
 public class InvoiceMenu extends AbstractSelectionMenu implements MenuItem {
 
 	private final List<MenuItem> items;

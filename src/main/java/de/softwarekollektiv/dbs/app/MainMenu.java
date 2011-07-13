@@ -27,7 +27,7 @@ class MainMenu extends AbstractSelectionMenu {
 		items = new LinkedList<MenuItem>();
 		items.add(new ParserCommander(dbcon));
 		items.add(new ListingsMenu(out, in, dbcon));
-		items.add(new InvoiceMenu(out, in, dbcon));
+		items.add(new SingleInvoice(out, in, dbcon));
 		items.add(new SimpleQueryMenu(out, in, dbcon));
 		items.add(new ComplexQueryMenu(out, in, dbcon));
 		items.add(new QuitItem());
