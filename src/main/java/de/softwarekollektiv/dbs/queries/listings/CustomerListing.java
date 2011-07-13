@@ -28,7 +28,7 @@ class CustomerListing extends AbstractListing implements MenuItem {
 
 	@Override
 	protected String[] getFields() {
-		return new String[] { "cus_id", "name", "surname" };
+		return new String[] { "cus_id", "surename", "forename" };
 	}
 
 }
