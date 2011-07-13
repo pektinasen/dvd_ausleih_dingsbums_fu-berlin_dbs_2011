@@ -127,28 +127,28 @@ class QueryF implements MenuItem {
 
 	private List<Integer> shortestPathAsList(
 			Map<Integer, Integer> predecessors, int endId) {
-		List<Integer> list = new LinkedList<Integer>();
-		list.add(endId);
+		List<Integer> result = new LinkedList<Integer>();
+		result.add(endId);
 		Integer l_pred = endId;
 		do {
 			l_pred = predecessors.get(l_pred);
-			list.add(l_pred);
+			result.add(l_pred);
 			
 		}while (l_pred != null);
-		Collections.reverse(list);	
-		list.remove(0);
-		return list;
+		Collections.reverse(result);	
+		result.remove(0);
+		return result;
 	}
 
 	private List<Integer> getActorsWhoWorkedWith(int id) throws SQLException {
 		hasWorkedWithStmt.setInt(1, id);
-		ResultSet result = hasWorkedWithStmt.executeQuery();
-		List<Integer> resultList = new LinkedList<Integer>();
-		while(result.next()){
-			resultList.add(result.getInt("act_id"));
-			result.close();
+		ResultSet rs = hasWorkedWithStmt.executeQuery();
+		List<Integer> result = new LinkedList<Integer>();
+		while(rs.next()){
+			result.add(rs.getInt("act_id"));
+			rs.close();
 		}
-		return resultList;
+		return result;
 	}
 	
 	private int getId(String name) throws SQLException {
@@ -156,6 +156,8 @@ class QueryF implements MenuItem {
 		ResultSet rs = actIdStmt.executeQuery();
 		// must exist
 		rs.next();
-		return rs.getInt(1);
+		int result = rs.getInt(1);
+		rs.close();
+		return result;
 	}
 }

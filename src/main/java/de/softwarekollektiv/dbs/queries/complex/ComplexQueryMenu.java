@@ -20,6 +20,7 @@ public class ComplexQueryMenu extends AbstractSelectionMenu implements MenuItem 
 		items = new LinkedList<MenuItem>();
 		items.add(new QueryE(out, dbcon));
 		items.add(new QueryF(out, dbcon));
+		items.add(new QueryFHack(out, dbcon));
 		items.add(new QuitItem("Return", "Return to main menu."));
 	}
 	
