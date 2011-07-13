@@ -71,7 +71,6 @@ class QueryF implements MenuItem {
 	}
 	
 	/**
-	 * TODO return the path correct
 	 * BFS
 	 * @throws SQLException 
 	 */
