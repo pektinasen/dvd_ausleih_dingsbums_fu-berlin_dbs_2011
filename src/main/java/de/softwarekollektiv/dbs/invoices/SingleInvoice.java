@@ -94,7 +94,7 @@ public class SingleInvoice implements MenuItem {
 		try {
 			return Integer.parseInt(line);
 		} catch (NumberFormatException e) {
-			out.print("Not a valid customer ID.");
+			out.println("Not a valid customer ID.");
 			return -1;
 		}
 	}
@@ -109,7 +109,7 @@ public class SingleInvoice implements MenuItem {
 		if(rs.next())
 			retval = rs.getString(1) + ", " + rs.getString(2);
 		else {
-			out.print("Could not find customer with ID '" + id + "'.");
+			out.println("Could not find customer with ID '" + id + "'.");
 		}	
 		
 		cusIdStmt.close();
