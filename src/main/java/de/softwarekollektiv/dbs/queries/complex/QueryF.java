@@ -71,7 +71,6 @@ class QueryF implements MenuItem {
 	}
 	
 	/**
-	 * TODO return the path correct
 	 * BFS
 	 * @throws SQLException 
 	 */
@@ -146,8 +145,8 @@ class QueryF implements MenuItem {
 		List<Integer> result = new LinkedList<Integer>();
 		while(rs.next()){
 			result.add(rs.getInt("act_id"));
-			rs.close();
 		}
+		rs.close();
 		return result;
 	}
 	
