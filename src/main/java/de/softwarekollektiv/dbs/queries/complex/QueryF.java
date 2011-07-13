@@ -4,7 +4,14 @@ import java.io.PrintStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
@@ -32,24 +39,30 @@ class QueryF implements MenuItem {
 		return "Beantwortet Aufgabe 5.2.b:\n[...]\nErmitteln Sie nun die kürzeste Verbindung zwischen folgenden Paaren:\ni. Johnny Depp und Timothy Dalton\nii. Johnny Depp und August Diehl\niii. Bill Murray und Sylvester Stallone\niv. Edward Norton und Don Cheadle";
 	}
 
+	private Queue<Integer> queue = new LinkedList<Integer>();
+	private Set<Integer> visited = new TreeSet<Integer>();
+	private Map<Integer, Integer> predecessor = new TreeMap<Integer, Integer>();
+	
 	@Override
 	public boolean run() throws Exception {
 		
 		String[][] pairs = {
 				{"Depp, Johnny", "Dalton, Timothy"},
 				{"Depp, Johnny", "Diehl, August"},
-				{"Murray, Bill", "Stallone, Sylvester"},
-				{"Norton, Edward", "Cheadle, Don"}
+				{"Murray, Bill (I)", "Stallone, Sylvester"},
+				{"Norton, Edward (I)", "Cheadle, Don"}
 		};
+		
+		
 		actIdStmt = dbcon.getConnection().prepareStatement("SELECT act_id FROM actors WHERE name = ?");
 		hasWorkedWithStmt = dbcon.getConnection().prepareStatement(
-				"SELECT act_id FROM features WHERE mov_id IN (SELECT mov_id FROM features WHERE act_id = ?)");
-		
+				"SELECT act_id FROM features WHERE mov_id IN (SELECT DISTINCT mov_id FROM features WHERE act_id = ?)"
+		);
 		out.println();
 		for(String[] pair : pairs) {
 			int startId = getId(pair[0]);
 			int endId = getId(pair[1]);
-			out.println("Shortest path between " + pair[0] + " and " + pair[1] + " is: " + shortestPath(startId, endId));
+			out.println("Shortest path between " + pair[0] + " and " + pair[1] + " is: " +actIdsToNames( shortestPath(startId, endId)));
 		}
 		
 		actIdStmt.close();
@@ -58,14 +71,84 @@ class QueryF implements MenuItem {
 	}
 	
 	/**
+	 * TODO return the path correct
 	 * BFS
+	 * @throws SQLException 
 	 */
-	private int shortestPath(int startId, int endId) {
-		return 0;
+	private List<Integer> shortestPath(int startId, int endId) throws SQLException {
+		
+			queue.clear();
+			visited.clear();
+			predecessor.clear();
+		
+			queue.offer(startId);
+			visited.add(startId);
+			predecessor.put(startId, null);
+			
+			out:
+			while (!queue.isEmpty()){
+				int node = queue.poll();
+				if (node == endId){
+					return null;
+				}
+				for (int neighbor : getActorsWhoWorkedWith(node)){
+					if (neighbor == endId) {
+						predecessor.put(neighbor, node);
+						break out;
+					}
+					if (!visited.contains(neighbor)){
+						queue.offer(neighbor);
+						visited.add(neighbor);
+						predecessor.put(neighbor, node);
+					}
+				}
+			}
+			
+			return shortestPathAsList(predecessor, endId);
 	}
 	
+	private List<String> actIdsToNames(List<Integer> shortestPathAsList) throws SQLException {
+		PreparedStatement actIdToNameStmt = dbcon.getConnection().prepareStatement(
+		"SELECT name FROM actors WHERE act_id = ?");
+		
+		List<String> list = new LinkedList<String>();
+		for (Integer id : shortestPathAsList){
+			actIdToNameStmt.setInt(1, id);
+			ResultSet result = actIdToNameStmt.executeQuery();
+			result.next();
+			list.add("\""+result.getString(1)+"\"");
+			result.close();
+		}
+		
+		actIdToNameStmt.close();
+		
+		return list;
+	}
+
+	private List<Integer> shortestPathAsList(
+			Map<Integer, Integer> predecessors, int endId) {
+		List<Integer> list = new LinkedList<Integer>();
+		list.add(endId);
+		Integer l_pred = endId;
+		do {
+			l_pred = predecessors.get(l_pred);
+			list.add(l_pred);
+			
+		}while (l_pred != null);
+		Collections.reverse(list);	
+		list.remove(0);
+		return list;
+	}
+
 	private List<Integer> getActorsWhoWorkedWith(int id) throws SQLException {
-		return null;
+		hasWorkedWithStmt.setInt(1, id);
+		ResultSet result = hasWorkedWithStmt.executeQuery();
+		List<Integer> resultList = new LinkedList<Integer>();
+		while(result.next()){
+			resultList.add(result.getInt("act_id"));
+			result.close();
+		}
+		return resultList;
 	}
 	
 	private int getId(String name) throws SQLException {
