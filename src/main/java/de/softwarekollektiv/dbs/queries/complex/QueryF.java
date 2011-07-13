@@ -141,13 +141,14 @@ class QueryF implements MenuItem {
 	}
 
 	private List<Integer> getActorsWhoWorkedWith(int id) throws SQLException {
+		List<Integer> result = new LinkedList<Integer>();
+		
 		hasWorkedWithStmt.setInt(1, id);
 		ResultSet rs = hasWorkedWithStmt.executeQuery();
-		List<Integer> result = new LinkedList<Integer>();
-		while(rs.next()){
+		while(rs.next())
 			result.add(rs.getInt("act_id"));
-			rs.close();
-		}
+		rs.close();
+		
 		return result;
 	}
 	
