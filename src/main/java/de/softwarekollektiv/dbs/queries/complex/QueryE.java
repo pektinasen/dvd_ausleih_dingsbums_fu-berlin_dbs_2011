@@ -112,7 +112,7 @@ class QueryE implements MenuItem {
 
 	private Double totalCharge(int cust_id) throws SQLException {
 		PreparedStatement totalCharge = dbcon.getConnection().prepareStatement(
-				"SELECT * FROM totalcharges(?)");
+				"SELECT * FROM totalcharges(?, -1, -1)");
 		totalCharge.setInt(1, cust_id);
 		ResultSet rs = totalCharge.executeQuery();
 		double result = 0.0;
