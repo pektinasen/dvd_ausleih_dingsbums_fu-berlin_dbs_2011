@@ -22,6 +22,7 @@ class QueryF implements MenuItem {
 	private final DbConnection dbcon;
 
 	private PreparedStatement actIdStmt;
+	private PreparedStatement actCountStmt;
 	private PreparedStatement hasWorkedWithStmt;
 
 	QueryF(PrintStream out, DbConnection dbcon) {
@@ -40,7 +41,7 @@ class QueryF implements MenuItem {
 	}
 
 	private Queue<Integer> queue = new LinkedList<Integer>();
-	private Set<Integer> visited = new TreeSet<Integer>();
+	private boolean[] visited;
 	private Map<Integer, Integer> predecessor = new TreeMap<Integer, Integer>();
 
 	@Override
@@ -50,7 +51,9 @@ class QueryF implements MenuItem {
 				{ "Depp, Johnny", "Diehl, August" },
 				{ "Murray, Bill (I)", "Stallone, Sylvester" },
 				{ "Norton, Edward (I)", "Cheadle, Don" } };
-
+		
+		int numActs = getActorsCount();
+		
 		actIdStmt = dbcon.getConnection().prepareStatement(
 				"SELECT act_id FROM actors WHERE name = ?");
 		hasWorkedWithStmt = dbcon
@@ -59,6 +62,7 @@ class QueryF implements MenuItem {
 						"SELECT act_id FROM features WHERE mov_id IN (SELECT DISTINCT mov_id FROM features WHERE act_id = ?)");
 		out.println();
 		for (String[] pair : pairs) {
+			visited = new boolean[numActs];
 			int startId = getId(pair[0]);
 			int endId = getId(pair[1]);
 			out.println("Shortest path between " + pair[0] + " and " + pair[1]
@@ -68,6 +72,17 @@ class QueryF implements MenuItem {
 		actIdStmt.close();
 		hasWorkedWithStmt.close();
 		return true;
+	}
+	
+	private int getActorsCount() throws SQLException {
+		actCountStmt = dbcon.getConnection().prepareStatement(
+		"SELECT COUNT(*) FROM actors;");
+		ResultSet rslt = actCountStmt.executeQuery();
+		rslt.next();
+		int retval = rslt.getInt(1);
+		rslt.close();
+		actCountStmt.close();
+		return retval;
 	}
 
 	/**
@@ -79,11 +94,10 @@ class QueryF implements MenuItem {
 			throws SQLException {
 
 		queue.clear();
-		visited.clear();
 		predecessor.clear();
 
 		queue.offer(startId);
-		visited.add(startId);
+		visited[startId - 1] = true;
 		predecessor.put(startId, null);
 
 		out: while (!queue.isEmpty()) {
@@ -96,9 +110,9 @@ class QueryF implements MenuItem {
 					predecessor.put(neighbor, node);
 					break out;
 				}
-				if (!visited.contains(neighbor)) {
+				if (!visited[neighbor - 1]) {
 					queue.offer(neighbor);
-					visited.add(neighbor);
+					visited[neighbor - 1] = true;
 					predecessor.put(neighbor, node);
 				}
 			}
