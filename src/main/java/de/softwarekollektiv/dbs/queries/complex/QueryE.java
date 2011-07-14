@@ -41,7 +41,7 @@ class QueryE implements MenuItem {
 		
 		PreparedStatement flatCustomers = dbcon.getConnection()
 				.prepareStatement(
-						"SELECT cus_id FROM rentals WHERE type = 'flat'");
+						"SELECT DISTINCT cus_id FROM rentals WHERE type = 'flat'");
 
 		ResultSet rs = flatCustomers.executeQuery();
 		while (rs.next()) {
@@ -64,7 +64,7 @@ class QueryE implements MenuItem {
 		
 		for (Entry<Integer, Double> entry : flatCharges.entrySet()){
 			double starterCharge = starterCharges.get(entry.getKey());
-			out.println(String.format(" %6d | %5.2f | %7.2f | %s",
+			out.println(String.format(" %6d | %6.2f | %8.2f | %s",
 					entry.getKey() , entry.getValue() ,starterCharge , (entry.getValue()>starterCharge)));
 		}
 		out.println("");
