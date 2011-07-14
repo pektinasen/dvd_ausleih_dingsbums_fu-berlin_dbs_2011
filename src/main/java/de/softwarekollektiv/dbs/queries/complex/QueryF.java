@@ -9,9 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
