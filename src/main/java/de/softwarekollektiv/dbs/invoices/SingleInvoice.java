@@ -138,16 +138,17 @@ public class SingleInvoice implements MenuItem {
 			rip.duration = rentals.getInt("duration");
 			
 			if(rip.price_category.equals("A")) {
-				if(rip.type.equals("speedy") || rip.type.equals("flat"))
+				if(rip.type.equals("speedy") || rip.type.equals("flat")) {
 					rip.amount = (0.19 * rip.duration);
-				else /* starter */
+				} else /* starter */ {
 					rip.amount = (1.29 * rip.duration);
+				}
 			} else {
-				if(rip.type.equals("speedy"))
+				if(rip.type.equals("speedy")) {
 					rip.amount = (0.15 * rip.duration);
-				else if(rip.type.equals("starter"))
+				} else if(rip.type.equals("starter")) {
 					rip.amount = (0.79 * rip.duration);
-				else {
+				} else {
 					if(!firstBseen) {
 						firstBseen = true;
 						rip.amount = 0.0;
@@ -234,10 +235,11 @@ public class SingleInvoice implements MenuItem {
 		
 		@Override
 		public void print(PrintStream out) {
+			out.println();
 			out.println(
 					"Flat fee for month " + (getMonth(month) + 1) + "."	+
 					getYear(month));
-			out.println(10);
+			out.println("Cost: " + 10);
 		}
 
 		@Override
