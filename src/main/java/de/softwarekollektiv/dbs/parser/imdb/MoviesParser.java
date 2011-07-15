@@ -3,17 +3,17 @@ package de.softwarekollektiv.dbs.parser.imdb;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 import de.softwarekollektiv.dbs.parser.Parser;
 
 public class MoviesParser extends AbstractImdbParser implements Parser {
 
+	/*
 	private static final Pattern yearPattern = Pattern
 			.compile("(\\d{4})?-?((\\d{4})|\\?{4})");
-
+	*/
+	
 	private final DbConnection dbcon;
 	private final Map<String, Integer> movIdCache;
 
@@ -37,11 +37,15 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	protected void newLine(String[] lineParts) throws SQLException {
 
 		String movieTitle = lineParts[0];
+
+		// We ignore the movie release year
+		// String movieReleaseString = null;
+
 		String movieCategory = null;
 
 		// normal case
 		if (lineParts.length == 3) {
-			// movieReleaseString = parseReleaseString(lineParts[1]);
+			// movieReleaseString = lineParts[1];
 			movieCategory = lineParts[2];
 		}
 		// the release year field is missing
@@ -61,7 +65,8 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 		movIdCache.put(movieTitle, currentId);
 	}
 
-	@Deprecated
+
+	/*
 	private String parseReleaseString(String input) {
 
 		Matcher m = yearPattern.matcher(input);
@@ -77,7 +82,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 			localRelease = m.group(1);
 		}
 		return localRelease;
-	}
+	}*/
 
 	@Override
 	protected void prepareStatements() throws SQLException {
