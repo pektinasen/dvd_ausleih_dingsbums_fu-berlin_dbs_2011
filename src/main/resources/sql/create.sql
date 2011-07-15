@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS shotIn;
 DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS rentals;
 DROP TABLE IF EXISTS nominations;
+DROP INDEX IF EXISTS act_idx;
 
 CREATE TABLE movies (
 	mov_id integer PRIMARY KEY,
@@ -81,6 +82,16 @@ CREATE TABLE nominations (
 	year integer
 );
 
+/*
+ * INDEXES
+ */
+
+CREATE INDEX act_idx ON features(act_id);
+
+/*
+ * STORED PROCEDURES
+ */
+ 
 -- commented out as postgres complains if already created and there's
 -- no way of CREATing it IF NOT EXISTs...
 -- CREATE LANGUAGE plpgsql;
@@ -164,3 +175,5 @@ $$
 	END;
 $$
 LANGUAGE 'plpgsql' STABLE;
+
+

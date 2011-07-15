@@ -64,7 +64,7 @@ class QueryE implements MenuItem {
 		
 		for (Entry<Integer, Double> entry : flatCharges.entrySet()){
 			double starterCharge = starterCharges.get(entry.getKey());
-			out.println(String.format(" %6d | %6.2f | %8.2f | %s",
+			out.println(String.format(" %6d | %6.2f | %7.2f | %s",
 					entry.getKey() , entry.getValue() ,starterCharge , (entry.getValue()>starterCharge)));
 		}
 		out.println("");
@@ -101,10 +101,8 @@ class QueryE implements MenuItem {
 				}
 				else {
 					charge +=  duration * 0.15;
-				}
-					
+				}		
 			}
-			
 		}
 		
 		return charge;

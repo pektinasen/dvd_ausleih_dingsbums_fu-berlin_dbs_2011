@@ -21,6 +21,7 @@ public class LocationsParser extends AbstractImdbParser implements Parser {
 	public LocationsParser(DbConnection dbcon, String file, Map<String, Integer> movIdCache) {
 		super(dbcon, file);
 		super.skipLines = 264;
+		super.stopAfter = 532964;
 		this.dbcon = dbcon;
 		this.movIdCache = movIdCache;
 		this.locIdCache = new HashMap<String, Integer>();

@@ -37,7 +37,6 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 	protected void newLine(String[] lineParts) throws SQLException {
 
 		String movieTitle = lineParts[0];
-		String movieReleaseString = null;
 		String movieCategory = null;
 
 		// normal case
@@ -62,6 +61,7 @@ public class MoviesParser extends AbstractImdbParser implements Parser {
 		movIdCache.put(movieTitle, currentId);
 	}
 
+	@Deprecated
 	private String parseReleaseString(String input) {
 
 		Matcher m = yearPattern.matcher(input);

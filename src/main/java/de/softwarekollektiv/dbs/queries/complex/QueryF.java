@@ -9,15 +9,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
 
 import de.softwarekollektiv.dbs.app.MenuItem;
 import de.softwarekollektiv.dbs.dbcon.DbConnection;
 
 class QueryF implements MenuItem {
 
+	static Logger log = Logger.getLogger(QueryF.class);
+	
 	private final PrintStream out;
 	private final DbConnection dbcon;
 
@@ -45,8 +47,8 @@ class QueryF implements MenuItem {
 	private Map<Integer, Integer> predecessor = new TreeMap<Integer, Integer>();
 
 	@Override
-	public boolean run() throws Exception {
-
+	public boolean run() throws Exception {	
+		
 		String[][] pairs = { { "Depp, Johnny", "Dalton, Timothy" },
 				{ "Depp, Johnny", "Diehl, August" },
 				{ "Murray, Bill (I)", "Stallone, Sylvester" },
@@ -90,9 +92,9 @@ class QueryF implements MenuItem {
 	 * 
 	 * @throws SQLException
 	 */
-	private List<Integer> shortestPath(int startId, int endId)
+	protected List<Integer> shortestPath(int startId, int endId)
 			throws SQLException {
-
+		Long start = System.currentTimeMillis();
 		queue.clear();
 		predecessor.clear();
 
@@ -117,7 +119,8 @@ class QueryF implements MenuItem {
 				}
 			}
 		}
-
+		Long end = System.currentTimeMillis();
+		log.info(end - start +"ms");
 		return shortestPathAsList(predecessor, endId);
 	}
 
