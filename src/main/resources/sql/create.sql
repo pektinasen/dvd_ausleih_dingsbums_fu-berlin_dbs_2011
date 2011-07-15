@@ -106,72 +106,77 @@ $$
 	DECLARE
 		v_rental RECORD;
 		v_result NUMERIC;
-		flat boolean;
-		firstB boolean;
+		firstBFlat boolean;
 		firstB_start date;
 		firstB_duration numeric;
 		firstBEver timestamp;
+		lastBRentalTS timestamp;
 		sqlexpr text;
 		pcus_id ALIAS FOR $1;
 		pmonth ALIAS FOR $2;
 		pyear ALIAS FOR $3;
 	BEGIN
-			sqlexpr := 'SELECT price_category, type, startdate, duration
-					FROM rentals JOIN movies
-					ON rentals.mov_id = movies.mov_id
-					WHERE rentals.cus_id = ' || pcus_id;
-			IF pmonth > 0 THEN 
-					sqlexpr := sqlexpr || ' AND EXTRACT(MONTH FROM startdate) = ' || pmonth;
-			END IF;
-			IF pyear > 0 THEN 
-					sqlexpr := sqlexpr || ' AND EXTRACT(YEAR FROM startdate) = ' || pyear;
-			END IF;
-			sqlexpr := sqlexpr || ' ORDER BY startdate;';
-			
-			flat := false;
-			firstB := false;
-			v_result := 0.0;
-			
-			FOR v_rental IN EXECUTE sqlexpr LOOP	
-				IF v_rental.type = 'flat' THEN
-					flat := true;
-					IF firstB = false AND v_rental.price_category = 'B' THEN
-						firstB := true;
-						firstB_start := v_rental.startdate;
-						firstB_duration := v_rental.duration;
-					END IF;
-					v_result := v_result + v_rental.duration * 0.19;
-				ELSE 
-					IF v_rental.type = 'speedy' THEN
-						IF v_rental.price_category = 'A' THEN
-							v_result := v_result + v_rental.duration * 0.19;
-						ELSE
-							v_result := v_result + v_rental.duration * 0.15;
-						END IF;
-					ELSE
-						IF v_rental.price_category = 'A' THEN
-							v_result := v_result + v_rental.duration * 1.29;
-						ELSE
-							v_result := v_result + v_rental.duration * 0.79;
-						END IF;
-					END IF;
+		sqlexpr := 'SELECT price_category, type, startdate, duration
+				FROM rentals JOIN movies
+				ON rentals.mov_id = movies.mov_id
+				WHERE rentals.cus_id = ' || pcus_id;
+		IF pmonth > 0 THEN 
+				sqlexpr := sqlexpr || ' AND EXTRACT(MONTH FROM startdate) = ' || pmonth;
+		END IF;
+		IF pyear > 0 THEN 
+				sqlexpr := sqlexpr || ' AND EXTRACT(YEAR FROM startdate) = ' || pyear;
+		END IF;
+		sqlexpr := sqlexpr || ' ORDER BY startdate;';
+		
+		firstBFlat := false;
+		v_result := 0.0;
+		lastBRentalTS := NULL;
+		
+		FOR v_rental IN EXECUTE sqlexpr LOOP	
+			IF v_rental.type = 'flat' THEN
+				IF firstBFlat = false AND v_rental.price_category = 'B' THEN
+					firstBFlat := true;
+					firstB_start := v_rental.startdate;
+					firstB_duration := v_rental.duration;
 				END IF;
-			END LOOP;
-			
-			IF flat = true THEN			
-				v_result := v_result + 10;
-				IF firstB THEN
-					SELECT MIN(startdate) INTO firstBEver 
-					FROM rentals
-					WHERE cus_id = pcus_id;
+				v_result := v_result + v_rental.duration * 0.19;
+
+				IF lastBRentalTS IS NULL OR
+					EXTRACT(MONTH FROM lastBRentalTS) <> EXTRACT(MONTH FROM v_rental.startdate) OR
+					EXTRACT(YEAR FROM lastBRentalTS) <> EXTRACT(YEAR FROM v_rental.startdate) THEN
 					
-					IF firstB_start = firstBEver THEN
-						v_result := v_result - firstB_duration * 0.19;
+					lastBRentalTS := v_rental.startdate;
+					v_result := v_result + 10.0;
+					
+				END IF;
+			ELSE 
+				IF v_rental.type = 'speedy' THEN
+					IF v_rental.price_category = 'A' THEN
+						v_result := v_result + v_rental.duration * 0.19;
+					ELSE
+						v_result := v_result + v_rental.duration * 0.15;
+					END IF;
+				ELSE
+					IF v_rental.price_category = 'A' THEN
+						v_result := v_result + v_rental.duration * 1.29;
+					ELSE
+						v_result := v_result + v_rental.duration * 0.79;
 					END IF;
 				END IF;
 			END IF;
+		END LOOP;
+		
+		IF firstBFlat THEN
+			SELECT MIN(startdate) INTO firstBEver 
+			FROM rentals
+			WHERE cus_id = pcus_id;
 			
-			RETURN v_result;
+			IF firstB_start = firstBEver THEN
+				v_result := v_result - firstB_duration * 0.19;
+			END IF;
+		END IF;
+		
+		RETURN v_result;
 	END;
 $$
 LANGUAGE 'plpgsql' STABLE;

@@ -76,7 +76,7 @@ class QueryE implements MenuItem {
 				"SELECT price_category, type, duration "+
 				"FROM rentals JOIN movies "+
 				"ON rentals.mov_id = movies.mov_id "+
-				"WHERE cus_id = ?");
+				"WHERE cus_id = ?;");
 		
 		custStmt.setInt(1, cust_id);
 		ResultSet rs = custStmt.executeQuery();
@@ -110,7 +110,7 @@ class QueryE implements MenuItem {
 
 	private Double totalCharge(int cust_id) throws SQLException {
 		PreparedStatement totalCharge = dbcon.getConnection().prepareStatement(
-				"SELECT * FROM totalcharges(?, -1, -1)");
+				"SELECT * FROM totalcharges(?, -1, -1);");
 		totalCharge.setInt(1, cust_id);
 		ResultSet rs = totalCharge.executeQuery();
 		double result = 0.0;
