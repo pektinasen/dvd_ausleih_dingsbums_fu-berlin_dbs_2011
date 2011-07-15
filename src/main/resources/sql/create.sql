@@ -181,4 +181,11 @@ $$
 $$
 LANGUAGE 'plpgsql' STABLE;
 
-
+CREATE OR REPLACE FUNCTION totalcharges(integer)
+RETURNS numeric
+AS
+$$
+	BEGIN
+		RETURN totalcharges($1, -1,-1);
+	END
+$$ LANGUAGE 'plpgsql' STABLE;
